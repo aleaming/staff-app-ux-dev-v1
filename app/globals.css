@@ -1,0 +1,285 @@
+@import url('https://fonts.googleapis.com/css2?family=Zalando+Sans:wght@400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-sans: "Zalando Sans", system-ui, -apple-system, sans-serif;
+    --font-serif: Adamina, ui-serif, serif;
+    --font-mono: "Fira Code", ui-monospace, monospace;
+
+    --radius: 0.625rem;
+    --background: 48 50% 97%;
+    --foreground: 48 20% 20%;
+    --card: 48 50% 99%;
+    --card-foreground: 30 2% 8%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 48 19% 13%;
+    --primary: 16 51% 52%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 48 24% 89%;
+    --secondary-foreground: 48 8% 30%;
+    --muted: 48 30% 90%;
+    --muted-foreground: 40 3% 40%;
+    --accent: 48 24% 89%;
+    --accent-foreground: 48 19% 13%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 92%;
+    --input: 0 0% 79.8%;
+    --ring: 16 96% 59%;
+    --chart-1: 16 57% 44%;
+    --chart-2: 247 73% 75%;
+    --chart-3: 48 26% 82%;
+    --chart-4: 260 48% 88%;
+    --chart-5: 16 60% 44%;
+    --sidebar: 48 32% 95%;
+    --sidebar-foreground: 60 2% 24%;
+    --sidebar-primary: 16 51% 52%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 48 24% 89%;
+    --sidebar-accent-foreground: 0 0% 20%;
+    --sidebar-border: 0 0% 91%;
+    --sidebar-ring: 16 96% 59%;
+    
+    --shadow-color: rgb(0, 0, 0);
+    --shadow-2xs: 0 1px 3px 0px rgb(from var(--shadow-color) r g b / 0.05);
+    --shadow-xs: 0 1px 3px 0px rgb(from var(--shadow-color) r g b / 0.05);
+    --shadow-sm: 0 1px 3px 0px rgb(from var(--shadow-color) r g b / 0.1), 0 1px 2px -1px rgb(from var(--shadow-color) r g b / 0.1);
+    --shadow: 0 1px 3px 0px rgb(from var(--shadow-color) r g b / 0.1), 0 1px 2px -1px rgb(from var(--shadow-color) r g b / 0.1);
+    --shadow-md: 0 1px 3px 0px rgb(from var(--shadow-color) r g b / 0.1), 0 2px 4px -1px rgb(from var(--shadow-color) r g b / 0.1);
+    --shadow-lg: 0 1px 3px 0px rgb(from var(--shadow-color) r g b / 0.1), 0 4px 6px -1px rgb(from var(--shadow-color) r g b / 0.1);
+    --shadow-xl: 0 1px 3px 0px rgb(from var(--shadow-color) r g b / 0.1), 0 8px 10px -1px rgb(from var(--shadow-color) r g b / 0.1);
+    --shadow-2xl: 0 1px 3px 0px rgb(from var(--shadow-color) r g b / 0.1);
+  }
+  
+  .dark {
+    --background: 60 3% 15%;
+    --foreground: 48 13% 74%;
+    --card: 60 3% 15%;
+    --card-foreground: 48 50% 97%;
+    --popover: 60 2% 18%;
+    --popover-foreground: 60 3% 89%;
+    --primary: 16 58% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 48 50% 97%;
+    --secondary-foreground: 60 2% 18%;
+    --muted: 60 4% 10%;
+    --muted-foreground: 48 10% 69%;
+    --accent: 48 10% 9%;
+    --accent-foreground: 48 32% 95%;
+    --destructive: 0 70% 53%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 60 5% 31%;
+    --input: 50 5% 25%;
+    --ring: 16 100% 74%;
+    --chart-1: 16 57% 44%;
+    --chart-2: 247 73% 75%;
+    --chart-3: 48 10% 9%;
+    --chart-4: 253 21% 22%;
+    --chart-5: 16 60% 44%;
+    --sidebar: 60 2% 12%;
+    --sidebar-foreground: 48 13% 74%;
+    --sidebar-primary: 16 58% 60%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 60 4% 6%;
+    --sidebar-accent-foreground: 48 13% 74%;
+    --sidebar-border: 0 0% 19%;
+    --sidebar-ring: 16 100% 74%;
+    
+    --shadow-color: rgb(0, 0, 0);
+  }
+}
+@theme inline {
+  --font-sans: "Zalando Sans", system-ui, -apple-system, sans-serif;
+  --font-serif: Adamina, ui-serif, serif;
+  --font-mono: "Fira Code", ui-monospace, monospace;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --shadow-2xs: var(--shadow-2xs);
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow: var(--shadow);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-2xl: var(--shadow-2xl);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: translate(-50%, 100px) scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(-50%, -10px) scale(1.05);
+    opacity: 0.9;
+  }
+  70% {
+    transform: translate(-50%, 5px) scale(0.95);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, 0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes float-centered {
+  0%, 100% {
+    transform: translate(-50%, 0);
+  }
+  50% {
+    transform: translate(-50%, -5px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 hsl(var(--primary) / 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px 5px hsl(var(--primary) / 0.2);
+  }
+}
+
+.animate-bounce-in {
+  animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-float-centered {
+  animation: float-centered 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Liquid Glass Effect for BottomNav */
+.liquid-glass-nav {
+  background: rgba(250, 249, 245, 0.90);
+  backdrop-filter: blur(33px) saturate(180%);
+  -webkit-backdrop-filter: blur(33px) saturate(180%);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    0 -4px 30px rgba(0, 0, 0, 0.1),
+    0 -2px 10px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.liquid-glass-nav::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(250, 249, 245, 0.5) 50%,
+    transparent
+  );
+}
+
+.liquid-glass-nav::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* Dark mode support */
+.dark .liquid-glass-nav {
+  background: rgba(15, 15, 15, 0.8);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 -4px 30px rgba(0, 0, 0, 0.3),
+    0 -2px 10px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.dark .liquid-glass-nav::before {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent
+  );
+}
+
+.dark .liquid-glass-nav::after {
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+}
+
