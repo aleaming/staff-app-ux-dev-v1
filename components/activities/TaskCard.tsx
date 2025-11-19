@@ -185,7 +185,7 @@ export function TaskCard({
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between gap-2 mb-1">
                 <div className="flex items-center gap-2 flex-1">
-                  {task.action && getActionIcon(task.action)}
+                  
                   <label 
                     htmlFor={`task-${task.id}`}
                     className="font-semibold text-base cursor-pointer flex-1"
@@ -193,28 +193,13 @@ export function TaskCard({
                     {task.name}
                   </label>
                 </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  {task.required ? (
-                    <AlertCircle className="h-4 w-4 text-destructive" />
-                  ) : (
-                    <Info className="h-4 w-4 text-muted-foreground" />
-                  )}
-                  <Badge 
-                    variant={task.required ? "destructive" : "secondary"}
-                    className="text-xs"
-                  >
-                    {task.required ? "Required" : "Optional"}
-                  </Badge>
-                </div>
+
               </div>
               <p className="text-sm text-muted-foreground mb-2">
                 {task.description}
               </p>
-              <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
-                <div className="flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
-                  <span>~{task.estimatedTime} min</span>
-                </div>
+              <div className="flex items-center justify-start gap-3 text-xs text-muted-foreground flex-wrap">
+                
                 {task.action && (
                   <Badge variant="outline" className="text-xs">
                     {task.action}
@@ -225,14 +210,10 @@ export function TaskCard({
                     📍 {task.location}
                   </span>
                 )}
-                {task.priority && (
-                  <Badge 
-                    variant={task.priority === "high" ? "destructive" : task.priority === "medium" ? "default" : "secondary"}
-                    className="text-xs"
-                  >
-                    {task.priority}
-                  </Badge>
-                )}
+                <div className="flex items-center gap-1">
+                  <Clock className="h-3 w-3" />
+                  <span>~{task.estimatedTime} min</span>
+                </div>
               </div>
             </div>
           </div>
@@ -243,7 +224,7 @@ export function TaskCard({
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Camera className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm font-medium">
+                  <span className="text-xs font-medium text-blue-700">
                     Photos ({photoCount}/{requiredPhotos} required)
                   </span>
                 </div>
@@ -289,17 +270,17 @@ export function TaskCard({
           )}
 
           {/* Notes Section */}
-          <div className="space-y-2">
-            <label htmlFor={`notes-${task.id}`} className="text-sm font-medium">
+          <div className="space-y-1">
+            <label htmlFor={`notes-${task.id}`} className="text-xs font-medium">
               Notes (Optional)
             </label>
             <Textarea
               id={`notes-${task.id}`}
-              placeholder="Add any notes about this task..."
+              placeholder="Add notes about this task if needed..."
               value={notes}
               onChange={(e) => onNotesChange(e.target.value)}
               rows={2}
-              className="text-sm"
+              className="text-xs"
             />
             
             {/* Report Issue Toggle - Only show when notes are added */}

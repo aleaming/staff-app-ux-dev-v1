@@ -137,7 +137,7 @@ export function DamagesSheet({ homeId, damages }: DamagesSheetProps) {
   return (
     <div className="space-y-6 pb-24">
       <div>
-        <p className="text-muted-foreground">
+        <p className="text-foreground font-medium">
           {home?.code} {home?.name && `• ${home.name}`}
         </p>
         <p className="text-sm text-muted-foreground mt-2">
@@ -228,7 +228,7 @@ export function DamagesSheet({ homeId, damages }: DamagesSheetProps) {
       </div>
 
       {/* Summary */}
-      <Card className="bg-muted/50">
+      <Card className="bg-background dark:bg-secondary-foreground">
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div>

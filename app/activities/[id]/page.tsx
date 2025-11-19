@@ -97,7 +97,7 @@ export default async function ActivityDetailPage({ params }: ActivityDetailPageP
           
           <div className="flex-1">
             <h1 className="text-xl md:text-2xl font-bold">{activity.title}</h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               {activity.homeCode} {activity.homeName && `• ${activity.homeName}`}
             </p>
           </div>
@@ -119,14 +119,13 @@ export default async function ActivityDetailPage({ params }: ActivityDetailPageP
                   <div className={`p-2 rounded-lg ${typeConfig.color} text-white`}>
                     <TypeIcon className="h-5 w-5" />
                   </div>
-                  Activity Details <span className="text-muted-foreground font-normal text-sm">- {activity.type}</span>
+                  Activity Details
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 {activity.description && (
                   <div className="flex flex-col">
-                    <h3 className="text-sm mb-2 text-muted-foreground">Description</h3>
-                    <p className="font-medium">{activity.description}</p>
+                    <p className="text-sm font-medium">{activity.description}</p>
                   </div>
                 )}
                 
@@ -135,7 +134,7 @@ export default async function ActivityDetailPage({ params }: ActivityDetailPageP
                     <Clock className="h-5 w-5 text-muted-foreground" />
                     <div>
                       <p className="text-sm text-muted-foreground">Scheduled Time</p>
-                      <p className="font-medium">{formatDateTime(activity.scheduledTime)}</p>
+                      <p className="font-medium text-sm">{formatDateTime(activity.scheduledTime)}</p>
                     </div>
                   </div>
                   
@@ -144,7 +143,7 @@ export default async function ActivityDetailPage({ params }: ActivityDetailPageP
                       <User className="h-5 w-5 text-muted-foreground" />
                       <div>
                         <p className="text-sm text-muted-foreground">Assigned To</p>
-                        <p className="font-medium">{activity.assignedTo}</p>
+                        <p className="text-sm font-medium">{activity.assignedTo}</p>
                       </div>
                     </div>
                   )}
@@ -173,17 +172,17 @@ export default async function ActivityDetailPage({ params }: ActivityDetailPageP
                 <CardContent>
                   <div className="space-y-3">
                     <div>
-                      <h3 className="font-semibold">{home.code}</h3>
-                      {home.name && <p className="text-muted-foreground">{home.name}</p>}
+                      <h3 className="text-sm font-semibold">{home.code}</h3>
+                      {home.name && <p className="text-sm text-muted-foreground">{home.name}</p>}
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Address</p>
-                      <p className="font-medium">{home.address}, {home.city}</p>
+                      <p className="text-sm font-medium">{home.address}, {home.city}</p>
                     </div>
                     {home.distance !== undefined && (
                       <div>
                         <p className="text-sm text-muted-foreground">Distance</p>
-                        <p className="font-medium">{home.distance.toFixed(1)} km away</p>
+                        <p className="text-sm ont-medium">{home.distance.toFixed(1)} km away</p>
                       </div>
                     )}
                     <Button variant="outline" asChild className="w-full">
@@ -207,22 +206,22 @@ export default async function ActivityDetailPage({ params }: ActivityDetailPageP
                   <div className="space-y-3">
                     <div>
                       <p className="text-sm text-muted-foreground">Booking ID</p>
-                      <p className="font-semibold">{booking.bookingId}</p>
+                      <p className="text-sm font-semibold">{booking.bookingId}</p>
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Guest</p>
-                      <p className="font-medium">{booking.guestName}</p>
+                      <p className="text-sm font-medium">{booking.guestName}</p>
                     </div>
-                    <div className="grid gap-2 md:grid-cols-2">
+                    <div className="grid gap-1 grid-cols-2">
                       <div>
                         <p className="text-sm text-muted-foreground">Check-in</p>
-                        <p className="font-medium">
+                        <p className="text-sm font-medium">
                           {booking.checkIn.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                         </p>
                       </div>
                       <div>
                         <p className="text-sm text-muted-foreground">Check-out</p>
-                        <p className="font-medium">
+                        <p className="text-sm font-medium">
                           {booking.checkOut.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                         </p>
                       </div>
@@ -243,20 +242,7 @@ export default async function ActivityDetailPage({ params }: ActivityDetailPageP
                 <CardTitle>Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <Button variant="outline" className="w-full justify-start" asChild>
-                  <Link href={`/homes/${home?.id || '#'}`}>
-                    <MapPin className="h-4 w-4 mr-2" />
-                    View Home
-                  </Link>
-                </Button>
-                {booking && (
-                  <Button variant="outline" className="w-full justify-start" asChild>
-                    <Link href={`/bookings/${booking.id}`}>
-                      <Calendar className="h-4 w-4 mr-2" />
-                      View Booking
-                    </Link>
-                  </Button>
-                )}
+               
                 {home && (
                   <ReportIssueButton
                     homeId={home.id}

@@ -696,15 +696,25 @@ export function ActivityTracker({
         )
       })()}
 
-      {/* Property Metadata Card (for phase-based activities) */}
-      {template.metadata && (
-        <PropertyInfoCard 
-          metadata={template.metadata} 
-          defaultOpen={false}
-          className="mb-6"
-        />
-      )}
 
+      {/* Completion Warning */}
+      {!allRequiredCompleted && (
+        <Card className="bg-yellow-50 border-yellow-200">
+          <CardContent className="p-4">
+            <div className="flex items-start gap-2">
+              <AlertCircle className="h-5 w-5 text-yellow-700 mt-0.5" />
+              <div>
+                <p className="font-semibold text-yellow-900 mb-1">
+                  Complete all required tasks
+                </p>
+                <p className="text-sm text-yellow-800">
+                  {requiredTasks.length - completedRequiredTasks} required task(s) remaining
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
       {/* Tasks List - Phase-based or Regular */}
       {template.phases ? (
         // Phase-based rendering (Provisioning with phases)
@@ -787,6 +797,7 @@ export function ActivityTracker({
         <CardContent>
           <Textarea
             placeholder="Add any general notes about this activity..."
+            className="text-xs"
             value={activityNotes}
             onChange={(e) => {
               setActivityNotes(e.target.value)
@@ -829,24 +840,7 @@ export function ActivityTracker({
         </Button>
       </div>
 
-      {/* Completion Warning */}
-      {!allRequiredCompleted && (
-        <Card className="bg-yellow-50 border-yellow-200">
-          <CardContent className="p-4">
-            <div className="flex items-start gap-2">
-              <AlertCircle className="h-5 w-5 text-yellow-700 mt-0.5" />
-              <div>
-                <p className="font-semibold text-yellow-900 mb-1">
-                  Complete all required tasks
-                </p>
-                <p className="text-sm text-yellow-800">
-                  {requiredTasks.length - completedRequiredTasks} required task(s) remaining
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+
 
       {/* Activity Switch Dialog */}
       {isMounted && showSwitchDialog && (() => {
