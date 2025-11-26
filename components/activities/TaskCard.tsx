@@ -17,6 +17,14 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { PhotoUploader } from "./PhotoUploader"
 import { PhotoGallery } from "./PhotoGallery"
 import { PhotoAnnotationDialog } from "./PhotoAnnotation"
@@ -99,6 +107,7 @@ export function TaskCard({
 }: TaskCardProps) {
   const [annotatingPhotoId, setAnnotatingPhotoId] = useState<string | null>(null)
   const [isExpanded, setIsExpanded] = useState(!completed)
+  const [showPhotoWarning, setShowPhotoWarning] = useState(false)
   const photoCount = photos?.length || 0
 
   // Auto-collapse when task is completed
@@ -110,6 +119,19 @@ export function TaskCard({
   const uploadedPhotos = photos?.filter(p => p.status === "uploaded").length || 0
   const queuedPhotos = photos?.filter(p => p.status === "in-queue").length || 0
   const failedPhotos = photos?.filter(p => p.status === "failed").length || 0
+
+  const handleToggleComplete = (checked: boolean) => {
+    // If trying to complete the task
+    if (checked) {
+      // Check if photos are required but none have been uploaded
+      if (task.photoRequired && uploadedPhotos === 0) {
+        setShowPhotoWarning(true)
+        return
+      }
+    }
+    // Otherwise proceed with completion
+    onToggleComplete(checked)
+  }
 
   const handleAnnotate = (photoId: string) => {
     setAnnotatingPhotoId(photoId)
@@ -186,7 +208,7 @@ export function TaskCard({
             <Checkbox
               id={`task-${task.id}`}
               checked={completed}
-              onCheckedChange={(checked) => onToggleComplete(checked === true)}
+              onCheckedChange={(checked) => handleToggleComplete(checked === true)}
               disabled={!canComplete}
               className="h-6 w-6"
             />
@@ -454,6 +476,26 @@ export function TaskCard({
           open={annotatingPhotoId !== null}
         />
       )}
+
+      {/* Photo Required Warning Dialog */}
+      <Dialog open={showPhotoWarning} onOpenChange={setShowPhotoWarning}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Camera className="h-5 w-5 text-orange-500" />
+              Photos Required
+            </DialogTitle>
+            <DialogDescription>
+              This task requires at least one photo to be uploaded before it can be marked as complete. Please add and upload photos before completing this task.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button onClick={() => setShowPhotoWarning(false)}>
+              OK
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   )
 }
