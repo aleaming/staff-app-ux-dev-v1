@@ -8,6 +8,7 @@ import { HomeEssentials } from "@/components/homes/HomeEssentials"
 import { HomeRules } from "@/components/homes/HomeRules"
 import { HomeMedia } from "@/components/homes/HomeMedia"
 import { PropertyBrowser } from "@/components/property/PropertyBrowser"
+import { HomeActivitiesSheet } from "@/components/homes/HomeActivitiesSheet"
 import { Home } from "lucide-react"
 
 interface HomeInfoSheetProps {
@@ -40,6 +41,15 @@ export function HomeInfoSheet({
             {homeCode} {homeName && `• ${homeName}`}
           </SheetTitle>
         </SheetHeader>
+
+        {/* Home Activities Button */}
+        <div className="mb-4">
+          <HomeActivitiesSheet 
+            homeId={homeId} 
+            homeCode={homeCode} 
+            homeName={homeName} 
+          />
+        </div>
         
         <Tabs defaultValue={defaultTab} className="w-full h-full flex flex-col">
           <TabsList className="grid w-full grid-cols-5 mb-4">

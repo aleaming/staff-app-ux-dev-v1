@@ -78,7 +78,7 @@ export function BookingOverview({
         <div className="flex items-center justify-between gap-2">
           <CardTitle className="text-base sm:text-lg break-words">Booking Overview</CardTitle>
           <Button variant="ghost" size="sm" asChild>
-            <Link href="/bookings">View All</Link>
+            <Link href="/catalog?tab=bookings">View All</Link>
           </Button>
         </div>
           </CardHeader>

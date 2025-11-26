@@ -77,7 +77,7 @@ export default async function ActivityDetailPage({ params }: ActivityDetailPageP
   // Build breadcrumbs based on whether activity has a booking
   const breadcrumbs = booking
     ? [
-        { label: "Bookings", href: "/bookings" },
+        { label: "Bookings", href: "/catalog?tab=bookings" },
         { label: booking.bookingId, href: `/bookings/${booking.id}` },
         { label: activity.title }
       ]

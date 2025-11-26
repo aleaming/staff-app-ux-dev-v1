@@ -4,7 +4,11 @@ import { useState, useEffect } from "react"
 import { SearchBar } from "./SearchBar"
 import { cn } from "@/lib/utils"
 
-export function FixedSearchBar() {
+interface FixedSearchBarProps {
+  onOpenSearch?: () => void
+}
+
+export function FixedSearchBar({ onOpenSearch }: FixedSearchBarProps) {
   const [isTopNavVisible, setIsTopNavVisible] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
 
@@ -26,11 +30,6 @@ export function FixedSearchBar() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [lastScrollY])
 
-  const handleSearch = (query: string) => {
-    // Navigate to search page
-    window.location.href = `/search?q=${encodeURIComponent(query)}`
-  }
-
   return (
     <div 
       className={cn(
@@ -39,7 +38,7 @@ export function FixedSearchBar() {
       )}
     >
       <div className="container px-4 py-3">
-        <SearchBar onSearch={handleSearch} />
+        <SearchBar onOpenSearch={onOpenSearch} />
       </div>
     </div>
   )

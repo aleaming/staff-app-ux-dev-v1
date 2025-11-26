@@ -20,10 +20,10 @@ import {
 import Link from "next/link"
 
 const statusConfig = {
-  "upcoming": { label: "Upcoming", variant: "secondary" as const },
-  "current": { label: "Current Stay", variant: "default" as const },
-  "departure": { label: "Departing Soon", variant: "destructive" as const },
-  "completed": { label: "Completed", variant: "outline" as const },
+  "upcoming": { label: "Pre-Stay", className: "bg-[#E2F0D9] text-green-900 border-[#E2F0D9] hover:bg-[#E2F0D9]" },
+  "current": { label: "In-Stay", className: "bg-[#A7C58E] text-green-900 border-[#A7C58E] hover:bg-[#A7C58E]" },
+  "departure": { label: "Post-Stay", className: "bg-[#AFABAB] text-gray-900 border-[#AFABAB] hover:bg-[#AFABAB]" },
+  "completed": { label: "Completed", className: "bg-[#AFABAB] text-gray-900 border-[#AFABAB] hover:bg-[#AFABAB]" },
 }
 
 interface BookingDetailPageProps {
@@ -62,7 +62,7 @@ export default async function BookingDetailPage({ params }: BookingDetailPagePro
   }
 
   const breadcrumbs = [
-    { label: "Bookings", href: "/bookings" },
+    { label: "Bookings", href: "/catalog?tab=bookings" },
     { label: booking.bookingId }
   ]
 
@@ -74,12 +74,12 @@ export default async function BookingDetailPage({ params }: BookingDetailPagePro
 
         {/* Header */}
         <div className="flex items-start gap-4">
-          <BackButton href="/bookings" />
+          <BackButton href="/catalog?tab=bookings" />
           <div className="flex-1">
             <h1 className="text-2xl font-bold">{booking.bookingId}</h1>
             <p className="text-muted-foreground mt-1">{booking.guestName}</p>
           </div>
-          <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>
+          <Badge className={statusInfo.className}>{statusInfo.label}</Badge>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-3">

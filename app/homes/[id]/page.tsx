@@ -43,7 +43,7 @@ export default async function HomeDetailPage({ params }: HomeDetailPageProps) {
   const statusInfo = statusConfig[home.status]
 
   const breadcrumbs = [
-    { label: "Homes", href: "/homes" },
+    { label: "Homes", href: "/catalog?tab=homes" },
     { label: home.code }
   ]
 

@@ -1,5 +1,6 @@
 "use client"
 
+import { useSearchParams } from "next/navigation"
 import { testHomes, testBookings } from "@/lib/test-data"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -22,6 +23,9 @@ const bookingStatusConfig = {
 }
 
 export default function CatalogPage() {
+  const searchParams = useSearchParams()
+  const tab = searchParams.get('tab') || 'homes'
+
   return (
     <div className="container mx-auto px-4 py-4">
       <div className="space-y-4">
@@ -30,7 +34,7 @@ export default function CatalogPage() {
           <p className="text-muted-foreground">Browse homes and bookings</p>
         </div>
 
-        <Tabs defaultValue="homes" className="w-full">
+        <Tabs defaultValue={tab} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="homes">
               Homes ({testHomes.length})
@@ -103,7 +107,7 @@ export default function CatalogPage() {
 
                 return (
                   <Link key={booking.id} href={`/bookings/${booking.id}`}>
-                    <Card className="hover:bg-muted/50 transition-colors">
+                    <Card className="hover:bg-white dark:hover:bg-neutral-900 transition-colors">
                       <CardContent className="p-3">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">

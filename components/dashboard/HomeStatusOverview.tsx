@@ -75,7 +75,7 @@ export function HomeStatusOverview({
         <div className="flex items-center justify-between gap-2">
           <CardTitle className="text-base sm:text-lg">Home Status Overview</CardTitle>
           <Button variant="ghost" size="sm" asChild className="text-xs sm:text-sm">
-            <Link href="/homes">View All</Link>
+            <Link href="/catalog?tab=homes">View All</Link>
           </Button>
         </div>
       </CardHeader>
@@ -88,7 +88,7 @@ export function HomeStatusOverview({
             return (
               <Link 
                 key={status} 
-                href={`/homes?status=${status}`}
+                href={`/catalog?tab=homes`}
                 className="block"
               >
                 <Card className="hover:bg-muted/50 transition-colors">
@@ -110,7 +110,7 @@ export function HomeStatusOverview({
           
           {/* Homes Needing Attention */}
           <Link 
-            href="/homes?attention=true"
+            href="/catalog?tab=homes"
             className="block"
           >
             <Card className="hover:bg-muted/50 transition-colors border-orange-200 dark:border-orange-800">
