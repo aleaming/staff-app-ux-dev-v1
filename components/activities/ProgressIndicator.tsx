@@ -23,17 +23,17 @@ export function ProgressIndicator({
   const photoProgress = totalPhotos > 0 ? (completedPhotos / totalPhotos) * 100 : 0
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Task Progress */}
       <div>
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
+            <CheckCircle2 className="h-4 w-4 text-primary" />
             <span className="text-sm font-medium">
               Tasks: {completedTasks} of {totalTasks}
             </span>
           </div>
-          <span className="text-sm text-muted-foreground">
+          <span className="text-sm text-foreground">
             {Math.round(taskProgress)}%
           </span>
         </div>
@@ -45,12 +45,12 @@ export function ProgressIndicator({
         <div>
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <Camera className="h-4 w-4 text-muted-foreground" />
+              <Camera className="h-4 w-4 text-primary" />
               <span className="text-sm font-medium">
                 Photos: {completedPhotos} of {totalPhotos}
               </span>
             </div>
-            <span className="text-sm text-muted-foreground">
+            <span className="text-sm text-foreground">
               {Math.round(photoProgress)}%
             </span>
           </div>
@@ -60,7 +60,7 @@ export function ProgressIndicator({
 
       {/* Time Estimate */}
       {estimatedTimeRemaining !== undefined && estimatedTimeRemaining > 0 && (
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <div className="flex items-center gap-2 text-sm text-foreground">
           <Clock className="h-4 w-4" />
           <span>~{estimatedTimeRemaining} min remaining</span>
         </div>

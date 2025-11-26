@@ -63,9 +63,9 @@ export function PhaseSection({
   className
 }: PhaseSectionProps) {
   const phaseConfig = {
-    arrive: { icon: LogIn, color: "text-purple-500", bgColor: "bg-purple-50 dark:bg-purple-950" },
-    during: { icon: Home, color: "text-blue-500", bgColor: "bg-blue-50 dark:bg-blue-950" },
-    depart: { icon: LogOut, color: "text-green-500", bgColor: "bg-green-50 dark:bg-green-950" }
+    arrive: { icon: LogIn, color: "text-primary", bgColor: "bg-white dark:bg-neutral-900" },
+    during: { icon: Home, color: "text-primary", bgColor: "bg-white dark:bg-neutral-900" },
+    depart: { icon: LogOut, color: "text-primary", bgColor: "bg-white dark:bg-neutral-900" }
   }
 
   const config = phaseConfig[phase.name]

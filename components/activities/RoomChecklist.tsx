@@ -64,7 +64,7 @@ export function RoomChecklist({
   }, [room.tasks, taskStates])
 
   return (
-    <Card className={cn("border-l-4 border-l-blue-500", className)}>
+    <Card className={cn("border-l-4 border-l-blue-300", className)}>
       <CardHeader className="pb-3">
         <div className="space-y-2">
           <div className="flex items-center justify-between">
