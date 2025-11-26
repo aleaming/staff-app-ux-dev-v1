@@ -143,6 +143,7 @@ export function ActivityTracker({
   const [showSwitchDialog, setShowSwitchDialog] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false)
+  const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null)
   
   // Phase-based activity state
   const [currentSeason, setCurrentSeason] = useState<"summer" | "winter">(
@@ -154,6 +155,18 @@ export function ActivityTracker({
   useEffect(() => {
     setIsMounted(true)
   }, [])
+
+  // Set initial expanded task to first incomplete task
+  useEffect(() => {
+    if (!isMounted || expandedTaskId !== null) return
+    
+    const allTasks = getAllTasks()
+    const firstIncomplete = allTasks.find(task => !taskStates[task.id]?.completed)
+    
+    if (firstIncomplete) {
+      setExpandedTaskId(firstIncomplete.id)
+    }
+  }, [isMounted, taskStates])
 
   // Check for existing active activity on mount
   useEffect(() => {
@@ -223,6 +236,24 @@ export function ActivityTracker({
       }
     }))
     saveToLocalStorage()
+    
+    // If task is completed, find and expand the next incomplete task
+    if (completed) {
+      const allTasks = getAllTasks()
+      const currentIndex = allTasks.findIndex(t => t.id === taskId)
+      
+      // Find next incomplete task
+      for (let i = currentIndex + 1; i < allTasks.length; i++) {
+        const nextTask = allTasks[i]
+        if (!taskStates[nextTask.id]?.completed) {
+          setExpandedTaskId(nextTask.id)
+          return
+        }
+      }
+      
+      // If no next task found, collapse all
+      setExpandedTaskId(null)
+    }
   }
 
   const addPhotoToTask = async (taskId: string, file: File, thumbnail?: string) => {
@@ -738,6 +769,7 @@ export function ActivityTracker({
                   phase={phase}
                   taskStates={taskStates}
                   locked={!previousPhaseCompleted}
+                  expandedTaskId={expandedTaskId}
                   onTaskToggle={(taskId) => toggleTaskComplete(taskId, !taskStates[taskId]?.completed)}
                   onTaskPhotoAdd={(taskId, file, thumbnail) => addPhotoToTask(taskId, file, thumbnail)}
                   onTaskNotesChange={(taskId, notes) => updateTaskNotes(taskId, notes)}
@@ -751,6 +783,7 @@ export function ActivityTracker({
                     }
                   }}
                   onTaskRetryUpload={(taskId, photoId) => retryPhotoUpload(taskId, photoId)}
+                  onExpandedChange={(taskId) => setExpandedTaskId(taskId)}
                   currentSeason={currentSeason}
                   currentOccupancy={currentOccupancy}
                 />
@@ -776,6 +809,7 @@ export function ActivityTracker({
                   canComplete={canComplete}
                   reportIssue={taskState?.reportIssue || false}
                   issueReport={taskState?.issueReport || {}}
+                  isExpanded={expandedTaskId === task.id}
                   onToggleComplete={(completed) => toggleTaskComplete(task.id, completed)}
                   onAddPhoto={(file, thumbnail) => addPhotoToTask(task.id, file, thumbnail)}
                   onNotesChange={(notes) => updateTaskNotes(task.id, notes)}
@@ -783,6 +817,7 @@ export function ActivityTracker({
                   onIssueReportChange={(issueReport) => updateIssueReport(task.id, issueReport)}
                   onAnnotatePhoto={(photoId, annotations) => annotatePhoto(task.id, photoId, annotations)}
                   onRetryUpload={(photoId) => retryPhotoUpload(task.id, photoId)}
+                  onExpandedChange={(expanded) => setExpandedTaskId(expanded ? task.id : null)}
                 />
               )
             })}

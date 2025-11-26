@@ -28,6 +28,7 @@ interface TaskState {
 interface RoomChecklistProps {
   room: RoomTemplate
   taskStates: Record<string, TaskState>
+  expandedTaskId?: string | null
   onTaskToggle: (taskId: string) => void
   onTaskPhotoAdd: (taskId: string, file: File, thumbnail?: string) => void
   onTaskNotesChange: (taskId: string, notes: string) => void
@@ -35,12 +36,14 @@ interface RoomChecklistProps {
   onTaskIssueReportChange: (taskId: string, report: TaskState["issueReport"]) => void
   onTaskAnnotatePhoto: (taskId: string, photoId: string) => void
   onTaskRetryUpload: (taskId: string, photoId: string) => void
+  onExpandedChange?: (taskId: string | null) => void
   className?: string
 }
 
 export function RoomChecklist({
   room,
   taskStates,
+  expandedTaskId,
   onTaskToggle,
   onTaskPhotoAdd,
   onTaskNotesChange,
@@ -48,6 +51,7 @@ export function RoomChecklist({
   onTaskIssueReportChange,
   onTaskAnnotatePhoto,
   onTaskRetryUpload,
+  onExpandedChange,
   className
 }: RoomChecklistProps) {
   // Calculate room progress
@@ -110,6 +114,7 @@ export function RoomChecklist({
               canComplete={!task.dependencies || task.dependencies.every(depId => taskStates[depId]?.completed)}
               reportIssue={state.reportIssue}
               issueReport={state.issueReport}
+              isExpanded={expandedTaskId === task.id}
               onToggleComplete={() => onTaskToggle(task.id)}
               onAddPhoto={(file, thumbnail) => onTaskPhotoAdd(task.id, file, thumbnail)}
               onNotesChange={(notes) => onTaskNotesChange(task.id, notes)}
@@ -117,6 +122,7 @@ export function RoomChecklist({
               onIssueReportChange={(report) => onTaskIssueReportChange(task.id, report)}
               onAnnotatePhoto={(photoId) => onTaskAnnotatePhoto(task.id, photoId)}
               onRetryUpload={(photoId) => onTaskRetryUpload(task.id, photoId)}
+              onExpandedChange={(expanded) => onExpandedChange?.(expanded ? task.id : null)}
             />
           )
         })}

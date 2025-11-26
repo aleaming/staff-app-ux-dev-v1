@@ -35,6 +35,7 @@ interface PhaseSectionProps {
   phase: PhaseTemplate
   taskStates: Record<string, TaskState>
   locked?: boolean
+  expandedTaskId?: string | null
   onTaskToggle: (taskId: string) => void
   onTaskPhotoAdd: (taskId: string, file: File, thumbnail?: string) => void
   onTaskNotesChange: (taskId: string, notes: string) => void
@@ -42,6 +43,7 @@ interface PhaseSectionProps {
   onTaskIssueReportChange: (taskId: string, report: TaskState["issueReport"]) => void
   onTaskAnnotatePhoto: (taskId: string, photoId: string) => void
   onTaskRetryUpload: (taskId: string, photoId: string) => void
+  onExpandedChange?: (taskId: string | null) => void
   currentSeason?: "summer" | "winter"
   currentOccupancy?: "booking" | "empty" | "host"
   className?: string
@@ -51,6 +53,7 @@ export function PhaseSection({
   phase,
   taskStates,
   locked = false,
+  expandedTaskId,
   onTaskToggle,
   onTaskPhotoAdd,
   onTaskNotesChange,
@@ -58,6 +61,7 @@ export function PhaseSection({
   onTaskIssueReportChange,
   onTaskAnnotatePhoto,
   onTaskRetryUpload,
+  onExpandedChange,
   currentSeason,
   currentOccupancy,
   className
@@ -194,6 +198,7 @@ export function PhaseSection({
                           key={room.id}
                           room={{ ...room, tasks: filteredRoomTasks }}
                           taskStates={taskStates}
+                          expandedTaskId={expandedTaskId}
                           onTaskToggle={onTaskToggle}
                           onTaskPhotoAdd={onTaskPhotoAdd}
                           onTaskNotesChange={onTaskNotesChange}
@@ -201,6 +206,7 @@ export function PhaseSection({
                           onTaskIssueReportChange={onTaskIssueReportChange}
                           onTaskAnnotatePhoto={onTaskAnnotatePhoto}
                           onTaskRetryUpload={onTaskRetryUpload}
+                          onExpandedChange={onExpandedChange}
                         />
                       )
                     })}
@@ -243,6 +249,7 @@ export function PhaseSection({
                             canComplete={!task.dependencies || task.dependencies.every(depId => taskStates[depId]?.completed)}
                             reportIssue={state.reportIssue}
                             issueReport={state.issueReport}
+                            isExpanded={expandedTaskId === task.id}
                             onToggleComplete={() => onTaskToggle(task.id)}
                             onAddPhoto={(file, thumbnail) => onTaskPhotoAdd(task.id, file, thumbnail)}
                             onNotesChange={(notes) => onTaskNotesChange(task.id, notes)}
@@ -250,6 +257,7 @@ export function PhaseSection({
                             onIssueReportChange={(report) => onTaskIssueReportChange(task.id, report)}
                             onAnnotatePhoto={(photoId) => onTaskAnnotatePhoto(task.id, photoId)}
                             onRetryUpload={(photoId) => onTaskRetryUpload(task.id, photoId)}
+                            onExpandedChange={(expanded) => onExpandedChange?.(expanded ? task.id : null)}
                           />
                         )
                       })}

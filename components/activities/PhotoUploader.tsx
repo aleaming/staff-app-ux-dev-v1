@@ -10,13 +10,15 @@ interface PhotoUploaderProps {
   multiple?: boolean
   maxPhotos?: number
   currentCount?: number
+  children?: React.ReactNode
 }
 
 export function PhotoUploader({
   onPhotoSelect,
   multiple = false,
   maxPhotos,
-  currentCount = 0
+  currentCount = 0,
+  children
 }: PhotoUploaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isUploading, setIsUploading] = useState(false)
@@ -79,25 +81,31 @@ export function PhotoUploader({
         className="hidden"
         capture="environment" // Use back camera on mobile
       />
-      <Button
-        type="button"
-        variant="outline"
-        onClick={handleClick}
-        disabled={isUploading || (maxPhotos !== undefined && currentCount >= maxPhotos)}
-        className="w-full"
-      >
-        {isUploading ? (
-          <>
-            <Upload className="h-4 w-4 mr-2 animate-pulse" />
-            Processing...
-          </>
-        ) : (
-          <>
-            <Camera className="h-4 w-4 mr-2" />
-            {multiple ? "Add Photos" : "Add Photo"}
-          </>
-        )}
-      </Button>
+      {children ? (
+        <div onClick={handleClick}>
+          {children}
+        </div>
+      ) : (
+        <Button
+          type="button"
+          variant="outline"
+          onClick={handleClick}
+          disabled={isUploading || (maxPhotos !== undefined && currentCount >= maxPhotos)}
+          className="w-full"
+        >
+          {isUploading ? (
+            <>
+              <Upload className="h-4 w-4 mr-2 animate-pulse" />
+              Processing...
+            </>
+          ) : (
+            <>
+              <Camera className="h-4 w-4 mr-2" />
+              {multiple ? "Add Photos" : "Add Photo"}
+            </>
+          )}
+        </Button>
+      )}
       {maxPhotos !== undefined && currentCount >= maxPhotos && (
         <p className="text-xs text-muted-foreground mt-1 text-center">
           Maximum {maxPhotos} photos reached

@@ -80,6 +80,7 @@ interface TaskCardProps {
   canComplete: boolean // Whether dependencies are met
   reportIssue?: boolean
   issueReport?: TaskIssueReport
+  isExpanded?: boolean // Control expansion from parent
   onToggleComplete: (completed: boolean) => void
   onAddPhoto: (file: File, thumbnail?: string) => void
   onNotesChange: (notes: string) => void
@@ -87,6 +88,7 @@ interface TaskCardProps {
   onIssueReportChange?: (issueReport: TaskIssueReport) => void
   onAnnotatePhoto?: (photoId: string, annotations: PhotoAnnotation[]) => void
   onRetryUpload?: (photoId: string) => void
+  onExpandedChange?: (expanded: boolean) => void
 }
 
 export function TaskCard({
@@ -97,25 +99,30 @@ export function TaskCard({
   canComplete,
   reportIssue = false,
   issueReport = {},
+  isExpanded: controlledIsExpanded,
   onToggleComplete,
   onAddPhoto,
   onNotesChange,
   onToggleReportIssue,
   onIssueReportChange,
   onAnnotatePhoto,
-  onRetryUpload
+  onRetryUpload,
+  onExpandedChange
 }: TaskCardProps) {
   const [annotatingPhotoId, setAnnotatingPhotoId] = useState<string | null>(null)
-  const [isExpanded, setIsExpanded] = useState(!completed)
+  const [internalIsExpanded, setInternalIsExpanded] = useState(!completed)
   const [showPhotoWarning, setShowPhotoWarning] = useState(false)
   const photoCount = photos?.length || 0
 
-  // Auto-collapse when task is completed
+  // Use controlled or internal state
+  const isExpanded = controlledIsExpanded !== undefined ? controlledIsExpanded : internalIsExpanded
+
+  // Auto-collapse when task is completed (only for internal state)
   useEffect(() => {
-    if (completed) {
-      setIsExpanded(false)
+    if (completed && controlledIsExpanded === undefined) {
+      setInternalIsExpanded(false)
     }
-  }, [completed])
+  }, [completed, controlledIsExpanded])
   const uploadedPhotos = photos?.filter(p => p.status === "uploaded").length || 0
   const queuedPhotos = photos?.filter(p => p.status === "in-queue").length || 0
   const failedPhotos = photos?.filter(p => p.status === "failed").length || 0
@@ -232,7 +239,13 @@ export function TaskCard({
               variant="ghost"
               size="sm"
               className="h-6 w-6"
-              onClick={() => setIsExpanded(!isExpanded)}
+              onClick={() => {
+                const newExpanded = !isExpanded
+                if (controlledIsExpanded === undefined) {
+                  setInternalIsExpanded(newExpanded)
+                }
+                onExpandedChange?.(newExpanded)
+              }}
             >
               {isExpanded ? (
                 <ChevronUp className="h-4 w-4" />
@@ -490,9 +503,24 @@ export function TaskCard({
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button onClick={() => setShowPhotoWarning(false)}>
-              OK
-            </Button>
+            <div className="flex items-center gap-2 w-full justify-end">
+              <PhotoUploader
+                onPhotoSelect={(file, thumbnail) => {
+                  onAddPhoto(file, thumbnail)
+                  setShowPhotoWarning(false)
+                }}
+                multiple={true}
+                currentCount={photoCount}
+              >
+                <Button className="gap-2">
+                  <Camera className="h-4 w-4" />
+                  Take Photo
+                </Button>
+              </PhotoUploader>
+              <Button variant="outline" onClick={() => setShowPhotoWarning(false)}>
+                Cancel
+              </Button>
+            </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>
