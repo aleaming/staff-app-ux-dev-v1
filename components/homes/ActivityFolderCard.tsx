@@ -36,27 +36,27 @@ const activityTypeConfig = {
   "provisioning": { 
     label: "Provisioning", 
     icon: Package, 
-    color: "bg-blue-500" 
+    color: "var(--activity-provisioning)" 
   },
   "meet-greet": { 
     label: "Meet & Greet", 
     icon: Handshake, 
-    color: "bg-green-500" 
+    color: "var(--activity-greet)" 
   },
   "turn": { 
     label: "Turn", 
     icon: RefreshCw, 
-    color: "bg-orange-500" 
+    color: "var(--activity-turn)" 
   },
   "deprovision": { 
     label: "Deprovision", 
     icon: XIcon, 
-    color: "bg-red-500" 
+    color: "var(--activity-deprovision)" 
   },
   "ad-hoc": { 
     label: "Ad-hoc", 
     icon: AlertCircle, 
-    color: "bg-purple-500" 
+    color: "var(--activity-adhoc)" 
   },
 }
 
@@ -90,7 +90,7 @@ export function ActivityFolderCard({ activity, homeCode }: ActivityFolderCardPro
           <div className="flex items-start gap-4">
             {/* Timeline indicator */}
             <div className="flex flex-col items-center gap-2">
-              <div className={`p-3 rounded-lg ${config.color} text-white`}>
+              <div className="p-3 rounded-lg text-white" style={{ backgroundColor: config.color }}>
                 <Icon className="h-5 w-5" />
               </div>
               <div className="w-px h-full bg-border min-h-[40px]" />

@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { testBookings } from "@/lib/test-data"
+import { testBookings, testHomes } from "@/lib/test-data"
 import { Calendar, Users, LogOut, Clock } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -97,7 +97,9 @@ export function BookingOverview({
               <p className="text-sm text-muted-foreground">No upcoming arrivals</p>
             ) : (
               <div className="flex flex-col gap-2">
-                {upcomingArrivals.map((booking) => (
+                {upcomingArrivals.map((booking) => {
+                  const home = testHomes.find(h => h.code === booking.homeCode)
+                  return (
                       <Link key={booking.id} href={`/bookings/${booking.id}`}>
                         <Card className="hover:bg-muted/50 transition-colors">
                           <CardContent className="p-2.5 sm:p-3">
@@ -105,7 +107,14 @@ export function BookingOverview({
                           <div>
                             <p className="font-medium">{booking.bookingId}</p>
                             <p className="text-sm text-muted-foreground">
-                              {booking.guestName} • {booking.homeCode}
+                              {booking.guestName} •{" "}
+                              <Link
+                                href={`/homes/${home?.id || booking.homeCode}`}
+                                className="text-primary underline hover:text-primary/80 transition-colors"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                {booking.homeCode}
+                              </Link>
                             </p>
                           </div>
                           <div className="text-right">
@@ -118,7 +127,8 @@ export function BookingOverview({
                       </CardContent>
                     </Card>
                   </Link>
-                ))}
+                  )
+                })}
               </div>
             )}
           </div>
@@ -136,7 +146,9 @@ export function BookingOverview({
               <p className="text-sm text-muted-foreground">No current stays</p>
             ) : (
               <div className="flex flex-col gap-2">
-                {currentStays.map((booking) => (
+                {currentStays.map((booking) => {
+                  const home = testHomes.find(h => h.code === booking.homeCode)
+                  return (
                       <Link key={booking.id} href={`/bookings/${booking.id}`}>
                         <Card className="hover:bg-muted/50 transition-colors">
                           <CardContent className="p-2.5 sm:p-3">
@@ -144,7 +156,14 @@ export function BookingOverview({
                           <div>
                             <p className="font-medium">{booking.bookingId}</p>
                             <p className="text-sm text-muted-foreground">
-                              {booking.guestName} • {booking.homeCode}
+                              {booking.guestName} •{" "}
+                              <Link
+                                href={`/homes/${home?.id || booking.homeCode}`}
+                                className="text-primary underline hover:text-primary/80 transition-colors"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                {booking.homeCode}
+                              </Link>
                             </p>
                           </div>
                           <div className="text-right">
@@ -157,7 +176,8 @@ export function BookingOverview({
                       </CardContent>
                     </Card>
                   </Link>
-                ))}
+                  )
+                })}
               </div>
             )}
           </div>
@@ -175,7 +195,9 @@ export function BookingOverview({
               <p className="text-sm text-muted-foreground">No departures scheduled</p>
             ) : (
               <div className="flex flex-col gap-2">
-                {departures.map((booking) => (
+                {departures.map((booking) => {
+                  const home = testHomes.find(h => h.code === booking.homeCode)
+                  return (
                       <Link key={booking.id} href={`/bookings/${booking.id}`}>
                         <Card className="hover:bg-muted/50 transition-colors">
                           <CardContent className="p-2.5 sm:p-3">
@@ -183,7 +205,14 @@ export function BookingOverview({
                           <div>
                             <p className="font-medium">{booking.bookingId}</p>
                             <p className="text-sm text-muted-foreground">
-                              {booking.guestName} • {booking.homeCode}
+                              {booking.guestName} •{" "}
+                              <Link
+                                href={`/homes/${home?.id || booking.homeCode}`}
+                                className="text-primary underline hover:text-primary/80 transition-colors"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                {booking.homeCode}
+                              </Link>
                             </p>
                           </div>
                           <div className="text-right">
@@ -196,7 +225,8 @@ export function BookingOverview({
                       </CardContent>
                     </Card>
                   </Link>
-                ))}
+                  )
+                })}
               </div>
             )}
           </div>

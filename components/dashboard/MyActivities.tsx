@@ -47,11 +47,11 @@ const activityTypeToTemplateType: Record<string, string> = {
 }
 
 const activityTypeConfig = {
-  "provisioning": { label: "Provisioning", icon: Package, color: "bg-blue-500" },
-  "meet-greet": { label: "Meet & Greet", icon: Handshake, color: "bg-green-500" },
-  "turn": { label: "Turn", icon: RefreshCw, color: "bg-orange-500" },
-  "deprovision": { label: "Deprovision", icon: X, color: "bg-red-500" },
-  "ad-hoc": { label: "Ad-hoc", icon: AlertCircle, color: "bg-purple-500" },
+  "provisioning": { label: "Provisioning", icon: Package, color: "var(--activity-provisioning)" },
+  "meet-greet": { label: "Meet & Greet", icon: Handshake, color: "var(--activity-greet)" },
+  "turn": { label: "Turn", icon: RefreshCw, color: "var(--activity-turn)" },
+  "deprovision": { label: "Deprovision", icon: X, color: "var(--activity-deprovision)" },
+  "ad-hoc": { label: "Ad-hoc", icon: AlertCircle, color: "var(--activity-adhoc)" },
 }
 
 const statusConfig = {
@@ -128,7 +128,7 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
                 {/* Left: Icon and Title */}
                 <div className="flex items-start gap-2 flex-1 min-w-0">
                   {/* Icon */}
-                  <div className={`p-1.5 rounded-lg ${typeConfig.color} text-background flex-shrink-0`}>
+                  <div className="p-1.5 rounded-lg text-background flex-shrink-0" style={{ backgroundColor: typeConfig.color }}>
                     <TypeIcon className="h-4 w-4" />
                   </div>
                   {/* Title and Details */}
@@ -138,7 +138,7 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
                       <div className="text-sm text-muted-foreground">
                         <Link
                           href={`/homes/${home?.id || activity.homeCode}`}
-                          className="underline hover:text-primary transition-colors"
+                          className="text-primary underline hover:text-primary/80 transition-colors"
                           onClick={(e) => e.stopPropagation()}
                         >
                           {activity.homeCode}

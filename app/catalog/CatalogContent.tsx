@@ -122,9 +122,9 @@ export default function CatalogContent() {
                               <span>{booking.guestName}</span>
                             </div>
                             <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-                              <MapPin className="h-3 w-3" />
+                              <Home className="h-3 w-3" />
                               {home ? (
-                                <span onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
+                                <span onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} className="flex items-center gap-1.5">
                                   <HomeInfoSheet
                                     homeId={home.id}
                                     homeCode={home.code}
@@ -132,11 +132,17 @@ export default function CatalogContent() {
                                   >
                                     <button
                                       type="button"
-                                      className="underline hover:text-primary transition-colors"
+                                      className="text-primary underline hover:text-primary/80 transition-colors"
                                     >
                                       {booking.homeCode}
                                     </button>
                                   </HomeInfoSheet>
+                                  {home.name && (
+                                    <>
+                                      <span>•</span>
+                                      <span>{home.name}</span>
+                                    </>
+                                  )}
                                 </span>
                               ) : (
                                 <span>{booking.homeCode}</span>

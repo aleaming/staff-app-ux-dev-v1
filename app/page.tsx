@@ -1,6 +1,5 @@
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader"
 import { DashboardMap } from "@/components/dashboard/DashboardMap"
-import { WeatherWidget } from "@/components/dashboard/WeatherWidget"
 import { MyActivities } from "@/components/dashboard/MyActivities"
 import { RecentlyAccessed } from "@/components/dashboard/RecentlyAccessed"
 import { BookingOverview } from "@/components/dashboard/BookingOverview"
@@ -37,15 +36,14 @@ export default function Home() {
           stats={stats}
         />
 
-        {/* Map and Weather Section */}
-        <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-3">
-          <div className="lg:col-span-2">
-            <DashboardMap homes={testHomes} activities={testActivities} />
-          </div>
-          <div>
-            <WeatherWidget latitude={51.5074} longitude={-0.1278} city="London" />
-          </div>
-        </div>
+        {/* Weather & Map Section */}
+        <DashboardMap 
+          homes={testHomes} 
+          activities={testActivities}
+          latitude={51.5074}
+          longitude={-0.1278}
+          city="London"
+        />
 
         {/* Main Dashboard Sections */}
         <MyActivities activities={testActivities} />

@@ -12,6 +12,7 @@ import { HomeAccess } from "@/components/homes/HomeAccess"
 import { HomeEssentials } from "@/components/homes/HomeEssentials"
 import { HomeRules } from "@/components/homes/HomeRules"
 import { HomeMedia } from "@/components/homes/HomeMedia"
+import { HomeActivitiesSheet } from "@/components/homes/HomeActivitiesSheet"
 import { PropertyBrowser } from "@/components/property/PropertyBrowser"
 import { PropertyInfoCard } from "./PropertyInfoCard"
 import { PhaseSection } from "./PhaseSection"
@@ -607,6 +608,15 @@ export function ActivityTracker({
               {homeCode} {homeName && `• ${homeName}`}
             </SheetTitle>
           </SheetHeader>
+          
+          {/* Home Activities CTA */}
+          <div className="mb-4">
+            <HomeActivitiesSheet 
+              homeId={homeId} 
+              homeCode={homeCode} 
+              homeName={homeName}
+            />
+          </div>
           
           <Tabs defaultValue="essentials" className="w-full h-full flex flex-col">
             <TabsList className="grid w-full grid-cols-5 mb-4">

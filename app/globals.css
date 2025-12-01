@@ -44,6 +44,21 @@
     --sidebar-border: 0 0% 91%;
     --sidebar-ring: 16 96% 59%;
     
+    /* Activity Type Colors */
+    --activity-provisioning: #F4B183;
+    --activity-deprovision: #A1C6E7;
+    --activity-turn: #B4A7D6;
+    --activity-maid: #C5E0B4;
+    --activity-touch-up: #FFE699;
+    --activity-greet: #46BDC6;
+    --activity-bag-drop: #7DD2D9;
+    --activity-viewing: #FFCCCC;
+    --activity-service-recovery: #FFD521;
+    --activity-mini-maid: #E2F0D9;
+    --activity-adhoc: #AFABAB;
+    --activity-quality-check: #FF9393;
+    --activity-additional-greet: #B2E4E8;
+    
     --shadow-color: rgb(0, 0, 0);
     --shadow-2xs: 0 1px 3px 0px rgb(from var(--shadow-color) r g b / 0.05);
     --shadow-xs: 0 1px 3px 0px rgb(from var(--shadow-color) r g b / 0.05);
@@ -88,6 +103,21 @@
     --sidebar-accent-foreground: 48 13% 74%;
     --sidebar-border: 0 0% 19%;
     --sidebar-ring: 16 100% 74%;
+    
+    /* Activity Type Colors */
+    --activity-provisioning: #F4B183;
+    --activity-deprovision: #A1C6E7;
+    --activity-turn: #B4A7D6;
+    --activity-maid: #C5E0B4;
+    --activity-touch-up: #FFE699;
+    --activity-greet: #46BDC6;
+    --activity-bag-drop: #7DD2D9;
+    --activity-viewing: #FFCCCC;
+    --activity-service-recovery: #FFD521;
+    --activity-mini-maid: #E2F0D9;
+    --activity-adhoc: #AFABAB;
+    --activity-quality-check: #FF9393;
+    --activity-additional-greet: #B2E4E8;
     
     --shadow-color: rgb(0, 0, 0);
   }

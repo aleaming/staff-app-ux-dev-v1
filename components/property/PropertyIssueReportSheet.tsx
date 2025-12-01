@@ -226,10 +226,10 @@ export function PropertyIssueReportSheet({
       <SheetContent side="bottom" className="max-h-[90vh] overflow-y-auto">
         <SheetHeader>
           <SheetTitle className="text-left">Report Issue</SheetTitle>
-          <div className="mt-2 space-y-2">
+          <div className="mt-2 space-y-1">
             <Breadcrumbs items={breadcrumbs} />
             {item && (
-              <div className="font-medium text-sm">{item.label}</div>
+              <div className="font-medium text-base text-left">{item.label}</div>
             )}
             {!item && homeCode && (
               <div className="font-medium text-sm">
@@ -239,7 +239,7 @@ export function PropertyIssueReportSheet({
           </div>
         </SheetHeader>
 
-        <div className="mt-6 space-y-6">
+        <div className="mt-6 space-y-4 text-left">
           {/* Offline Indicator */}
           {!isOnline && (
             <div className="bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3 text-sm text-yellow-800 dark:text-yellow-200">
