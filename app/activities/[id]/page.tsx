@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Breadcrumbs } from "@/components/navigation/Breadcrumbs"
 import { BackButton } from "@/components/navigation/BackButton"
 import { ReportIssueButton } from "@/components/property/ReportIssueButton"
+import { HomeInformationCard } from "./ActivityDetailClient"
 import { 
   MapPin, 
   Clock, 
@@ -159,35 +160,7 @@ export default async function ActivityDetailPage({ params }: ActivityDetailPageP
 
             {/* Home Information */}
             {home && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <MapPin className="h-5 w-5" />
-                    Home Information
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div>
-                      <h3 className="text-sm font-semibold">{home.code}</h3>
-                      {home.name && <p className="text-sm text-muted-foreground">{home.name}</p>}
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Address</p>
-                      <p className="text-sm font-medium">{home.address}, {home.city}</p>
-                    </div>
-                    {home.distance !== undefined && (
-                      <div>
-                        <p className="text-sm text-muted-foreground">Distance</p>
-                        <p className="text-sm ont-medium">{home.distance.toFixed(1)} km away</p>
-                      </div>
-                    )}
-                    <Button variant="outline" asChild className="w-full">
-                      <Link href={`/homes/${home.id}`}>View Home Details</Link>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              <HomeInformationCard home={home} />
             )}
 
             {/* Booking Information */}

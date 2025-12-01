@@ -30,6 +30,12 @@ export type TaskAction =
   | "Test"
   | "Verify"
   | "Photograph"
+  | "Show"
+  | "Explain"
+  | "Demonstrate"
+  | "Review"
+  | "Welcome"
+  | "Answer Questions"
 
 export interface TaskTemplate {
   id: string
@@ -457,7 +463,7 @@ export const activityTemplates: Record<ActivityType, ActivityTemplate> = {
 /**
  * Get activity template by type, optionally with property-specific data
  * @param type Activity type
- * @param propertyCode Optional property code for property-specific templates (e.g., "COS285")
+ * @param propertyCode Optional property code for property-specific templates (e.g., "COS285", "ALB134")
  */
 export function getActivityTemplate(type: ActivityType, propertyCode?: string): ActivityTemplate {
   // For provisioning with a property code, check for property-specific data
@@ -471,6 +477,20 @@ export function getActivityTemplate(type: ActivityType, propertyCode?: string): 
       }
     } catch (error) {
       console.warn(`No property-specific data found for ${propertyCode}, using default template`)
+    }
+  }
+  
+  // For meet-greet with a property code, check for property-specific data
+  if (type === "meet-greet" && propertyCode) {
+    try {
+      // Try to load property-specific meet-greet data
+      // For demo/sample property (ALB134)
+      if (propertyCode === "SAMPLE" || propertyCode === "ALB134") {
+        const { sampleGreetData } = require("./greet-data/sample-greet")
+        return sampleGreetData
+      }
+    } catch (error) {
+      console.warn(`No meet-greet data found for ${propertyCode}, using default template`)
     }
   }
   

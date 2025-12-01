@@ -177,6 +177,20 @@ export const testHomes: Home[] = [
     ]
   },
   {
+    id: "home-alb134",
+    code: "ALB134",
+    name: "Albert Bridge Road II",
+    address: "Albert Bridge Road",
+    city: "London",
+    distance: 1.4,
+    activeBookings: 1,
+    pendingActivities: 2,
+    status: "available",
+    coordinates: { lat: 51.4821, lng: -0.1589 },
+    bedrooms: 2,
+    bathrooms: 1
+  },
+  {
     id: "home-2",
     code: "APT123",
     name: "Apartment 123",
@@ -364,6 +378,18 @@ export const testActivities: Activity[] = [
     scheduledTime: hoursFromNow(4),
     status: "pending",
     description: "Welcome guest and provide keys",
+    assignedTo: "Alex"
+  },
+  {
+    id: "activity-2a",
+    type: "meet-greet",
+    title: "Meet & Greet - Smith Booking",
+    homeCode: "ALB134",
+    homeName: "Albert Bridge Road II",
+    bookingId: "BB-2024-003",
+    scheduledTime: hoursFromNow(6),
+    status: "pending",
+    description: "Comprehensive guest orientation with property tour",
     assignedTo: "Alex"
   },
   {

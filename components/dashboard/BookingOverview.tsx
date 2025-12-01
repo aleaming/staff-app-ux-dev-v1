@@ -2,12 +2,14 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
 import { testBookings, testHomes } from "@/lib/test-data"
-import { Calendar, Users, LogOut, Clock } from "lucide-react"
+import { Calendar, Users, LogOut, Clock, MapPin } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
+import { MapSheet } from "@/components/map/MapSheet"
 
 export interface Booking {
   id: string
@@ -29,6 +31,14 @@ export function BookingOverview({
   isLoading = false 
 }: BookingOverviewProps) {
   const router = useRouter()
+  const [mapSheetOpen, setMapSheetOpen] = useState(false)
+  const [selectedHome, setSelectedHome] = useState<{
+    code: string
+    name?: string
+    address: string
+    city?: string
+    coordinates?: { lat: number, lng: number }
+  } | null>(null)
   
   // Use provided bookings or fall back to test data
   const now = new Date()
@@ -56,6 +66,21 @@ export function BookingOverview({
     if (days === 1) return "Tomorrow"
     if (days < 0) return `${Math.abs(days)} days ago`
     return `In ${days} days`
+  }
+
+  const handleShowMap = (e: React.MouseEvent, homeCode: string) => {
+    e.stopPropagation()
+    const home = testHomes.find(h => h.code === homeCode)
+    if (home) {
+      setSelectedHome({
+        code: home.code,
+        name: home.name,
+        address: home.address,
+        city: home.city,
+        coordinates: home.coordinates
+      })
+      setMapSheetOpen(true)
+    }
   }
 
   if (isLoading) {
@@ -110,7 +135,7 @@ export function BookingOverview({
                     >
                       <CardContent className="p-2.5 sm:p-3">
                         <div className="flex items-center justify-between">
-                          <div>
+                          <div className="flex-1 min-w-0">
                             <p className="font-medium">{booking.bookingId}</p>
                             <p className="text-sm text-muted-foreground">
                               {booking.guestName} •{" "}
@@ -122,8 +147,17 @@ export function BookingOverview({
                                 {booking.homeCode}
                               </Link>
                             </p>
+                            {home && (
+                              <button
+                                onClick={(e) => handleShowMap(e, booking.homeCode)}
+                                className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mt-0.5"
+                              >
+                                <MapPin className="h-3 w-3" />
+                                <span className="underline">{home.address}</span>
+                              </button>
+                            )}
                           </div>
-                          <div className="text-right">
+                          <div className="text-right flex-shrink-0 ml-2">
                             <p className="text-sm font-medium">{formatDate(booking.checkIn)}</p>
                             <p className="text-xs text-muted-foreground">
                               {getDaysUntil(booking.checkIn)}
@@ -161,7 +195,7 @@ export function BookingOverview({
                     >
                       <CardContent className="p-2.5 sm:p-3">
                         <div className="flex items-center justify-between">
-                          <div>
+                          <div className="flex-1 min-w-0">
                             <p className="font-medium">{booking.bookingId}</p>
                             <p className="text-sm text-muted-foreground">
                               {booking.guestName} •{" "}
@@ -173,8 +207,17 @@ export function BookingOverview({
                                 {booking.homeCode}
                               </Link>
                             </p>
+                            {home && (
+                              <button
+                                onClick={(e) => handleShowMap(e, booking.homeCode)}
+                                className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mt-0.5"
+                              >
+                                <MapPin className="h-3 w-3" />
+                                <span className="underline">{home.address}</span>
+                              </button>
+                            )}
                           </div>
-                          <div className="text-right">
+                          <div className="text-right flex-shrink-0 ml-2">
                             <p className="text-sm font-medium">Until {formatDate(booking.checkOut)}</p>
                             <p className="text-xs text-muted-foreground">
                               {getDaysUntil(booking.checkOut)}
@@ -212,7 +255,7 @@ export function BookingOverview({
                     >
                       <CardContent className="p-2.5 sm:p-3">
                         <div className="flex items-center justify-between">
-                          <div>
+                          <div className="flex-1 min-w-0">
                             <p className="font-medium">{booking.bookingId}</p>
                             <p className="text-sm text-muted-foreground">
                               {booking.guestName} •{" "}
@@ -224,8 +267,17 @@ export function BookingOverview({
                                 {booking.homeCode}
                               </Link>
                             </p>
+                            {home && (
+                              <button
+                                onClick={(e) => handleShowMap(e, booking.homeCode)}
+                                className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mt-0.5"
+                              >
+                                <MapPin className="h-3 w-3" />
+                                <span className="underline">{home.address}</span>
+                              </button>
+                            )}
                           </div>
-                          <div className="text-right">
+                          <div className="text-right flex-shrink-0 ml-2">
                             <p className="text-sm font-medium">{formatDate(booking.checkOut)}</p>
                             <p className="text-xs text-muted-foreground">
                               {getDaysUntil(booking.checkOut)}
@@ -241,6 +293,19 @@ export function BookingOverview({
           </div>
         </div>
       </CardContent>
+      
+      {/* Map Sheet */}
+      {selectedHome && (
+        <MapSheet
+          open={mapSheetOpen}
+          onOpenChange={setMapSheetOpen}
+          homeCode={selectedHome.code}
+          homeName={selectedHome.name}
+          address={selectedHome.address}
+          city={selectedHome.city}
+          coordinates={selectedHome.coordinates}
+        />
+      )}
     </Card>
   )
 }

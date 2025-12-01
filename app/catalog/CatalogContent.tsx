@@ -1,12 +1,14 @@
 "use client"
 
 import { useSearchParams } from "next/navigation"
+import { useState } from "react"
 import { testHomes, testBookings } from "@/lib/test-data"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { HomeInfoSheet } from "@/components/homes/HomeInfoSheet"
 import { MapPin, Navigation, Home, Calendar, User } from "lucide-react"
+import { MapSheet } from "@/components/map/MapSheet"
 import Link from "next/link"
 
 const homeStatusConfig = {
@@ -25,6 +27,31 @@ const bookingStatusConfig = {
 export default function CatalogContent() {
   const searchParams = useSearchParams()
   const tab = searchParams.get('tab') || 'homes'
+  
+  const [mapSheetOpen, setMapSheetOpen] = useState(false)
+  const [selectedHome, setSelectedHome] = useState<{
+    code: string
+    name?: string
+    address: string
+    city?: string
+    coordinates?: { lat: number, lng: number }
+  } | null>(null)
+
+  const handleShowMap = (e: React.MouseEvent, homeCode: string) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const home = testHomes.find(h => h.code === homeCode)
+    if (home) {
+      setSelectedHome({
+        code: home.code,
+        name: home.name,
+        address: home.address,
+        city: home.city,
+        coordinates: home.coordinates
+      })
+      setMapSheetOpen(true)
+    }
+  }
 
   return (
     <div className="container mx-auto px-4 py-4">
@@ -64,10 +91,13 @@ export default function CatalogContent() {
                                 {home.name && (
                                   <p className="text-sm text-muted-foreground">{home.name}</p>
                                 )}
-                                <div className="flex items-center gap-1 mt-1 text-sm text-muted-foreground">
+                                <button
+                                  onClick={(e) => handleShowMap(e, home.code)}
+                                  className="flex items-center gap-1 mt-1 text-sm text-muted-foreground hover:text-primary transition-colors"
+                                >
                                   <MapPin className="h-3 w-3" />
-                                  <span className="truncate">{home.address}, {home.city}</span>
-                                </div>
+                                  <span className="truncate underline">{home.address}, {home.city}</span>
+                                </button>
                                 {home.distance !== undefined && (
                                   <div className="flex items-center gap-1 mt-1 text-sm text-muted-foreground">
                                     <Navigation className="h-3 w-3" />
@@ -148,6 +178,15 @@ export default function CatalogContent() {
                                 <span>{booking.homeCode}</span>
                               )}
                             </div>
+                            {home && (
+                              <button
+                                onClick={(e) => handleShowMap(e, booking.homeCode)}
+                                className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mb-1"
+                              >
+                                <MapPin className="h-3 w-3" />
+                                <span className="underline">{home.address}, {home.city}</span>
+                              </button>
+                            )}
                             <div className="flex items-center gap-4 text-sm">
                               <div className="flex items-center gap-1 text-muted-foreground">
                                 <Calendar className="h-3 w-3" />
@@ -172,6 +211,19 @@ export default function CatalogContent() {
           </TabsContent>
         </Tabs>
       </div>
+      
+      {/* Map Sheet */}
+      {selectedHome && (
+        <MapSheet
+          open={mapSheetOpen}
+          onOpenChange={setMapSheetOpen}
+          homeCode={selectedHome.code}
+          homeName={selectedHome.name}
+          address={selectedHome.address}
+          city={selectedHome.city}
+          coordinates={selectedHome.coordinates}
+        />
+      )}
     </div>
   )
 }

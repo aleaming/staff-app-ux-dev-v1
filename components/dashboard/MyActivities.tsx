@@ -11,7 +11,8 @@ import {
   RefreshCw,
   X,
   Pause,
-  ChevronDown
+  ChevronDown,
+  MapPin
 } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Card as SectionCard, CardContent as SectionCardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -19,6 +20,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { MapSheet } from "@/components/map/MapSheet"
 
 export type ActivityType = "provisioning" | "meet-greet" | "turn" | "deprovision" | "ad-hoc"
 export type ActivityStatus = "pending" | "in-progress" | "completed" | "overdue" | "incomplete"
@@ -68,6 +70,14 @@ const statusConfig = {
 export function MyActivities({ activities = [], isLoading = false }: MyActivitiesProps) {
   const [incompleteActivities, setIncompleteActivities] = useState<Activity[]>([])
   const [completedIsOpen, setCompletedIsOpen] = useState(false)
+  const [mapSheetOpen, setMapSheetOpen] = useState(false)
+  const [selectedHome, setSelectedHome] = useState<{
+    code: string
+    name?: string
+    address: string
+    city?: string
+    coordinates?: { lat: number, lng: number }
+  } | null>(null)
 
   // Load incomplete activities on mount
   useEffect(() => {
@@ -82,6 +92,22 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
   // Separate activities into active and completed
   const activeActivities = displayActivities.filter(a => a.status !== "completed")
   const completedActivities = displayActivities.filter(a => a.status === "completed")
+
+  const handleShowMap = (e: React.MouseEvent, homeCode: string) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const home = testHomes.find(h => h.code === homeCode)
+    if (home) {
+      setSelectedHome({
+        code: home.code,
+        name: home.name,
+        address: home.address,
+        city: home.city,
+        coordinates: home.coordinates
+      })
+      setMapSheetOpen(true)
+    }
+  }
 
   if (isLoading) {
     return (
@@ -151,6 +177,15 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
                           <span> • {activity.homeName}</span>
                         )}
                       </div>
+                      {home && (
+                        <button
+                          onClick={(e) => handleShowMap(e, activity.homeCode)}
+                          className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mb-2"
+                        >
+                          <MapPin className="h-3 w-3" />
+                          <span className="underline">{home.address}, {home.city}</span>
+                        </button>
+                      )}
                       {activity.bookingId && booking && (
                         <div className="text-xs text-muted-foreground italic mb-3">
                           Booking:{" "}
@@ -279,6 +314,19 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
             </Collapsible>
           )}
         </>
+      )}
+      
+      {/* Map Sheet */}
+      {selectedHome && (
+        <MapSheet
+          open={mapSheetOpen}
+          onOpenChange={setMapSheetOpen}
+          homeCode={selectedHome.code}
+          homeName={selectedHome.name}
+          address={selectedHome.address}
+          city={selectedHome.city}
+          coordinates={selectedHome.coordinates}
+        />
       )}
     </div>
   )

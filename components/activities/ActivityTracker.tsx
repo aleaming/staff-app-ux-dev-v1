@@ -756,6 +756,16 @@ export function ActivityTracker({
           </CardContent>
         </Card>
       )}
+      
+      {/* Property Information */}
+      {template.metadata && (
+        <PropertyInfoCard 
+          metadata={template.metadata} 
+          activityType={template.type}
+          className="mb-6"
+        />
+      )}
+      
       {/* Tasks List - Phase-based or Regular */}
       {template.phases ? (
         // Phase-based rendering (Provisioning with phases)

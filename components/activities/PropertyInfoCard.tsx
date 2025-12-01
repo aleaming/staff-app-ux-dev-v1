@@ -25,15 +25,18 @@ import {
 } from "lucide-react"
 import type { PropertyMetadata } from "@/lib/activity-templates"
 import { cn } from "@/lib/utils"
+import type { ActivityType } from "@/lib/activity-templates"
 
 interface PropertyInfoCardProps {
   metadata: PropertyMetadata
+  activityType?: ActivityType
   className?: string
   defaultOpen?: boolean
 }
 
 export function PropertyInfoCard({ 
-  metadata, 
+  metadata,
+  activityType,
   className,
   defaultOpen = false 
 }: PropertyInfoCardProps) {
@@ -53,6 +56,9 @@ export function PropertyInfoCard({
   }
 
   const sensitivityInfo = sensitivityConfig[metadata.sensitivityLevel]
+  
+  // Determine if this is a meet-greet activity
+  const isGreetActivity = activityType === "meet-greet"
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className={className}>
@@ -111,7 +117,7 @@ export function PropertyInfoCard({
               <div className="space-y-2">
                 <h4 className="text-sm font-semibold flex items-center gap-2">
                   <AlertCircle className="h-4 w-4" />
-                  At Each Activity
+                  {isGreetActivity ? "Guest Orientation Checklist" : "At Each Activity"}
                 </h4>
                 <ul className="space-y-1 ml-6">
                   {metadata.checkInstructions.map((instruction, index) => (
