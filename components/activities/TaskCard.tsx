@@ -51,7 +51,12 @@ import {
   FileText,
   Wind,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Eye,
+  MessageSquare,
+  PlayCircle,
+  Hand,
+  MessageCircle
 } from "lucide-react"
 import type { TaskTemplate, TaskAction } from "@/lib/activity-templates"
 import type { PhotoAnnotation } from "./PhotoAnnotation"
@@ -185,7 +190,13 @@ export function TaskCard({
       "Vacuum": <Wind className="h-4 w-4 text-purple-500" />,
       "Test": <ClipboardCheck className="h-4 w-4 text-blue-500" />,
       "Verify": <CheckCircle2 className="h-4 w-4 text-green-500" />,
-      "Photograph": <Camera className="h-4 w-4 text-purple-500" />
+      "Photograph": <Camera className="h-4 w-4 text-purple-500" />,
+      "Show": <Eye className="h-4 w-4 text-blue-500" />,
+      "Explain": <MessageSquare className="h-4 w-4 text-green-500" />,
+      "Demonstrate": <PlayCircle className="h-4 w-4 text-purple-500" />,
+      "Review": <ClipboardCheck className="h-4 w-4 text-blue-500" />,
+      "Welcome": <Hand className="h-4 w-4 text-green-500" />,
+      "Answer Questions": <MessageCircle className="h-4 w-4 text-blue-500" />
     }
     
     return iconMap[action] || null
