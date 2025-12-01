@@ -1,4 +1,5 @@
 import { PlanMyDay } from "@/components/settings/PlanMyDay"
+import { HapticSettings } from "@/components/settings/HapticSettings"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Settings, Bell, User, Shield } from "lucide-react"
 
@@ -13,6 +14,9 @@ export default function SettingsPage() {
 
         {/* Plan My Day */}
         <PlanMyDay />
+
+        {/* Haptic Feedback Settings */}
+        <HapticSettings />
 
         {/* Other Settings Sections */}
         <div className="grid gap-6 md:grid-cols-2">

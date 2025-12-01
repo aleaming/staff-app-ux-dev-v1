@@ -28,6 +28,7 @@ import {
 import { PhotoUploader } from "./PhotoUploader"
 import { PhotoGallery } from "./PhotoGallery"
 import { PhotoAnnotationDialog } from "./PhotoAnnotation"
+import { useHapticFeedback } from "@/components/haptic/HapticProvider"
 import { 
   AlertCircle, 
   Info, 
@@ -109,6 +110,7 @@ export function TaskCard({
   onRetryUpload,
   onExpandedChange
 }: TaskCardProps) {
+  const { trigger } = useHapticFeedback()
   const [annotatingPhotoId, setAnnotatingPhotoId] = useState<string | null>(null)
   const [internalIsExpanded, setInternalIsExpanded] = useState(!completed)
   const [showPhotoWarning, setShowPhotoWarning] = useState(false)
@@ -132,9 +134,15 @@ export function TaskCard({
     if (checked) {
       // Check if photos are required but none have been uploaded
       if (task.photoRequired && uploadedPhotos === 0) {
+        trigger('warning')
         setShowPhotoWarning(true)
         return
       }
+      // Success haptic for task completion
+      trigger('success')
+    } else {
+      // Light haptic for unchecking
+      trigger('light')
     }
     // Otherwise proceed with completion
     onToggleComplete(checked)

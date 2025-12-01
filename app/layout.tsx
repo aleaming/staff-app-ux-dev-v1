@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Adamina, Fira_Code } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme/ThemeProvider"
+import { HapticProvider } from "@/components/haptic/HapticProvider"
 import { LayoutClient } from "@/components/layout/LayoutClient"
 
 // Zalando Sans is loaded via @import in globals.css
@@ -38,7 +39,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <LayoutClient>{children}</LayoutClient>
+          <HapticProvider>
+            <LayoutClient>{children}</LayoutClient>
+          </HapticProvider>
         </ThemeProvider>
       </body>
     </html>

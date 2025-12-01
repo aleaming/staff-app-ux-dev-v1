@@ -4,6 +4,7 @@ import { useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Camera, X, Upload } from "lucide-react"
 import { compressImage, generateThumbnail } from "@/lib/photo-utils"
+import { useHapticFeedback } from "@/components/haptic/HapticProvider"
 
 interface PhotoUploaderProps {
   onPhotoSelect: (file: File, thumbnail?: string) => void
@@ -20,12 +21,16 @@ export function PhotoUploader({
   currentCount = 0,
   children
 }: PhotoUploaderProps) {
+  const { trigger } = useHapticFeedback()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isUploading, setIsUploading] = useState(false)
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
     if (!files || files.length === 0) return
+
+    // Light haptic for file selection
+    trigger('light')
 
     const filesArray = Array.from(files)
     const filesToProcess = maxPhotos 
@@ -38,6 +43,7 @@ export function PhotoUploader({
       // Validate file type
       if (!file.type.startsWith("image/")) {
         alert("Please select an image file")
+        trigger('error')
         continue
       }
 
@@ -50,9 +56,14 @@ export function PhotoUploader({
         
         // Pass compressed file and thumbnail
         onPhotoSelect(compressed.file, thumbnail)
+        
+        // Success haptic for each photo uploaded
+        trigger('success')
       } catch (error) {
         console.error("Error processing image:", error)
         alert("Failed to process image. Please try again.")
+        // Error haptic for upload failure
+        trigger('error')
         // Fallback: pass original file if compression fails
         onPhotoSelect(file)
       }

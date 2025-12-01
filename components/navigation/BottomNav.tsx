@@ -6,6 +6,7 @@ import { Home, BookOpen, Target, Play } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { useState, useEffect } from "react"
+import { useHapticFeedback } from "@/components/haptic/HapticProvider"
 import type { ActivityType } from "@/lib/activity-templates"
 
 const navItems = [
@@ -37,6 +38,7 @@ interface ActiveActivity {
 }
 
 export function BottomNav() {
+  const { trigger } = useHapticFeedback()
   const pathname = usePathname()
   const [activeActivity, setActiveActivity] = useState<ActiveActivity | null>(null)
 
@@ -135,6 +137,7 @@ export function BottomNav() {
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={() => trigger('light')}
                 className={cn(
                   "flex flex-col items-center justify-center gap-1 relative",
                   "transition-all duration-200 rounded-xl",
@@ -169,6 +172,7 @@ export function BottomNav() {
           {/* Current Activity Button */}
           <Link
             href={currentActivityHref}
+            onClick={() => trigger('light')}
             className={cn(
               "flex flex-col items-center justify-center gap-1 relative",
               "transition-all duration-200 rounded-xl",

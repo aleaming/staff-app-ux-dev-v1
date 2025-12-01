@@ -6,8 +6,23 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { useHapticFeedback } from "@/components/haptic/HapticProvider"
 
-const Sheet = SheetPrimitive.Root
+// Wrapper for Sheet root that adds haptic feedback
+const SheetRoot: React.FC<React.ComponentPropsWithoutRef<typeof SheetPrimitive.Root>> = ({ onOpenChange, ...props }) => {
+  const { trigger } = useHapticFeedback()
+  
+  const handleOpenChange = (open: boolean) => {
+    if (open) {
+      trigger('medium')
+    }
+    onOpenChange?.(open)
+  }
+  
+  return <SheetPrimitive.Root onOpenChange={handleOpenChange} {...props} />
+}
+
+const Sheet = SheetRoot
 
 const SheetTrigger = SheetPrimitive.Trigger
 
