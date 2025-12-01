@@ -9,6 +9,7 @@ export const sampleGreetData: ActivityTemplate = {
   name: "Meet & Greet - ALB134",
   description: "Welcome guest and provide comprehensive home orientation",
   estimatedTotalTime: 45,
+  tasks: [], // Tasks are organized in phases below
   metadata: {
     propertyCode: "ALB134",
     propertyName: "Albert Bridge Road II",
