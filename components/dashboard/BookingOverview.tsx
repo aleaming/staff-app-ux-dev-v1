@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { testBookings, testHomes } from "@/lib/test-data"
 import { Calendar, Users, LogOut, Clock } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -27,6 +28,8 @@ export function BookingOverview({
   bookings = [], 
   isLoading = false 
 }: BookingOverviewProps) {
+  const router = useRouter()
+  
   // Use provided bookings or fall back to test data
   const now = new Date()
   const displayBookings: Booking[] = bookings.length > 0 ? bookings : testBookings
@@ -100,9 +103,12 @@ export function BookingOverview({
                 {upcomingArrivals.map((booking) => {
                   const home = testHomes.find(h => h.code === booking.homeCode)
                   return (
-                      <Link key={booking.id} href={`/bookings/${booking.id}`}>
-                        <Card className="hover:bg-muted/50 transition-colors">
-                          <CardContent className="p-2.5 sm:p-3">
+                    <Card 
+                      key={booking.id} 
+                      className="hover:bg-muted/50 transition-colors cursor-pointer"
+                      onClick={() => router.push(`/bookings/${booking.id}`)}
+                    >
+                      <CardContent className="p-2.5 sm:p-3">
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="font-medium">{booking.bookingId}</p>
@@ -126,7 +132,6 @@ export function BookingOverview({
                         </div>
                       </CardContent>
                     </Card>
-                  </Link>
                   )
                 })}
               </div>
@@ -149,9 +154,12 @@ export function BookingOverview({
                 {currentStays.map((booking) => {
                   const home = testHomes.find(h => h.code === booking.homeCode)
                   return (
-                      <Link key={booking.id} href={`/bookings/${booking.id}`}>
-                        <Card className="hover:bg-muted/50 transition-colors">
-                          <CardContent className="p-2.5 sm:p-3">
+                    <Card 
+                      key={booking.id} 
+                      className="hover:bg-muted/50 transition-colors cursor-pointer"
+                      onClick={() => router.push(`/bookings/${booking.id}`)}
+                    >
+                      <CardContent className="p-2.5 sm:p-3">
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="font-medium">{booking.bookingId}</p>
@@ -175,7 +183,6 @@ export function BookingOverview({
                         </div>
                       </CardContent>
                     </Card>
-                  </Link>
                   )
                 })}
               </div>
@@ -198,9 +205,12 @@ export function BookingOverview({
                 {departures.map((booking) => {
                   const home = testHomes.find(h => h.code === booking.homeCode)
                   return (
-                      <Link key={booking.id} href={`/bookings/${booking.id}`}>
-                        <Card className="hover:bg-muted/50 transition-colors">
-                          <CardContent className="p-2.5 sm:p-3">
+                    <Card 
+                      key={booking.id} 
+                      className="hover:bg-muted/50 transition-colors cursor-pointer"
+                      onClick={() => router.push(`/bookings/${booking.id}`)}
+                    >
+                      <CardContent className="p-2.5 sm:p-3">
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="font-medium">{booking.bookingId}</p>
@@ -224,7 +234,6 @@ export function BookingOverview({
                         </div>
                       </CardContent>
                     </Card>
-                  </Link>
                   )
                 })}
               </div>

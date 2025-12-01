@@ -122,11 +122,15 @@ export function BottomNav() {
         <div className="grid grid-cols-4 h-16 px-2">
           {navItems.map((item) => {
             // Special handling for Catalog - should be active on /catalog, /homes, and /bookings
+            // BUT NOT when on an activity tracking page (/homes/.../activities/.../track)
             let isActive = false
             if (item.href === "/catalog") {
-              isActive = pathname === "/catalog" || 
-                        pathname?.startsWith("/homes") || 
-                        pathname?.startsWith("/bookings")
+              const isOnActivityTrack = pathname?.includes("/activities/") && pathname?.includes("/track")
+              isActive = !isOnActivityTrack && (
+                pathname === "/catalog" || 
+                pathname?.startsWith("/homes") || 
+                pathname?.startsWith("/bookings")
+              )
             } else {
               isActive = pathname === item.href ||
                 (item.href !== "/" && pathname?.startsWith(item.href))
