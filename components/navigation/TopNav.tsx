@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { 
   Settings, 
@@ -81,8 +82,14 @@ export function TopNav({ onOpenSearch }: TopNavProps = { onOpenSearch: undefined
               <SheetTitle>Menu</SheetTitle>
             </SheetHeader>
             <nav className="flex flex-col gap-4 mt-8">
-              <Link href="/" className="text-lg font-semibold mb-4">
-                onefinestay
+              <Link href="/" className="mb-4">
+                <Image 
+                  src="/logo.svg" 
+                  alt="onefinestay" 
+                  width={101} 
+                  height={33}
+                  className="h-8 w-auto"
+                />
               </Link>
               <Link href="/manage" className="text-sm font-medium">
                 Manage
@@ -107,8 +114,14 @@ export function TopNav({ onOpenSearch }: TopNavProps = { onOpenSearch: undefined
         </Sheet>
 
         {/* Logo/Brand - Centered */}
-        <Link href="/" className="absolute left-1/2 -translate-x-1/2 text-xl font-bold">
-          hosted
+        <Link href="/" className="absolute left-1/2 -translate-x-1/2">
+          <Image 
+            src="/logo.svg" 
+            alt="onefinestay" 
+            width={101} 
+            height={33}
+            className="h-8 w-auto"
+          />
         </Link>
 
         {/* Search Bar - Desktop Only (hidden on mobile, mobile search is in FixedSearchBar) */}

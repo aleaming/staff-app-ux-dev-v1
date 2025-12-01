@@ -223,7 +223,7 @@ export function PropertyIssueReportSheet({
 
   return (
     <Sheet open={true} onOpenChange={onClose}>
-      <SheetContent side="bottom" className="max-h-[90vh] overflow-y-auto">
+      <SheetContent side="bottom" className="max-h-[90vh] overflow-y-auto pb-48">
         <SheetHeader>
           <SheetTitle className="text-left">Report Issue</SheetTitle>
           <div className="mt-2 space-y-1">
@@ -232,7 +232,7 @@ export function PropertyIssueReportSheet({
               <div className="font-medium text-base text-left">{item.label}</div>
             )}
             {!item && homeCode && (
-              <div className="font-medium text-sm">
+              <div className="font-medium text-sm text-left">
                 {homeCode} {homeName && `• ${homeName}`}
               </div>
             )}
