@@ -196,9 +196,6 @@ export function PlanMyDay() {
                           </div>
                           <div className="flex items-center gap-2 flex-shrink-0">
                             {getStatusBadge(activity.status)}
-                            {activity.priority === "high" && (
-                              <AlertCircle className="h-4 w-4 text-destructive" />
-                            )}
                           </div>
                         </div>
                         {activity.description && (

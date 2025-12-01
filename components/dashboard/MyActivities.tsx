@@ -10,12 +10,15 @@ import {
   Handshake,
   RefreshCw,
   X,
-  Pause
+  Pause,
+  ChevronDown
 } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
+import { Card as SectionCard, CardContent as SectionCardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 
 export type ActivityType = "provisioning" | "meet-greet" | "turn" | "deprovision" | "ad-hoc"
 export type ActivityStatus = "pending" | "in-progress" | "completed" | "overdue" | "incomplete"
@@ -64,6 +67,7 @@ const statusConfig = {
 
 export function MyActivities({ activities = [], isLoading = false }: MyActivitiesProps) {
   const [incompleteActivities, setIncompleteActivities] = useState<Activity[]>([])
+  const [completedIsOpen, setCompletedIsOpen] = useState(false)
 
   // Load incomplete activities on mount
   useEffect(() => {
@@ -135,7 +139,7 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
                   <div className="flex-1 min-w-0">
                     <h3 className="font-bold text-base">{activity.title}</h3>
                     <div className="gap-1">
-                      <div className="text-sm text-muted-foreground">
+                      <div className="text-sm text-muted-foreground mb-2">
                         <Link
                           href={`/homes/${home?.id || activity.homeCode}`}
                           className="text-primary underline hover:text-primary/80 transition-colors"
@@ -143,12 +147,10 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
                         >
                           {activity.homeCode}
                         </Link>
+                        {activity.homeName && (
+                          <span> • {activity.homeName}</span>
+                        )}
                       </div>
-                      {activity.homeName && (
-                        <div className="text-sm text-muted-foreground mb-2">
-                          {activity.homeName}
-                        </div>
-                      )}
                       {activity.bookingId && booking && (
                         <div className="text-xs text-muted-foreground italic mb-3">
                           Booking:{" "}
@@ -173,11 +175,6 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
                     {activity.status === 'incomplete' && <Pause className="h-3 w-3 mr-1" />}
                     {statusInfo.label}
                   </Badge>
-                  {activity.priority === "high" && (
-                    <Badge variant="destructive" className="text-xs whitespace-nowrap">
-                      High Priority
-                    </Badge>
-                  )}
 
                   <div className="text-sm text-muted-foreground pr-1">
                     <span>{timeString}</span>
@@ -255,21 +252,31 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
 
           {/* Completed Activities */}
           {completedActivities.length > 0 && (
-            <div>
-              <div className="py-4 sm:py-6">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-2">
-                  <h2 className="text-base sm:text-lg font-semibold flex items-center gap-2">
-                    <span className="break-words">Completed</span>
-                    <Badge variant="outline" className="text-xs">{completedActivities.length}</Badge>
-                  </h2>
-                </div>
-              </div>
-              <div className="py-4 sm:py-6 pt-0">
-                <div className="space-y-0">
-                  {completedActivities.map(renderActivity)}
-                </div>
-              </div>
-            </div>
+            <Collapsible open={completedIsOpen} onOpenChange={setCompletedIsOpen}>
+              <SectionCard className="w-full hover:bg-white/80 dark:hover:bg-black/50 transition-colors">
+                <CardHeader className="p-4 sm:p-6">
+                  <div className="flex items-center justify-between gap-2">
+                    <CardTitle className="text-sm sm:text-base flex items-center gap-2">
+                      <span className="break-words">Completed</span>
+                      <Badge variant="outline" className="text-xs">{completedActivities.length}</Badge>
+                    </CardTitle>
+                    <CollapsibleTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                        <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${completedIsOpen ? 'rotate-180' : ''}`} />
+                        <span className="sr-only">Toggle</span>
+                      </Button>
+                    </CollapsibleTrigger>
+                  </div>
+                </CardHeader>
+                <CollapsibleContent>
+                  <SectionCardContent className="p-4 sm:p-6 pt-0">
+                    <div className="space-y-0">
+                      {completedActivities.map(renderActivity)}
+                    </div>
+                  </SectionCardContent>
+                </CollapsibleContent>
+              </SectionCard>
+            </Collapsible>
           )}
         </>
       )}

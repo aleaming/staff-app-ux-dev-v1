@@ -88,7 +88,7 @@ export default function ActivitiesPage() {
                   <div className="flex-1 min-w-0">
                     <h3 className="font-bold text-lg">{activity.title}</h3>
                     <div className="gap-1">
-                      <div className="text-sm text-muted-foreground">
+                      <div className="text-sm text-muted-foreground mb-2">
                         <Link
                           href={`/homes/${home?.id || activity.homeCode}`}
                           className="underline hover:text-primary transition-colors"
@@ -96,12 +96,10 @@ export default function ActivitiesPage() {
                         >
                           {activity.homeCode}
                         </Link>
+                        {activity.homeName && (
+                          <span> • {activity.homeName}</span>
+                        )}
                       </div>
-                      {activity.homeName && (
-                        <div className="text-sm text-muted-foreground mb-2">
-                          {activity.homeName}
-                        </div>
-                      )}
                       {activity.bookingId && booking && (
                         <div className="text-xs text-muted-foreground italic">
                           Booking:{" "}
@@ -126,11 +124,6 @@ export default function ActivitiesPage() {
                     {activity.status === 'incomplete' && <Pause className="h-3 w-3 mr-1" />}
                     {statusInfo.label}
                   </Badge>
-                  {activity.priority === "high" && (
-                    <Badge variant="destructive" className="text-xs whitespace-nowrap">
-                      High Priority
-                    </Badge>
-                  )}
 
                   <div className="text-sm text-muted-foreground pr-1">
                     <span>{timeString}</span>

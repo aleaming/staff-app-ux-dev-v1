@@ -103,9 +103,6 @@ export default async function ActivityDetailPage({ params }: ActivityDetailPageP
           </div>
           <div className="flex flex-col gap-2">
             <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>
-            {activity.priority === "high" && (
-              <Badge variant="destructive">High Priority</Badge>
-            )}
           </div>
         </div>
 

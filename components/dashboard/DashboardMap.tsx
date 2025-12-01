@@ -175,7 +175,7 @@ export function DashboardMap({ homes, activities, latitude = 51.5074, longitude 
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <Card className="w-full hover:bg-white/80 dark:hover:bg-black/50 transition-colors">
         <CardHeader className="p-4 sm:p-6">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between gap-2">
             <CardTitle className="text-sm sm:text-base flex items-center gap-2">
               <Layers className="h-4 w-4 sm:h-5 sm:w-5" />
               <span className="break-words">Weather & Map</span>
