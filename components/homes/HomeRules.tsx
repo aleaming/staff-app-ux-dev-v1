@@ -216,16 +216,9 @@ export function HomeRules({ homeCode }: HomeRulesProps) {
                       htmlFor={`rule-${index}`}
                       className="cursor-pointer block"
                     >
-                      <div className="flex items-start gap-2 mb-2">
-                        <div className="flex-shrink-0 mt-0.5">
-                          {rule.priority === "high" ? (
-                            <AlertCircle className="h-4 w-4 text-destructive" />
-                          ) : (
-                            <Info className="h-4 w-4 text-muted-foreground" />
-                          )}
-                        </div>
-                        <p 
-                          className="text-sm text-foreground flex-1"
+                      <div className="mb-2">
+                        <p
+                          className="text-sm text-foreground"
                           dangerouslySetInnerHTML={{ __html: formatRuleText(rule.text) }}
                         />
                       </div>

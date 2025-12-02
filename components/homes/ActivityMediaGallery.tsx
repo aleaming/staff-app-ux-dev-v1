@@ -4,8 +4,16 @@ import { useState, useMemo } from "react"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
   Image as ImageIcon,
   Download,
   Share2,
@@ -14,7 +22,8 @@ import {
   MapPin,
   Tag,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Filter
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -160,20 +169,35 @@ export function ActivityMediaGallery({
           </SheetHeader>
 
           {/* Filters */}
-          <div className="flex gap-2 mb-4 flex-wrap">
-            <Tabs value={selectedRoom} onValueChange={setSelectedRoom} className="w-auto">
-              <TabsList>
-                <TabsTrigger value="all">All Rooms ({allPhotos.length})</TabsTrigger>
-                {activity.rooms.map(room => {
-                  const count = allPhotos.filter(p => p.room === room).length
-                  return (
-                    <TabsTrigger key={room} value={room}>
-                      {room} ({count})
-                    </TabsTrigger>
-                  )
-                })}
-              </TabsList>
-            </Tabs>
+          <div className="flex gap-2 mb-4 flex-wrap items-center">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Filter className="h-4 w-4 mr-2" />
+                  {selectedRoom === "all" ? "All Rooms" : selectedRoom}
+                  <Badge variant="secondary" className="ml-2">
+                    {filteredPhotos.length}
+                  </Badge>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56">
+                <DropdownMenuLabel>Filter by Room</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuRadioGroup value={selectedRoom} onValueChange={setSelectedRoom}>
+                  <DropdownMenuRadioItem value="all">
+                    All Rooms ({allPhotos.length})
+                  </DropdownMenuRadioItem>
+                  {activity.rooms.map(room => {
+                    const count = allPhotos.filter(p => p.room === room).length
+                    return (
+                      <DropdownMenuRadioItem key={room} value={room}>
+                        {room} ({count})
+                      </DropdownMenuRadioItem>
+                    )
+                  })}
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* Photo Grid */}

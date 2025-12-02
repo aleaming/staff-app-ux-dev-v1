@@ -12,7 +12,8 @@ import {
   X,
   Pause,
   ChevronDown,
-  MapPin
+  MapPin,
+  Calendar
 } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Card as SectionCard, CardContent as SectionCardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -21,9 +22,10 @@ import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { MapSheet } from "@/components/map/MapSheet"
+import { HomeInfoSheet } from "@/components/homes/HomeInfoSheet"
 
 export type ActivityType = "provisioning" | "meet-greet" | "turn" | "deprovision" | "ad-hoc"
-export type ActivityStatus = "pending" | "in-progress" | "completed" | "overdue" | "incomplete"
+export type ActivityStatus = "to-start" | "in-progress" | "paused" | "abandoned" | "completed" | "cancelled"
 
 export interface Activity {
   id: string
@@ -60,11 +62,12 @@ const activityTypeConfig = {
 }
 
 const statusConfig = {
-  "pending": { label: "Pending", variant: "secondary" as const },
-  "in-progress": { label: "In Progress", variant: "default" as const },
+  "to-start": { label: "To start", variant: "secondary" as const },
+  "in-progress": { label: "In progress", variant: "default" as const },
+  "paused": { label: "Paused", variant: "secondary" as const },
+  "abandoned": { label: "Abandoned", variant: "destructive" as const },
   "completed": { label: "Completed", variant: "outline" as const },
-  "overdue": { label: "Overdue", variant: "destructive" as const },
-  "incomplete": { label: "Incomplete", variant: "secondary" as const },
+  "cancelled": { label: "Cancelled", variant: "outline" as const },
 }
 
 export function MyActivities({ activities = [], isLoading = false }: MyActivitiesProps) {
@@ -92,6 +95,14 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
   // Separate activities into active and completed
   const activeActivities = displayActivities.filter(a => a.status !== "completed")
   const completedActivities = displayActivities.filter(a => a.status === "completed")
+
+  // Sort active activities: in-progress and paused first, then others
+  const sortedActiveActivities = activeActivities.sort((a, b) => {
+    const priorityOrder = { "in-progress": 0, "paused": 1, "to-start": 2, "abandoned": 3, "cancelled": 4 }
+    const aPriority = priorityOrder[a.status] ?? 99
+    const bPriority = priorityOrder[b.status] ?? 99
+    return aPriority - bPriority
+  })
 
   const handleShowMap = (e: React.MouseEvent, homeCode: string) => {
     e.preventDefault()
@@ -163,19 +174,23 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
                   </div>
                   {/* Title and Details */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-base">{activity.title}</h3>
+                    <h3 className="font-bold text-base">
+                      <HomeInfoSheet
+                        homeId={home?.id || activity.homeCode}
+                        homeCode={activity.homeCode}
+                        homeName={activity.homeName}
+                      >
+                        <button className="text-primary underline hover:text-primary/80 transition-colors text-left">
+                          {activity.homeCode}
+                          {activity.homeName && (
+                            <span> • {activity.homeName}</span>
+                          )}
+                        </button>
+                      </HomeInfoSheet>
+                    </h3>
                     <div className="gap-1">
                       <div className="text-sm text-muted-foreground mb-2">
-                        <Link
-                          href={`/homes/${home?.id || activity.homeCode}`}
-                          className="text-primary underline hover:text-primary/80 transition-colors"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          {activity.homeCode}
-                        </Link>
-                        {activity.homeName && (
-                          <span> • {activity.homeName}</span>
-                        )}
+                        {typeConfig.label}
                       </div>
                       {home && (
                         <button
@@ -187,8 +202,8 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
                         </button>
                       )}
                       {activity.bookingId && booking && (
-                        <div className="text-xs text-muted-foreground italic mb-3">
-                          Booking:{" "}
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground italic mb-3">
+                          <Calendar className="h-3 w-3" />
                           <Link
                             href={`/bookings/${booking.id}`}
                             className="underline hover:text-primary transition-colors"
@@ -205,9 +220,9 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
                 <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
                   <Badge
                     variant={statusInfo.variant}
-                    className={`whitespace-nowrap ${activity.status === 'incomplete' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400 border-orange-200 dark:border-orange-800' : ''}`}
+                    className={`whitespace-nowrap ${activity.status === 'paused' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400 border-orange-200 dark:border-orange-800' : ''}`}
                   >
-                    {activity.status === 'incomplete' && <Pause className="h-3 w-3 mr-1" />}
+                    {activity.status === 'paused' && <Pause className="h-3 w-3 mr-1" />}
                     {statusInfo.label}
                   </Badge>
 
@@ -218,18 +233,18 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
               </div>
 
               {/* Bottom: Start/Resume Activity Button */}
-              {activity.status === "pending" && (
+              {activity.status === "to-start" && (
                 <Link href={`/activities/${activity.id}`}>
                   <Button
                     size="lg"
                     variant="secondary"
                     className="w-full h-12 rounded-lg font-medium text-base"
                   >
-                    Activity Details
+                    {typeConfig.label}
                   </Button>
                 </Link>
               )}
-              {activity.status === "incomplete" && (
+              {activity.status === "paused" && (
                 <Link href={`/homes/${home?.id || activity.homeCode}/activities/${activityTypeToTemplateType[activity.type]}/track${activity.bookingId ? `?bookingId=${activity.bookingId}` : ''}`}>
                   <Button
                     size="lg"
@@ -237,7 +252,7 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
                     className="w-full h-12 rounded-lg font-medium text-base gap-2"
                   >
                     <Pause className="h-4 w-4" />
-                    Resume Activity
+                    {typeConfig.label}
                   </Button>
                 </Link>
               )}
@@ -267,19 +282,19 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
       ) : (
         <>
           {/* Active Activities */}
-          {activeActivities.length > 0 && (
+          {sortedActiveActivities.length > 0 && (
             <div>
               <div className="py-4 sm:py-6">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-2">
                   <h2 className="text-base sm:text-lg font-semibold flex items-center gap-2">
                     <span className="break-words">My Activities</span>
-                    <Badge variant="secondary" className="text-xs">{activeActivities.length}</Badge>
+                    <Badge variant="secondary" className="text-xs">{sortedActiveActivities.length}</Badge>
                   </h2>
                 </div>
               </div>
               <div className="py-4 sm:py-6 pt-0">
                 <div className="space-y-0">
-                  {activeActivities.map(renderActivity)}
+                  {sortedActiveActivities.map(renderActivity)}
                 </div>
               </div>
             </div>

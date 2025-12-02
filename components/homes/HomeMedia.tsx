@@ -6,6 +6,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { 
   Image, 
   Video, 
@@ -149,33 +157,46 @@ export function HomeMedia({ homeCode }: HomeMediaProps) {
               />
             </div>
 
-            {/* Filter Buttons */}
-            <div className="flex flex-wrap gap-2">
-              <span className="text-sm text-muted-foreground flex items-center gap-2 mr-2">
-                <Filter className="h-4 w-4" />
-                Filters:
-              </span>
-              {activityTypes.map(({ type, label, icon: Icon }) => (
-                <Button
-                  key={type}
-                  variant={selectedFilters.includes(type) ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => toggleFilter(type)}
-                  className="gap-2"
-                >
-                  <Icon className="h-4 w-4" />
-                  {label}
-                </Button>
-              ))}
-              {selectedFilters.length > 0 && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setSelectedFilters([])}
-                >
-                  Clear All
-                </Button>
-              )}
+            {/* Filter Dropdown */}
+            <div className="w-full">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="w-full justify-start">
+                    <Filter className="h-4 w-4 mr-2" />
+                    Activity Type
+                    {selectedFilters.length > 0 && (
+                      <Badge variant="secondary" className="ml-2">
+                        {selectedFilters.length}
+                      </Badge>
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-56">
+                  <DropdownMenuLabel>Filter by Activity Type</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {activityTypes.map(({ type, label, icon: Icon }) => (
+                    <DropdownMenuCheckboxItem
+                      key={type}
+                      checked={selectedFilters.includes(type)}
+                      onCheckedChange={() => toggleFilter(type)}
+                    >
+                      <Icon className="h-4 w-4 mr-2" />
+                      {label}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                  {selectedFilters.length > 0 && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuCheckboxItem
+                        onSelect={() => setSelectedFilters([])}
+                        className="text-muted-foreground"
+                      >
+                        Clear all filters
+                      </DropdownMenuCheckboxItem>
+                    </>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </CardContent>
         </Card>

@@ -113,10 +113,11 @@ export function getIncompleteActivities(): Activity[] {
 
   try {
     const activities = JSON.parse(stored)
-    // Convert date strings back to Date objects
+    // Convert date strings back to Date objects and ensure status is "paused"
     return activities.map((activity: any) => ({
       ...activity,
-      scheduledTime: new Date(activity.scheduledTime)
+      scheduledTime: new Date(activity.scheduledTime),
+      status: "paused" as const
     }))
   } catch (error) {
     console.error("Error parsing incomplete activities:", error)

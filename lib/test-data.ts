@@ -10,7 +10,7 @@
 // ============================================================================
 
 export type ActivityType = "provisioning" | "meet-greet" | "turn" | "deprovision" | "ad-hoc"
-export type ActivityStatus = "pending" | "in-progress" | "completed" | "overdue" | "incomplete"
+export type ActivityStatus = "to-start" | "in-progress" | "paused" | "abandoned" | "completed" | "cancelled"
 export type HomeStatus = "occupied" | "available" | "maintenance"
 export type NotificationType = "message" | "alert" | "activity-update"
 export type RecentItemType = "home" | "booking" | "activity"
@@ -363,7 +363,7 @@ export const testActivities: Activity[] = [
     homeName: "Cosmopolitan Suite",
     bookingId: "BB-1AB2C3D4",
     scheduledTime: hoursFromNow(2),
-    status: "pending",
+    status: "to-start",
     priority: "high",
     description: "Prepare home for guest arrival",
     assignedTo: "Alex"
@@ -376,7 +376,7 @@ export const testActivities: Activity[] = [
     homeName: "Cosmopolitan Suite",
     bookingId: "BB-1AB2C3D4",
     scheduledTime: hoursFromNow(4),
-    status: "pending",
+    status: "to-start",
     description: "Welcome guest and provide keys",
     assignedTo: "Alex"
   },
@@ -388,7 +388,7 @@ export const testActivities: Activity[] = [
     homeName: "Albert Bridge Road II",
     bookingId: "BB-2024-003",
     scheduledTime: hoursFromNow(6),
-    status: "pending",
+    status: "to-start",
     description: "Comprehensive guest orientation with property tour",
     assignedTo: "Alex"
   },
@@ -411,7 +411,7 @@ export const testActivities: Activity[] = [
     homeName: "Villa 789",
     bookingId: "BB-9XYZ1234",
     scheduledTime: hoursFromNow(8),
-    status: "pending",
+    status: "to-start",
     description: "Secure home after guest departure",
     assignedTo: "Alex"
   },
@@ -422,7 +422,7 @@ export const testActivities: Activity[] = [
     homeCode: "VIL789",
     homeName: "Villa 789",
     scheduledTime: hoursFromNow(1),
-    status: "pending",
+    status: "to-start",
     priority: "high",
     description: "Check heating system issue",
     assignedTo: "Alex"
@@ -435,7 +435,7 @@ export const testActivities: Activity[] = [
     homeName: "Penthouse 901",
     bookingId: "BB-IJKL3456",
     scheduledTime: daysFromNow(5),
-    status: "pending",
+    status: "to-start",
     description: "Prepare home for upcoming booking",
     assignedTo: "Alex"
   },
@@ -469,7 +469,7 @@ export const testActivities: Activity[] = [
     homeCode: "LOF234",
     homeName: "Loft 234",
     scheduledTime: daysFromNow(-1),
-    status: "overdue",
+    status: "to-start",
     priority: "high",
     description: "Secure home - overdue",
     assignedTo: "Alex"
@@ -482,7 +482,7 @@ export const testActivities: Activity[] = [
     homeName: "Albert Bridge Road II",
     bookingId: "BKG-2024-004",
     scheduledTime: hoursFromNow(2),
-    status: "pending",
+    status: "to-start",
     description: "Prepare property after guest checkout",
     assignedTo: "Alex"
   }
