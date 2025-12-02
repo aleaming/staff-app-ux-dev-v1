@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
@@ -17,18 +17,12 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { PhotoUploader } from "./PhotoUploader"
+import { PhotoUploader, type PhotoUploaderHandle } from "./PhotoUploader"
 import { PhotoGallery } from "./PhotoGallery"
 import { PhotoAnnotationDialog } from "./PhotoAnnotation"
 import { useHapticFeedback } from "@/components/haptic/HapticProvider"
+import { toast } from "sonner"
+import { cn } from "@/lib/utils"
 import { 
   AlertCircle, 
   Info, 
@@ -125,7 +119,8 @@ export function TaskCard({
   const { trigger } = useHapticFeedback()
   const [annotatingPhotoId, setAnnotatingPhotoId] = useState<string | null>(null)
   const [internalIsExpanded, setInternalIsExpanded] = useState(!completed)
-  const [showPhotoWarning, setShowPhotoWarning] = useState(false)
+  const [cameraAnimating, setCameraAnimating] = useState(false)
+  const photoUploaderRef = useRef<PhotoUploaderHandle>(null)
   const photoCount = photos?.length || 0
 
   // Use controlled or internal state
@@ -147,7 +142,21 @@ export function TaskCard({
       // Check if photos are required but none have been uploaded
       if (task.photoRequired && uploadedPhotos === 0) {
         trigger('warning')
-        setShowPhotoWarning(true)
+        
+        // Show brief toast notification
+        toast.warning("Photo required to complete task", {
+          duration: 2500,
+        })
+        
+        // Animate camera button
+        setCameraAnimating(true)
+        
+        // Auto-open camera after brief delay
+        setTimeout(() => {
+          photoUploaderRef.current?.triggerUpload()
+          setCameraAnimating(false)
+        }, 400)
+        
         return
       }
       // Success haptic for task completion
@@ -335,11 +344,25 @@ export function TaskCard({
                   )}
 
                   {/* Add Photo Button */}
-                  <PhotoUploader
-                    onPhotoSelect={onAddPhoto}
-                    multiple={true}
-                    currentCount={photoCount}
-                  />
+                  <div className={cn(cameraAnimating && "animate-bounce")}>
+                    <PhotoUploader
+                      ref={photoUploaderRef}
+                      onPhotoSelect={onAddPhoto}
+                      multiple={true}
+                      currentCount={photoCount}
+                    >
+                      <Button 
+                        variant="outline" 
+                        className={cn(
+                          "w-full gap-2",
+                          cameraAnimating && "ring-2 ring-orange-500 ring-offset-2"
+                        )}
+                      >
+                        <Camera className={cn("h-4 w-4", cameraAnimating && "animate-pulse")} />
+                        {task.photoRequired ? "Add Photo (Required)" : "Add Photo"}
+                      </Button>
+                    </PhotoUploader>
+                  </div>
 
                   {/* Photo Status Summary */}
                   {photos && photos.length > 0 && (
@@ -523,41 +546,6 @@ export function TaskCard({
           open={annotatingPhotoId !== null}
         />
       )}
-
-      {/* Photo Required Warning Dialog */}
-      <Dialog open={showPhotoWarning} onOpenChange={setShowPhotoWarning}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Camera className="h-5 w-5 text-orange-500" />
-              Photos Required
-            </DialogTitle>
-            <DialogDescription>
-              This task requires at least one photo to be uploaded before it can be marked as complete. Please add and upload photos before completing this task.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <div className="flex items-center gap-2 w-full justify-end">
-              <PhotoUploader
-                onPhotoSelect={(file, thumbnail) => {
-                  onAddPhoto(file, thumbnail)
-                  setShowPhotoWarning(false)
-                }}
-                multiple={true}
-                currentCount={photoCount}
-              >
-                <Button className="gap-2">
-                  <Camera className="h-4 w-4" />
-                  Take Photo
-                </Button>
-              </PhotoUploader>
-              <Button variant="outline" onClick={() => setShowPhotoWarning(false)}>
-                Cancel
-              </Button>
-            </div>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </Card>
   )
 }

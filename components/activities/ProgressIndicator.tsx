@@ -2,25 +2,20 @@
 
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
-import { CheckCircle2, Clock, Camera } from "lucide-react"
+import { CheckCircle2, Clock } from "lucide-react"
 
 interface ProgressIndicatorProps {
   completedTasks: number
   totalTasks: number
-  completedPhotos: number
-  totalPhotos: number
   estimatedTimeRemaining?: number
 }
 
 export function ProgressIndicator({
   completedTasks,
   totalTasks,
-  completedPhotos,
-  totalPhotos,
   estimatedTimeRemaining
 }: ProgressIndicatorProps) {
   const taskProgress = (completedTasks / totalTasks) * 100
-  const photoProgress = totalPhotos > 0 ? (completedPhotos / totalPhotos) * 100 : 0
 
   return (
     <div className="space-y-3">
@@ -39,24 +34,6 @@ export function ProgressIndicator({
         </div>
         <Progress value={taskProgress} className="h-2" />
       </div>
-
-      {/* Photo Progress */}
-      {totalPhotos > 0 && (
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <Camera className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium">
-                Photos: {completedPhotos} of {totalPhotos}
-              </span>
-            </div>
-            <span className="text-sm text-foreground">
-              {Math.round(photoProgress)}%
-            </span>
-          </div>
-          <Progress value={photoProgress} className="h-2" />
-        </div>
-      )}
 
       {/* Time Estimate */}
       {estimatedTimeRemaining !== undefined && estimatedTimeRemaining > 0 && (

@@ -656,10 +656,10 @@ export function ActivityTracker({
 
       {/* Header */}
       <div className="bg-background border-b pb-4 mb-6">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
             <div>
-              <h1 className="text-2xl font-bold">{template.name}</h1>
+              <h1 className="text-xl font-bold">{template.name}</h1>
               <p className="text-sm text-muted-foreground">
                 {homeCode} {homeName && `• ${homeName}`}
               </p>
@@ -673,8 +673,6 @@ export function ActivityTracker({
         <ProgressIndicator
           completedTasks={completedTasks}
           totalTasks={totalTasks}
-          completedPhotos={uploadedPhotos}
-          totalPhotos={totalPhotos}
         />
 
         {lastSaved && (

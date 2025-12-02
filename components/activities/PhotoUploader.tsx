@@ -1,10 +1,14 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useRef, useState, forwardRef, useImperativeHandle } from "react"
 import { Button } from "@/components/ui/button"
 import { Camera, X, Upload } from "lucide-react"
 import { compressImage, generateThumbnail } from "@/lib/photo-utils"
 import { useHapticFeedback } from "@/components/haptic/HapticProvider"
+
+export interface PhotoUploaderHandle {
+  triggerUpload: () => void
+}
 
 interface PhotoUploaderProps {
   onPhotoSelect: (file: File, thumbnail?: string) => void
@@ -14,16 +18,22 @@ interface PhotoUploaderProps {
   children?: React.ReactNode
 }
 
-export function PhotoUploader({
-  onPhotoSelect,
-  multiple = false,
-  maxPhotos,
-  currentCount = 0,
-  children
-}: PhotoUploaderProps) {
+export const PhotoUploader = forwardRef<PhotoUploaderHandle, PhotoUploaderProps>(
+  function PhotoUploader({
+    onPhotoSelect,
+    multiple = false,
+    maxPhotos,
+    currentCount = 0,
+    children
+  }, ref) {
   const { trigger } = useHapticFeedback()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isUploading, setIsUploading] = useState(false)
+
+  // Expose triggerUpload method via ref
+  useImperativeHandle(ref, () => ({
+    triggerUpload: () => fileInputRef.current?.click()
+  }))
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
@@ -124,5 +134,5 @@ export function PhotoUploader({
       )}
     </div>
   )
-}
+})
 
