@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation"
-import { getActivityById, getHomeByCode, getBookingByBookingId } from "@/lib/test-data"
+import { getActivityById, getHomeByCode, getBookingByBookingId, type ActivityStatus } from "@/lib/test-data"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -7,11 +7,11 @@ import { Breadcrumbs } from "@/components/navigation/Breadcrumbs"
 import { BackButton } from "@/components/navigation/BackButton"
 import { ReportIssueButton } from "@/components/property/ReportIssueButton"
 import { HomeInformationCard } from "./ActivityDetailClient"
-import { 
-  MapPin, 
-  Clock, 
-  Calendar, 
-  User, 
+import {
+  MapPin,
+  Clock,
+  Calendar,
+  User,
   Package,
   Handshake,
   RefreshCw,
@@ -38,12 +38,13 @@ const activityTypeToTemplateType: Record<string, string> = {
   "ad-hoc": "adhoc",
 }
 
-const statusConfig = {
-  "pending": { label: "Pending", variant: "secondary" as const },
-  "in-progress": { label: "In Progress", variant: "default" as const },
+const statusConfig: Record<ActivityStatus, { label: string; variant: "default" | "destructive" | "outline" | "secondary" }> = {
+  "to-start": { label: "To start", variant: "secondary" as const },
+  "in-progress": { label: "In progress", variant: "default" as const },
+  "paused": { label: "Paused", variant: "secondary" as const },
+  "abandoned": { label: "Abandoned", variant: "destructive" as const },
   "completed": { label: "Completed", variant: "outline" as const },
-  "overdue": { label: "Overdue", variant: "destructive" as const },
-  "incomplete": { label: "Incomplete", variant: "default" as const },
+  "cancelled": { label: "Cancelled", variant: "outline" as const },
 }
 
 interface ActivityDetailPageProps {
@@ -147,7 +148,7 @@ export default async function ActivityDetailPage({ params }: ActivityDetailPageP
                   )}
                 </div>
 
-                {activity.status === "pending" && home && (
+                {activity.status === "to-start" && home && (
                   <Button className="w-full" size="lg" asChild>
                     <Link href={`/homes/${home.id}/activities/${activityTypeToTemplateType[activity.type]}/track${activity.bookingId ? `?bookingId=${activity.bookingId}` : ''}`}>
                       <CheckCircle2 className="h-4 w-4 mr-2" />

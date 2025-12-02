@@ -98,7 +98,14 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
 
   // Sort active activities: in-progress and paused first, then others
   const sortedActiveActivities = activeActivities.sort((a, b) => {
-    const priorityOrder = { "in-progress": 0, "paused": 1, "to-start": 2, "abandoned": 3, "cancelled": 4 }
+    const priorityOrder: Record<ActivityStatus, number> = {
+      "in-progress": 0,
+      "paused": 1,
+      "to-start": 2,
+      "abandoned": 3,
+      "cancelled": 4,
+      "completed": 5
+    }
     const aPriority = priorityOrder[a.status] ?? 99
     const bPriority = priorityOrder[b.status] ?? 99
     return aPriority - bPriority

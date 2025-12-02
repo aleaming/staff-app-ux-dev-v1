@@ -316,15 +316,21 @@ export function GlobalSearchSheet({ open, onOpenChange }: GlobalSearchSheetProps
                                     {activity.scheduledTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}
                                   </p>
                                 </div>
-                                <Badge 
+                                <Badge
                                   variant={
-                                    activity.status === "pending" ? "secondary" :
+                                    activity.status === "to-start" ? "secondary" :
                                     activity.status === "in-progress" ? "default" :
-                                    activity.status === "completed" ? "outline" : "destructive"
+                                    activity.status === "paused" ? "secondary" :
+                                    activity.status === "completed" ? "outline" :
+                                    activity.status === "cancelled" ? "outline" : "destructive"
                                   }
                                   className="ml-2"
                                 >
-                                  {activity.status}
+                                  {activity.status === "to-start" ? "To start" :
+                                   activity.status === "in-progress" ? "In progress" :
+                                   activity.status === "paused" ? "Paused" :
+                                   activity.status === "abandoned" ? "Abandoned" :
+                                   activity.status === "completed" ? "Completed" : "Cancelled"}
                                 </Badge>
                               </div>
                             </CardContent>

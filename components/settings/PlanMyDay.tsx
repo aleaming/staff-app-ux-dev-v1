@@ -78,14 +78,18 @@ export function PlanMyDay() {
 
   const getStatusBadge = (status: Activity["status"]) => {
     switch (status) {
-      case "pending":
-        return <Badge variant="outline" className="bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800">Pending</Badge>
+      case "to-start":
+        return <Badge variant="outline" className="bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800">To Start</Badge>
       case "in-progress":
         return <Badge variant="outline" className="bg-orange-50 dark:bg-orange-950 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800">In Progress</Badge>
+      case "paused":
+        return <Badge variant="outline" className="bg-yellow-50 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800">Paused</Badge>
       case "completed":
         return <Badge variant="outline" className="bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800">Completed</Badge>
-      case "overdue":
-        return <Badge variant="destructive">Overdue</Badge>
+      case "abandoned":
+        return <Badge variant="destructive">Abandoned</Badge>
+      case "cancelled":
+        return <Badge variant="outline" className="bg-gray-50 dark:bg-gray-950 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-800">Cancelled</Badge>
       default:
         return null
     }

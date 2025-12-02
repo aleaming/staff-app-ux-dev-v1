@@ -21,16 +21,17 @@ export function ActivityStatusOverview({
   const displayActivities: Activity[] = activities.length > 0 ? activities : testActivities
 
   const statusCounts = {
-    pending: displayActivities.filter(a => a.status === "pending").length,
+    "to-start": displayActivities.filter(a => a.status === "to-start").length,
     "in-progress": displayActivities.filter(a => a.status === "in-progress").length,
     completed: displayActivities.filter(a => a.status === "completed").length,
-    overdue: displayActivities.filter(a => a.status === "overdue").length,
-    incomplete: displayActivities.filter(a => a.status === "incomplete").length,
+    paused: displayActivities.filter(a => a.status === "paused").length,
+    abandoned: displayActivities.filter(a => a.status === "abandoned").length,
+    cancelled: displayActivities.filter(a => a.status === "cancelled").length,
   }
 
   const statusConfig = {
-    pending: {
-      label: "Pending",
+    "to-start": {
+      label: "To Start",
       icon: Clock,
       color: "bg-yellow-500 dark:bg-yellow-600",
       variant: "secondary" as const
@@ -47,17 +48,23 @@ export function ActivityStatusOverview({
       color: "bg-green-500 dark:bg-green-600",
       variant: "outline" as const
     },
-    overdue: {
-      label: "Overdue",
+    paused: {
+      label: "Paused",
+      icon: AlertCircle,
+      color: "bg-orange-500 dark:bg-orange-600",
+      variant: "secondary" as const
+    },
+    abandoned: {
+      label: "Abandoned",
       icon: AlertCircle,
       color: "bg-destructive",
       variant: "destructive" as const
     },
-    incomplete: {
-      label: "Incomplete",
+    cancelled: {
+      label: "Cancelled",
       icon: AlertCircle,
-      color: "bg-orange-500 dark:bg-orange-600",
-      variant: "default" as const
+      color: "bg-gray-500 dark:bg-gray-600",
+      variant: "outline" as const
     },
   }
 
