@@ -584,21 +584,23 @@ export function ActivityTracker({
       ]
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Breadcrumbs */}
       <Breadcrumbs items={breadcrumbs} />
 
-      {/* Home Menubar */}
+      {/* Home Menubar - Sticky */}
       <Sheet open={homeSheetOpen} onOpenChange={setHomeSheetOpen}>
-        <div className="flex items-center gap-2 border rounded-lg p-2 bg-muted/50">
-          <Home className="h-4 w-4 text-muted-foreground" />
-          <span className="text-sm font-medium flex-1">{homeCode} {homeName && `• ${homeName}`}</span>
-          <SheetTrigger asChild>
-            <Button variant="outline" size="sm" className="gap-2">
-              <Menu className="h-4 w-4" />
-              View Home Info
-            </Button>
-          </SheetTrigger>
+        <div className="sticky top-16 z-30 bg-background pb-2 -mx-4 px-4 sm:-mx-6 sm:px-6">
+          <div className="flex items-center gap-2 border rounded-lg p-2 bg-muted/50 shadow-sm">
+            
+            <span className="text-sm font-medium flex-1">{homeCode} {homeName && `• ${homeName}`}</span>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-2">
+                <Menu className="h-4 w-4" />
+                View Home Info
+              </Button>
+            </SheetTrigger>
+          </div>
         </div>
 
         <SheetContent side="bottom" className="h-[calc(100vh-8rem)] max-h-[calc(100vh-4rem)]">
@@ -738,33 +740,8 @@ export function ActivityTracker({
       })()}
 
 
-      {/* Completion Warning */}
-      {!allRequiredCompleted && (
-        <Card className="bg-yellow-50 border-yellow-200">
-          <CardContent className="p-4">
-            <div className="flex items-start gap-2">
-              <AlertCircle className="h-5 w-5 text-yellow-700 mt-0.5" />
-              <div>
-                <p className="font-semibold text-yellow-900 mb-1">
-                  Complete all required tasks
-                </p>
-                <p className="text-sm text-yellow-800">
-                  {requiredTasks.length - completedRequiredTasks} required task(s) remaining
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-      
-      {/* Property Information */}
-      {template.metadata && (
-        <PropertyInfoCard 
-          metadata={template.metadata} 
-          activityType={template.type}
-          className="mb-6"
-        />
-      )}
+   
+
       
       {/* Tasks List - Phase-based or Regular */}
       {template.phases ? (

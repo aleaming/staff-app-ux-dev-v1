@@ -56,7 +56,14 @@ import {
   MessageSquare,
   PlayCircle,
   Hand,
-  MessageCircle
+  MessageCircle,
+  Eraser,
+  Minus,
+  Scissors,
+  Unlock,
+  Video,
+  Truck,
+  StickyNote
 } from "lucide-react"
 import type { TaskTemplate, TaskAction } from "@/lib/activity-templates"
 import type { PhotoAnnotation } from "./PhotoAnnotation"
@@ -196,7 +203,15 @@ export function TaskCard({
       "Demonstrate": <PlayCircle className="h-4 w-4 text-purple-500" />,
       "Review": <ClipboardCheck className="h-4 w-4 text-blue-500" />,
       "Welcome": <Hand className="h-4 w-4 text-green-500" />,
-      "Answer Questions": <MessageCircle className="h-4 w-4 text-blue-500" />
+      "Answer Questions": <MessageCircle className="h-4 w-4 text-blue-500" />,
+      "Collect": <Package className="h-4 w-4 text-blue-500" />,
+      "Deliver": <Truck className="h-4 w-4 text-green-500" />,
+      "Clear": <Eraser className="h-4 w-4 text-blue-500" />,
+      "Remove": <Minus className="h-4 w-4 text-red-500" />,
+      "Unribbon": <Scissors className="h-4 w-4 text-purple-500" />,
+      "Unseal": <Unlock className="h-4 w-4 text-orange-500" />,
+      "Video": <Video className="h-4 w-4 text-blue-500" />,
+      "Note": <StickyNote className="h-4 w-4 text-yellow-500" />
     }
     
     return iconMap[action] || null

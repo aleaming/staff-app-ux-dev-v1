@@ -1,12 +1,13 @@
 import type { ActivityTemplate } from "../activity-templates"
 
 /**
- * Sample Meet & Greet Data (Based on ALB134 - Albert Bridge Road II)
+ * Meet & Greet Activity Template
  * Comprehensive guest arrival and orientation checklist
+ * Based on ALB134 (Albert Bridge Road II) but used as default for all meet-greet activities
  */
 export const sampleGreetData: ActivityTemplate = {
   type: "meet-greet",
-  name: "Meet & Greet - ALB134",
+  name: "Meet & Greet",
   description: "Welcome guest and provide comprehensive home orientation",
   estimatedTotalTime: 45,
   tasks: [], // Tasks are organized in phases below

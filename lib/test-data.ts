@@ -473,6 +473,18 @@ export const testActivities: Activity[] = [
     priority: "high",
     description: "Secure home - overdue",
     assignedTo: "Alex"
+  },
+  {
+    id: "activity-10",
+    type: "deprovision",
+    title: "Deprovision - Guest Departure (ALB134)",
+    homeCode: "ALB134",
+    homeName: "Albert Bridge Road II",
+    bookingId: "BKG-2024-004",
+    scheduledTime: hoursFromNow(2),
+    status: "pending",
+    description: "Prepare property after guest checkout",
+    assignedTo: "Alex"
   }
 ]
 

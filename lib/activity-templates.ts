@@ -36,6 +36,14 @@ export type TaskAction =
   | "Review"
   | "Welcome"
   | "Answer Questions"
+  | "Collect"
+  | "Deliver"
+  | "Clear"
+  | "Remove"
+  | "Unribbon"
+  | "Unseal"
+  | "Video"
+  | "Note"
 
 export interface TaskTemplate {
   id: string
@@ -480,17 +488,25 @@ export function getActivityTemplate(type: ActivityType, propertyCode?: string): 
     }
   }
   
-  // For meet-greet with a property code, check for property-specific data
-  if (type === "meet-greet" && propertyCode) {
+  // For meet-greet activities, use the comprehensive template
+  if (type === "meet-greet") {
     try {
-      // Try to load property-specific meet-greet data
-      // For demo/sample property (ALB134)
-      if (propertyCode === "SAMPLE" || propertyCode === "ALB134") {
-        const { sampleGreetData } = require("./greet-data/sample-greet")
-        return sampleGreetData
-      }
+      const { sampleGreetData } = require("./greet-data/sample-greet")
+      return sampleGreetData
     } catch (error) {
-      console.warn(`No meet-greet data found for ${propertyCode}, using default template`)
+      console.warn(`Failed to load meet-greet template, using default`, error)
+      return activityTemplates[type]
+    }
+  }
+  
+  // For deprovisioning activities, use the comprehensive template
+  if (type === "deprovisioning") {
+    try {
+      const { sampleDeprovisionData } = require("./deprovision-data/sample-deprovision")
+      return sampleDeprovisionData
+    } catch (error) {
+      console.warn(`Failed to load deprovision template, using default`, error)
+      return activityTemplates[type]
     }
   }
   
