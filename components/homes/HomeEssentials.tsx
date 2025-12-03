@@ -39,7 +39,7 @@ export function HomeEssentials({ homeCode }: HomeEssentialsProps) {
   const essentials = {
     wifi: {
       networkName: "61 Westover",
-      password: "A0nyx123!!"
+      password: "[PASSWORD]"
     },
     homeOverview: {
       bedrooms: 4,

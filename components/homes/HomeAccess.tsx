@@ -54,10 +54,10 @@ export function HomeAccess({ homeCode }: HomeAccessProps) {
     },
     burglarAlarm: {
       inUse: true,
-      code: "1234", // Hidden in image, but we'll show it when toggled
+      code: "[CODE]", // Hidden in image, but we'll show it when toggled
       location: "Hallway entrance", // Hidden in image
-      disarmCode: "5678", // Hidden in image
-      armCode: "9012" // Hidden in image
+      disarmCode: "[CODE]", // Hidden in image
+      armCode: "[CODE]" // Hidden in image
     },
     media: [
       { id: "1", type: "image", caption: "Front door", url: "/placeholder-door.jpg" },

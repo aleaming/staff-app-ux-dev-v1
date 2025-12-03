@@ -31,7 +31,7 @@ export const sampleGreetData: ActivityTemplate = {
     wifi: [
       {
         name: "BT-F8CTWR",
-        password: "3p7VDRCdcQNpcf",
+        password: "[PASSWORD]",
         location: "Main network throughout property"
       }
     ],
@@ -350,7 +350,7 @@ export const sampleGreetData: ActivityTemplate = {
         {
           id: "info-1",
           name: "Provide WiFi information",
-          description: "Give guest WiFi network name (BT-F8CTWR) and password (3p7VDRCdcQNpcf)",
+          description: "Give guest WiFi network name (BT-F8CTWR) and password ([PASSWORD])",
           action: "Explain",
           subject: "WiFi network and password",
           required: true,

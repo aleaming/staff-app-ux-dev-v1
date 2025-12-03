@@ -31,7 +31,7 @@ export const sampleDeprovisionData: ActivityTemplate = {
     wifi: [
       {
         name: "BT-F8CTWR",
-        password: "3p7VDRCdcQNpcf",
+        password: "[PASSWORD]",
         location: "Main network throughout property"
       }
     ],

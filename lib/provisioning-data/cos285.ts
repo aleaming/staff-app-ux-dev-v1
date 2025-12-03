@@ -32,12 +32,12 @@ export const cos285ProvisioningData: ActivityTemplate = {
     wifi: [
       {
         name: "EE-BrightBox-5g2t9g",
-        password: "rail-unbox-odd",
+        password: "[PASSWORD]",
         location: "Master Bedroom - left bedside table"
       },
       {
         name: "BT4G-HOMEHUB-9117",
-        password: "7JNcqwCiwMyk",
+        password: "[PASSWORD]",
         location: "Sitting Room"
       }
     ],
