@@ -637,6 +637,58 @@ export const cos285ProvisioningData: ActivityTemplate = {
               photoRequired: false,
               order: 3,
               priority: "medium"
+            },
+            {
+              id: "k-4",
+              name: "Check oven",
+              description: "Verify oven is clean and functioning properly",
+              action: "Check",
+              subject: "oven",
+              location: "Kitchen",
+              required: true,
+              estimatedTime: 5,
+              photoRequired: false,
+              order: 4,
+              priority: "high"
+            },
+            {
+              id: "k-5",
+              name: "Test dishwasher",
+              description: "Run dishwasher cycle to ensure it's working correctly",
+              action: "Test",
+              subject: "dishwasher",
+              location: "Kitchen",
+              required: true,
+              estimatedTime: 3,
+              photoRequired: false,
+              order: 5,
+              priority: "medium"
+            },
+            {
+              id: "k-6",
+              name: "Verify coffee machine",
+              description: "Check coffee machine is clean and ready for use",
+              action: "Verify",
+              subject: "coffee machine",
+              location: "Kitchen",
+              required: true,
+              estimatedTime: 3,
+              photoRequired: false,
+              order: 6,
+              priority: "medium"
+            },
+            {
+              id: "k-7",
+              name: "Check fridge",
+              description: "Verify fridge/freezer is clean and at correct temperature",
+              action: "Check",
+              subject: "fridge",
+              location: "Kitchen",
+              required: true,
+              estimatedTime: 5,
+              photoRequired: false,
+              order: 7,
+              priority: "high"
             }
           ]
         }

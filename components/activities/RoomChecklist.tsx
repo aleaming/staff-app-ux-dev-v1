@@ -29,6 +29,9 @@ interface RoomChecklistProps {
   room: RoomTemplate
   taskStates: Record<string, TaskState>
   expandedTaskId?: string | null
+  homeId?: string
+  homeCode?: string
+  homeName?: string
   onTaskToggle: (taskId: string) => void
   onTaskPhotoAdd: (taskId: string, file: File, thumbnail?: string) => void
   onTaskNotesChange: (taskId: string, notes: string) => void
@@ -44,6 +47,9 @@ export function RoomChecklist({
   room,
   taskStates,
   expandedTaskId,
+  homeId,
+  homeCode,
+  homeName,
   onTaskToggle,
   onTaskPhotoAdd,
   onTaskNotesChange,
@@ -115,6 +121,9 @@ export function RoomChecklist({
               reportIssue={state.reportIssue}
               issueReport={state.issueReport}
               isExpanded={expandedTaskId === task.id}
+              homeId={homeId}
+              homeCode={homeCode}
+              homeName={homeName}
               onToggleComplete={() => onTaskToggle(task.id)}
               onAddPhoto={(file, thumbnail) => onTaskPhotoAdd(task.id, file, thumbnail)}
               onNotesChange={(notes) => onTaskNotesChange(task.id, notes)}

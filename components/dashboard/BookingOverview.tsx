@@ -122,7 +122,7 @@ export function BookingOverview({
               </div>
             </div>
             {upcomingArrivals.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No upcoming arrivals</p>
+              <p className="text-xs text-muted-foreground">No upcoming arrivals</p>
             ) : (
               <div className="flex flex-col gap-2">
                 {upcomingArrivals.map((booking) => {
@@ -136,8 +136,8 @@ export function BookingOverview({
                       <CardContent className="p-2.5 sm:p-3">
                         <div className="flex items-center justify-between">
                           <div className="flex-1 min-w-0">
-                            <p className="font-medium">{booking.bookingId}</p>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-xl font-semibold">{booking.bookingId}</p>
+                            <p className="text-xs text-muted-foreground">
                               {booking.guestName} •{" "}
                               <Link
                                 href={`/homes/${home?.id || booking.homeCode}`}
@@ -158,7 +158,7 @@ export function BookingOverview({
                             )}
                           </div>
                           <div className="text-right flex-shrink-0 ml-2">
-                            <p className="text-sm font-medium">{formatDate(booking.checkIn)}</p>
+                            <p className="text-xs font-medium">{formatDate(booking.checkIn)}</p>
                             <p className="text-xs text-muted-foreground">
                               {getDaysUntil(booking.checkIn)}
                             </p>
@@ -182,7 +182,7 @@ export function BookingOverview({
               </div>
             </div>
             {currentStays.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No current stays</p>
+              <p className="text-xs text-muted-foreground">No current stays</p>
             ) : (
               <div className="flex flex-col gap-2">
                 {currentStays.map((booking) => {
@@ -218,7 +218,7 @@ export function BookingOverview({
                             )}
                           </div>
                           <div className="text-right flex-shrink-0 ml-2">
-                            <p className="text-sm font-medium">Until {formatDate(booking.checkOut)}</p>
+                            <p className="text-xs font-medium">Until {formatDate(booking.checkOut)}</p>
                             <p className="text-xs text-muted-foreground">
                               {getDaysUntil(booking.checkOut)}
                             </p>
@@ -242,7 +242,7 @@ export function BookingOverview({
               </div>
             </div>
             {departures.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No departures scheduled</p>
+              <p className="text-xs text-muted-foreground">No departures scheduled</p>
             ) : (
               <div className="flex flex-col gap-2">
                 {departures.map((booking) => {

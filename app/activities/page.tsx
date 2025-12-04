@@ -128,11 +128,11 @@ export default function ActivitiesPage() {
               <div className="flex items-start justify-between gap-4 mb-3">
                 {/* Left: Title and Details */}
                 <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-lg">
+                    <h3 className="font-bold text-xl">
                       {typeConfig.label}
                     </h3>
                     <div className="gap-1">
-                      <div className="text-sm text-muted-foreground mb-2">
+                      <div className="text-xs text-muted-foreground mb-2">
                         <HomeInfoSheet
                           homeId={home?.id || activity.homeCode}
                           homeCode={activity.homeCode}
@@ -170,7 +170,7 @@ export default function ActivitiesPage() {
                     {statusInfo.label}
                   </Badge>
 
-                  <div className="text-sm text-muted-foreground pr-1">
+                  <div className="text-xs text-muted-foreground pr-1">
                     <span>{timeString}</span>
                   </div>
                 </div>
@@ -182,7 +182,7 @@ export default function ActivitiesPage() {
                   <Button
                     size="lg"
                     variant="secondary"
-                    className="w-full h-12 rounded-lg font-medium text-base gap-2"
+                    className="w-full h-10 rounded-lg font-medium text-base gap-2"
                   >
                     <Pause className="h-4 w-4" />
                     {typeConfig.label}
@@ -193,7 +193,7 @@ export default function ActivitiesPage() {
                   <Button
                     size="lg"
                     variant="secondary"
-                    className="w-full h-12 rounded-lg font-medium text-base"
+                    className="w-full h-10 rounded-lg font-medium text-base"
                   >
                     {typeConfig.label}
                   </Button>
@@ -203,7 +203,7 @@ export default function ActivitiesPage() {
                   <Button
                     size="lg"
                     variant="secondary"
-                    className="w-full h-12 rounded-lg font-medium text-base"
+                    className="w-full h-10 rounded-lg font-medium text-base"
                   >
                     {typeConfig.label}
                   </Button>

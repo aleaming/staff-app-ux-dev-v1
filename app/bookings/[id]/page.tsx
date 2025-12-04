@@ -1,12 +1,16 @@
-import { notFound } from "next/navigation"
-import { testBookings, getHomeByCode, getActivitiesForBooking } from "@/lib/test-data"
+"use client"
+
+import { use } from "react"
+import { useData } from "@/lib/data/DataProvider"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Breadcrumbs } from "@/components/navigation/Breadcrumbs"
 import { BackButton } from "@/components/navigation/BackButton"
 import { HomeActivitiesSheet } from "@/components/homes/HomeActivitiesSheet"
+import { HomeInfoSheet } from "@/components/homes/HomeInfoSheet"
 import { 
   Calendar, 
   User, 
@@ -30,16 +34,52 @@ interface BookingDetailPageProps {
   params: Promise<{ id: string }>
 }
 
-export default async function BookingDetailPage({ params }: BookingDetailPageProps) {
-  const { id } = await params
-  const booking = testBookings.find(b => b.id === id)
+function BookingDetailSkeleton() {
+  return (
+    <div className="container mx-auto px-4 py-6 md:py-8">
+      <div className="space-y-6">
+        <Skeleton className="h-6 w-48" />
+        <div className="flex items-start gap-4">
+          <div className="flex-1">
+            <Skeleton className="h-8 w-3/4" />
+            <Skeleton className="h-4 w-1/2 mt-1" />
+          </div>
+          <Skeleton className="h-6 w-24" />
+        </div>
+        <Skeleton className="h-64 w-full" />
+      </div>
+    </div>
+  )
+}
 
-  if (!booking) {
-    notFound()
+function BookingNotFound() {
+  return (
+    <div className="container mx-auto px-4 py-6 md:py-8 text-center">
+      <h1 className="text-2xl font-bold mb-4">Booking Not Found</h1>
+      <p className="text-muted-foreground mb-6">The booking you are looking for does not exist or has been removed.</p>
+      <Link href="/catalog?tab=bookings">
+        <Button>Go to Bookings Catalog</Button>
+      </Link>
+    </div>
+  )
+}
+
+export default function BookingDetailPage({ params }: BookingDetailPageProps) {
+  const { id } = use(params)
+  const { homes, bookings, activities, isLoading } = useData()
+
+  if (isLoading) {
+    return <BookingDetailSkeleton />
   }
 
-  const home = getHomeByCode(booking.homeCode)
-  const activities = getActivitiesForBooking(booking.bookingId)
+  const booking = bookings.find(b => b.id === id)
+
+  if (!booking) {
+    return <BookingNotFound />
+  }
+
+  const home = homes.find(h => h.code === booking.homeCode)
+  const bookingActivities = activities.filter(a => a.bookingId === booking.bookingId)
   const statusInfo = statusConfig[booking.status]
 
   const formatDate = (date: Date) => {
@@ -72,24 +112,16 @@ export default async function BookingDetailPage({ params }: BookingDetailPagePro
         {/* Breadcrumbs */}
         <Breadcrumbs items={breadcrumbs} />
 
-        {/* Header */}
-        <div className="flex items-start gap-4">
-          <BackButton href="/catalog?tab=bookings" />
-          <div className="flex-1">
-            <h1 className="text-2xl font-bold">{booking.bookingId}</h1>
-            <p className="text-muted-foreground mt-1">{booking.guestName}</p>
-          </div>
-          <Badge className={statusInfo.className}>{statusInfo.label}</Badge>
-        </div>
+       
 
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="space-y-6">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
-            <Tabs defaultValue="details" className="w-full">
+          <div className="space-y-6 w-full">
+            <Tabs defaultValue="details" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full">
               <TabsList>
                 <TabsTrigger value="details">Details</TabsTrigger>
                 <TabsTrigger value="activities">
-                  Activities ({activities.length})
+                  Activities ({bookingActivities.length})
                 </TabsTrigger>
                 <TabsTrigger value="home">Home</TabsTrigger>
               </TabsList>
@@ -105,16 +137,16 @@ export default async function BookingDetailPage({ params }: BookingDetailPagePro
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
-                      <p className="text-sm text-muted-foreground">Guest Name</p>
-                      <p className="font-semibold text-lg">{booking.guestName}</p>
+                      <p className="text-xs text-muted-foreground">Guest Name</p>
+                      <p className="font-semibold text-xl">{booking.guestName}</p>
                     </div>
                     
                     {booking.guestEmail && (
                       <div className="flex items-center gap-2">
                         <Mail className="h-4 w-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-muted-foreground">Email</p>
-                          <p className="font-medium">{booking.guestEmail}</p>
+                          <p className="text-xs text-muted-foreground">Email</p>
+                          <p className="font-medium text-xs">{booking.guestEmail}</p>
                         </div>
                       </div>
                     )}
@@ -123,8 +155,8 @@ export default async function BookingDetailPage({ params }: BookingDetailPagePro
                       <div className="flex items-center gap-2">
                         <Phone className="h-4 w-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-muted-foreground">Phone</p>
-                          <p className="font-medium">{booking.guestPhone}</p>
+                          <p className="text-xs text-muted-foreground">Phone</p>
+                          <p className="font-medium text-xs">{booking.guestPhone}</p>
                         </div>
                       </div>
                     )}
@@ -133,11 +165,62 @@ export default async function BookingDetailPage({ params }: BookingDetailPagePro
                       <div className="flex items-center gap-2">
                         <Users className="h-4 w-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-muted-foreground">Number of Guests</p>
-                          <p className="font-medium">{booking.numberOfGuests}</p>
+                          <p className="text-xs text-muted-foreground">Number of Guests</p>
+                          <p className="font-medium text-xs">{booking.numberOfGuests}</p>
                         </div>
                       </div>
                     )}
+
+                    {home && (
+                      <div className="flex items-center gap-2">
+                        <Home className="h-4 w-4 text-muted-foreground" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">Home</p>
+                          <HomeInfoSheet
+                            homeId={home.id}
+                            homeCode={home.code}
+                            homeName={home.name}
+                          >
+                            <button className="text-primary underline hover:text-primary/80 transition-colors text-left font-medium text-xs">
+                              {home.code}
+                              {home.name && (
+                                <span> • {home.name}</span>
+                              )}
+                            </button>
+                          </HomeInfoSheet>
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Quick Actions */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Quick Actions</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    {home && (
+                      <>
+                        <Button variant="outline" className="w-full justify-start" asChild>
+                          <Link href={`/homes/${home.id}`}>
+                            <Home className="h-4 w-4 mr-2" />
+                            View Home
+                          </Link>
+                        </Button>
+                        <HomeActivitiesSheet 
+                          homeId={home.id} 
+                          homeCode={home.code} 
+                          homeName={home.name}
+                          variant="quick-action"
+                          buttonText="Create Activity"
+                        />
+                      </>
+                    )}
+                    <Button variant="outline" className="w-full justify-start">
+                      <Phone className="h-4 w-4 mr-2" />
+                      Contact Guest
+                    </Button>
                   </CardContent>
                 </Card>
 
@@ -152,14 +235,14 @@ export default async function BookingDetailPage({ params }: BookingDetailPagePro
                   <CardContent className="space-y-4">
                     <div className="grid gap-4 md:grid-cols-2">
                       <div>
-                        <p className="text-sm text-muted-foreground">Check-in</p>
-                        <p className="font-semibold text-lg">{formatDate(booking.checkIn)}</p>
-                        <p className="text-sm text-muted-foreground mt-1">{getDaysUntil(booking.checkIn)}</p>
+                        <p className="text-xs text-muted-foreground">Check-in</p>
+                        <p className="font-semibold text-xl">{formatDate(booking.checkIn)}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{getDaysUntil(booking.checkIn)}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-muted-foreground">Check-out</p>
-                        <p className="font-semibold text-lg">{formatDate(booking.checkOut)}</p>
-                        <p className="text-sm text-muted-foreground mt-1">{getDaysUntil(booking.checkOut)}</p>
+                        <p className="text-xs text-muted-foreground">Check-out</p>
+                        <p className="font-semibold text-xl">{formatDate(booking.checkOut)}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{getDaysUntil(booking.checkOut)}</p>
                       </div>
                     </div>
                   </CardContent>
@@ -172,30 +255,30 @@ export default async function BookingDetailPage({ params }: BookingDetailPagePro
                       <CardTitle>Special Requests</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-muted-foreground">{booking.specialRequests}</p>
+                      <p className="text-xs text-muted-foreground">{booking.specialRequests}</p>
                     </CardContent>
                   </Card>
                 )}
               </TabsContent>
 
               <TabsContent value="activities" className="space-y-4">
-                {activities.length === 0 ? (
+                {bookingActivities.length === 0 ? (
                   <Card>
                     <CardContent className="p-8 text-center">
                       <Target className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
-                      <p className="text-muted-foreground">No activities for this booking</p>
+                      <p className="text-xs text-muted-foreground">No activities for this booking</p>
                     </CardContent>
                   </Card>
                 ) : (
-                  activities.map((activity) => (
+                  bookingActivities.map((activity) => (
                     <Card key={activity.id}>
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                           <div>
                             <Link href={`/activities/${activity.id}`}>
-                              <h3 className="font-semibold hover:underline">{activity.title}</h3>
+                              <h3 className="text-xl font-semibold hover:underline">{activity.title}</h3>
                             </Link>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-xs text-muted-foreground">
                               {activity.scheduledTime.toLocaleDateString('en-US', { 
                                 month: 'short', 
                                 day: 'numeric',
@@ -232,17 +315,17 @@ export default async function BookingDetailPage({ params }: BookingDetailPagePro
                     <CardContent className="p-6">
                       <div className="space-y-4">
                         <div>
-                          <h3 className="font-semibold text-lg">{home.code}</h3>
-                          {home.name && <p className="text-muted-foreground">{home.name}</p>}
+                          <h3 className="font-semibold text-xl">{home.code}</h3>
+                          {home.name && <p className="text-xs text-muted-foreground">{home.name}</p>}
                         </div>
-                        <div className="flex items-center gap-2 text-muted-foreground">
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
                           <MapPin className="h-4 w-4" />
                           <p>{home.address}, {home.city}</p>
                         </div>
                         {home.distance !== undefined && (
                           <div>
-                            <p className="text-sm text-muted-foreground">Distance</p>
-                            <p className="font-medium">{home.distance.toFixed(1)} km away</p>
+                            <p className="text-xs text-muted-foreground">Distance</p>
+                            <p className="font-medium text-xs">{home.distance.toFixed(1)} km away</p>
                           </div>
                         )}
                         <Button variant="outline" asChild className="w-full">
@@ -258,44 +341,12 @@ export default async function BookingDetailPage({ params }: BookingDetailPagePro
                   <Card>
                     <CardContent className="p-8 text-center">
                       <Home className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
-                      <p className="text-muted-foreground">Home information not available</p>
+                      <p className="text-xs text-muted-foreground">Home information not available</p>
                     </CardContent>
                   </Card>
                 )}
               </TabsContent>
             </Tabs>
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                {home && (
-                  <>
-                    <Button variant="outline" className="w-full justify-start" asChild>
-                      <Link href={`/homes/${home.id}`}>
-                        <Home className="h-4 w-4 mr-2" />
-                        View Home
-                      </Link>
-                    </Button>
-                    <HomeActivitiesSheet 
-                      homeId={home.id} 
-                      homeCode={home.code} 
-                      homeName={home.name}
-                      variant="quick-action"
-                      buttonText="Create Activity"
-                    />
-                  </>
-                )}
-                <Button variant="outline" className="w-full justify-start">
-                  <Phone className="h-4 w-4 mr-2" />
-                  Contact Guest
-                </Button>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </div>

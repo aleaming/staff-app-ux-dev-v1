@@ -36,6 +36,9 @@ interface PhaseSectionProps {
   taskStates: Record<string, TaskState>
   locked?: boolean
   expandedTaskId?: string | null
+  homeId?: string
+  homeCode?: string
+  homeName?: string
   onTaskToggle: (taskId: string) => void
   onTaskPhotoAdd: (taskId: string, file: File, thumbnail?: string) => void
   onTaskNotesChange: (taskId: string, notes: string) => void
@@ -54,6 +57,9 @@ export function PhaseSection({
   taskStates,
   locked = false,
   expandedTaskId,
+  homeId,
+  homeCode,
+  homeName,
   onTaskToggle,
   onTaskPhotoAdd,
   onTaskNotesChange,
@@ -199,6 +205,9 @@ export function PhaseSection({
                           room={{ ...room, tasks: filteredRoomTasks }}
                           taskStates={taskStates}
                           expandedTaskId={expandedTaskId}
+                          homeId={homeId}
+                          homeCode={homeCode}
+                          homeName={homeName}
                           onTaskToggle={onTaskToggle}
                           onTaskPhotoAdd={onTaskPhotoAdd}
                           onTaskNotesChange={onTaskNotesChange}
@@ -250,6 +259,9 @@ export function PhaseSection({
                             reportIssue={state.reportIssue}
                             issueReport={state.issueReport}
                             isExpanded={expandedTaskId === task.id}
+                            homeId={homeId}
+                            homeCode={homeCode}
+                            homeName={homeName}
                             onToggleComplete={() => onTaskToggle(task.id)}
                             onAddPhoto={(file, thumbnail) => onTaskPhotoAdd(task.id, file, thumbnail)}
                             onNotesChange={(notes) => onTaskNotesChange(task.id, notes)}
