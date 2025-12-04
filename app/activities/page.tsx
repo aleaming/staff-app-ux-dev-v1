@@ -90,22 +90,22 @@ export default function ActivitiesPage() {
                   {/* Title and Details */}
                   <div className="flex-1 min-w-0">
                     <h3 className="font-bold text-lg">
-                      <HomeInfoSheet
-                        homeId={home?.id || activity.homeCode}
-                        homeCode={activity.homeCode}
-                        homeName={activity.homeName}
-                      >
-                        <button className="text-primary underline hover:text-primary/80 transition-colors text-left">
-                          {activity.homeCode}
-                          {activity.homeName && (
-                            <span> • {activity.homeName}</span>
-                          )}
-                        </button>
-                      </HomeInfoSheet>
+                      {typeConfig.label}
                     </h3>
                     <div className="gap-1">
                       <div className="text-sm text-muted-foreground mb-2">
-                        {typeConfig.label}
+                        <HomeInfoSheet
+                          homeId={home?.id || activity.homeCode}
+                          homeCode={activity.homeCode}
+                          homeName={activity.homeName}
+                        >
+                          <button className="text-primary underline hover:text-primary/80 transition-colors text-left">
+                            {activity.homeCode}
+                            {activity.homeName && (
+                              <span> • {activity.homeName}</span>
+                            )}
+                          </button>
+                        </HomeInfoSheet>
                       </div>
                       {activity.bookingId && booking && (
                         <div className="flex items-center gap-1 text-xs text-muted-foreground italic">

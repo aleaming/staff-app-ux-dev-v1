@@ -395,13 +395,13 @@ export function TaskCard({
                   className="text-xs"
                 />
                 
-                {/* Report Issue Toggle - Only show when notes are added */}
-                {notes.trim().length > 0 && onToggleReportIssue && (
+                {/* Report Issue Toggle - Always visible */}
+                {onToggleReportIssue && (
                   <div className="flex items-center justify-between p-2 bg-muted/50 rounded-md border">
                     <div className="flex items-center gap-2">
                       <AlertTriangle className="h-4 w-4 text-orange-500" />
                       <Label htmlFor={`report-issue-${task.id}`} className="text-sm font-medium cursor-pointer">
-                        Report issue along with note
+                        Issue Report
                       </Label>
                     </div>
                     <Switch
