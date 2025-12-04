@@ -765,6 +765,9 @@ export function ActivityTracker({
                   taskStates={taskStates}
                   locked={!previousPhaseCompleted}
                   expandedTaskId={expandedTaskId}
+                  homeId={homeId}
+                  homeCode={homeCode}
+                  homeName={homeName}
                   onTaskToggle={(taskId) => toggleTaskComplete(taskId, !taskStates[taskId]?.completed)}
                   onTaskPhotoAdd={(taskId, file, thumbnail) => addPhotoToTask(taskId, file, thumbnail)}
                   onTaskNotesChange={(taskId, notes) => updateTaskNotes(taskId, notes)}
@@ -805,6 +808,9 @@ export function ActivityTracker({
                   reportIssue={taskState?.reportIssue || false}
                   issueReport={taskState?.issueReport || {}}
                   isExpanded={expandedTaskId === task.id}
+                  homeId={homeId}
+                  homeCode={homeCode}
+                  homeName={homeName}
                   onToggleComplete={(completed) => toggleTaskComplete(task.id, completed)}
                   onAddPhoto={(file, thumbnail) => addPhotoToTask(task.id, file, thumbnail)}
                   onNotesChange={(notes) => updateTaskNotes(task.id, notes)}

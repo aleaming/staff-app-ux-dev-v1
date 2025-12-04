@@ -1,6 +1,7 @@
 "use client"
 
-import { use } from "react"
+import { use, useState } from "react"
+import { useRouter } from "next/navigation"
 import { useData } from "@/lib/data/DataProvider"
 import type { ActivityStatus } from "@/lib/test-data"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,6 +11,8 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Breadcrumbs } from "@/components/navigation/Breadcrumbs"
 import { ReportIssueButton } from "@/components/property/ReportIssueButton"
 import { HomeInformationCard } from "./ActivityDetailClient"
+import { HomeInfoSheet } from "@/components/homes/HomeInfoSheet"
+import { PreActivityConfirmationModal } from "@/components/activities/PreActivityConfirmationModal"
 import {
   MapPin,
   Clock,
@@ -118,7 +121,9 @@ interface ActivityDetailPageProps {
 
 export default function ActivityDetailPage({ params }: ActivityDetailPageProps) {
   const { id } = use(params)
+  const router = useRouter()
   const { activities, homes, bookings, isLoading } = useData()
+  const [showConfirmation, setShowConfirmation] = useState(false)
 
   if (isLoading) {
     return <ActivityDetailSkeleton />
@@ -172,9 +177,24 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
           
           <div className="flex-1">
             <h1 className="text-xl md:text-2xl font-bold">{activity.title}</h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              {activity.homeCode} {activity.homeName && `• ${activity.homeName}`}
-            </p>
+            {home ? (
+              <HomeInfoSheet
+                homeId={home.id}
+                homeCode={home.code}
+                homeName={home.name}
+              >
+                <button className="text-xs text-primary underline hover:text-primary/80 transition-colors text-left mt-1">
+                  {activity.homeCode}
+                  {activity.homeName && (
+                    <span className="text-muted-foreground"> • {activity.homeName}</span>
+                  )}
+                </button>
+              </HomeInfoSheet>
+            ) : (
+              <p className="text-xs text-muted-foreground mt-1">
+                {activity.homeCode} {activity.homeName && `• ${activity.homeName}`}
+              </p>
+            )}
           </div>
           <div className="flex flex-col gap-2">
             <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>
@@ -187,17 +207,15 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
             {/* Activity Info */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <div className="p-2 rounded-lg text-white" style={{ backgroundColor: typeConfig.color }}>
-                    <TypeIcon className="h-5 w-5" />
-                  </div>
+                <CardTitle className="flex items-center gap-2 px-1">
+                  
                   Activity Details
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 {activity.description && (
                   <div className="flex flex-col">
-                    <p className="text-sm font-medium">{activity.description}</p>
+                    <p className="text-xs font-medium">{activity.description}</p>
                   </div>
                 )}
                 
@@ -205,8 +223,8 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
                   <div className="flex items-start gap-2">
                     <Clock className="h-5 w-5 text-muted-foreground" />
                     <div>
-                      <p className="text-sm text-muted-foreground">Scheduled Time</p>
-                      <p className="font-medium text-sm">{formatDateTime(activity.scheduledTime)}</p>
+                      <p className="text-xs text-muted-foreground">Scheduled Time</p>
+                      <p className="font-medium text-xs">{formatDateTime(activity.scheduledTime)}</p>
                     </div>
                   </div>
                   
@@ -214,19 +232,21 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
                     <div className="flex items-start gap-2">
                       <User className="h-5 w-5 text-muted-foreground" />
                       <div>
-                        <p className="text-sm text-muted-foreground">Assigned To</p>
-                        <p className="text-sm font-medium">{activity.assignedTo}</p>
+                        <p className="text-xs text-muted-foreground">Assigned To</p>
+                        <p className="text-xs font-medium">{activity.assignedTo}</p>
                       </div>
                     </div>
                   )}
                 </div>
 
                 {activity.status === "to-start" && home && (
-                  <Button className="w-full" size="lg" asChild>
-                    <Link href={`/homes/${home.id}/activities/${activityTypeToTemplateType[activity.type]}/track${activity.bookingId ? `?bookingId=${activity.bookingId}` : ''}`}>
-                      <CheckCircle2 className="h-4 w-4 mr-2" />
-                      Start Activity
-                    </Link>
+                  <Button 
+                    className="w-full" 
+                    size="lg" 
+                    onClick={() => setShowConfirmation(true)}
+                  >
+                    <CheckCircle2 className="h-4 w-4 mr-2" />
+                    Start Activity
                   </Button>
                 )}
               </CardContent>
@@ -241,31 +261,31 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
             {booking && (
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Calendar className="h-5 w-5" />
+                  <CardTitle className="flex items-center gap-2 px-1">
+    
                     Booking Information
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
                     <div>
-                      <p className="text-sm text-muted-foreground">Booking ID</p>
-                      <p className="text-sm font-semibold">{booking.bookingId}</p>
+                      <p className="text-xs text-muted-foreground">Booking ID</p>
+                      <p className="text-xl font-semibold">{booking.bookingId}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Guest</p>
-                      <p className="text-sm font-medium">{booking.guestName}</p>
+                      <p className="text-xs text-muted-foreground">Guest</p>
+                      <p className="text-xs font-medium">{booking.guestName}</p>
                     </div>
                     <div className="grid gap-1 grid-cols-2">
                       <div>
-                        <p className="text-sm text-muted-foreground">Check-in</p>
-                        <p className="text-sm font-medium">
+                        <p className="text-xs text-muted-foreground">Check-in</p>
+                        <p className="text-xs font-medium">
                           {booking.checkIn.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                         </p>
                       </div>
                       <div>
-                        <p className="text-sm text-muted-foreground">Check-out</p>
-                        <p className="text-sm font-medium">
+                        <p className="text-xs text-muted-foreground">Check-out</p>
+                        <p className="text-xs font-medium">
                           {booking.checkOut.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                         </p>
                       </div>
@@ -283,7 +303,7 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
+                <CardTitle className="px-1">Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                
@@ -302,6 +322,20 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
           </div>
         </div>
       </div>
+
+      {/* Pre-Activity Confirmation Modal */}
+      {home && (
+        <PreActivityConfirmationModal
+          open={showConfirmation}
+          onClose={() => setShowConfirmation(false)}
+          onConfirm={() => {
+            setShowConfirmation(false)
+            router.push(`/homes/${home.id}/activities/${activityTypeToTemplateType[activity.type]}/track${activity.bookingId ? `?bookingId=${activity.bookingId}` : ''}`)
+          }}
+          homeCode={home.code}
+          homeName={home.name}
+        />
+      )}
     </div>
   )
 }

@@ -23,6 +23,11 @@ import { PhotoAnnotationDialog } from "./PhotoAnnotation"
 import { useHapticFeedback } from "@/components/haptic/HapticProvider"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
+import { findNodeByLocation } from "@/lib/property/location-matcher"
+import { findNodeByItemName, type MatchResult } from "@/lib/property/item-matcher"
+import { getPropertyHierarchy } from "@/lib/test-data"
+import { ItemDetailsSheet } from "@/components/property/ItemDetailsSheet"
+import type { PropertyHierarchyNode, PropertyIssue } from "@/lib/test-data"
 import { 
   AlertCircle, 
   Info, 
@@ -88,6 +93,9 @@ interface TaskCardProps {
   reportIssue?: boolean
   issueReport?: TaskIssueReport
   isExpanded?: boolean // Control expansion from parent
+  homeId?: string // For property hierarchy lookup
+  homeCode?: string // For breadcrumbs
+  homeName?: string // For breadcrumbs
   onToggleComplete: (completed: boolean) => void
   onAddPhoto: (file: File, thumbnail?: string) => void
   onNotesChange: (notes: string) => void
@@ -107,6 +115,9 @@ export function TaskCard({
   reportIssue = false,
   issueReport = {},
   isExpanded: controlledIsExpanded,
+  homeId,
+  homeCode,
+  homeName,
   onToggleComplete,
   onAddPhoto,
   onNotesChange,
@@ -122,6 +133,74 @@ export function TaskCard({
   const [cameraAnimating, setCameraAnimating] = useState(false)
   const photoUploaderRef = useRef<PhotoUploaderHandle>(null)
   const photoCount = photos?.length || 0
+  const [selectedItem, setSelectedItem] = useState<PropertyHierarchyNode | null>(null)
+  const [itemBreadcrumbs, setItemBreadcrumbs] = useState<Array<{ label: string; href?: string }>>([])
+  const [itemIssue, setItemIssue] = useState<PropertyIssue | undefined>(undefined)
+  const [itemSheetOpen, setItemSheetOpen] = useState(false)
+  const [taskNameMatch, setTaskNameMatch] = useState<MatchResult | null>(null)
+
+  // Check if task name matches a blueprint item
+  useEffect(() => {
+    if (!homeId || !task.name) {
+      setTaskNameMatch(null)
+      return
+    }
+    
+    const hierarchy = getPropertyHierarchy(homeId)
+    if (!hierarchy) {
+      setTaskNameMatch(null)
+      return
+    }
+    
+    const match = findNodeByItemName(hierarchy, task.name)
+    setTaskNameMatch(match)
+  }, [homeId, task.name])
+
+  // Handle location click to open item details
+  const handleLocationClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    
+    if (!task.location || !homeId) {
+      return
+    }
+    
+    const hierarchy = getPropertyHierarchy(homeId)
+    if (!hierarchy) {
+      toast.info("Property information not available")
+      return
+    }
+    
+    const match = findNodeByLocation(hierarchy, task.location)
+    if (!match) {
+      toast.info(`Location "${task.location}" not found in property blueprint`)
+      return
+    }
+    
+    setSelectedItem(match.node)
+    setItemBreadcrumbs(match.breadcrumbs)
+    setItemIssue(undefined) // Could load issue data here if needed
+    setItemSheetOpen(true)
+  }
+
+  // Handle task name click to open item details
+  const handleTaskNameClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    e.preventDefault()
+    
+    if (!taskNameMatch || !homeId) {
+      return
+    }
+    
+    setSelectedItem(taskNameMatch.node)
+    setItemBreadcrumbs(taskNameMatch.breadcrumbs)
+    setItemIssue(undefined) // Could load issue data here if needed
+    setItemSheetOpen(true)
+  }
+
+  // Check if location is clickable (has homeId and location exists)
+  const isLocationClickable = homeId && task.location
+  // Check if task name is clickable (has homeId and matches a blueprint item)
+  const isTaskNameClickable = homeId && taskNameMatch !== null
 
   // Use controlled or internal state
   const isExpanded = controlledIsExpanded !== undefined ? controlledIsExpanded : internalIsExpanded
@@ -312,15 +391,31 @@ export function TaskCard({
                       {task.action}
                     </Badge>
                   )}
-                  {task.location && (
-                    <span className="text-xs">
-                      📍 {task.location}
-                    </span>
+                  {isTaskNameClickable && taskNameMatch && (
+                    <button
+                      onClick={handleTaskNameClick}
+                      className="text-xs text-primary hover:text-primary/80 underline transition-colors flex items-center gap-1"
+                    >
+                      <Package className="h-3 w-3" />
+                      {taskNameMatch.node.label}
+                    </button>
                   )}
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    <span>~{task.estimatedTime} min</span>
-                  </div>
+                  {task.location && (
+                    isLocationClickable ? (
+                      <button
+                        onClick={handleLocationClick}
+                        className="text-xs text-primary hover:text-primary/80 underline transition-colors flex items-center gap-1"
+                      >
+                        <Pin className="h-3 w-3" />
+                        {task.location}
+                      </button>
+                    ) : (
+                      <span className="text-xs">
+                        <Pin className="h-3 w-3 inline mr-1" />
+                        {task.location}
+                      </span>
+                    )
+                  )}
                 </div>
               </div>
 
@@ -559,6 +654,25 @@ export function TaskCard({
           onSave={handleSaveAnnotations}
           onClose={() => setAnnotatingPhotoId(null)}
           open={annotatingPhotoId !== null}
+        />
+      )}
+
+      {/* Item Details Sheet */}
+      {selectedItem && (
+        <ItemDetailsSheet
+          item={selectedItem}
+          breadcrumbs={itemBreadcrumbs}
+          issue={itemIssue}
+          onClose={() => {
+            setSelectedItem(null)
+            setItemBreadcrumbs([])
+            setItemIssue(undefined)
+            setItemSheetOpen(false)
+          }}
+          onReportIssue={() => {
+            // Could open issue report sheet here if needed
+            toast.info("Issue reporting from task location coming soon")
+          }}
         />
       )}
     </Card>

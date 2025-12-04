@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { ActivityTypeSelector } from "@/components/activities/ActivityTypeSelector"
 import { ActivitySwitchDialog } from "@/components/activities/ActivitySwitchDialog"
+import { PreActivityConfirmationModal } from "@/components/activities/PreActivityConfirmationModal"
 import { Breadcrumbs } from "@/components/navigation/Breadcrumbs"
 import type { ActivityType } from "@/lib/activity-templates"
 import { testHomes } from "@/lib/test-data"
@@ -20,6 +21,7 @@ export default function StartActivityPage({ params }: StartActivityPageProps) {
   const [homeName, setHomeName] = useState<string | undefined>(undefined)
   const [loading, setLoading] = useState(true)
   const [showSwitchDialog, setShowSwitchDialog] = useState(false)
+  const [showConfirmation, setShowConfirmation] = useState(false)
   const [pendingActivityType, setPendingActivityType] = useState<ActivityType | null>(null)
   const [currentActivity, setCurrentActivity] = useState<ActiveActivityInfo | null>(null)
 
@@ -47,9 +49,10 @@ export default function StartActivityPage({ params }: StartActivityPageProps) {
     if (activeActivity) {
       // Check if it's the same activity (same home and same type)
       if (activeActivity.homeId === homeId && activeActivity.activityType === type) {
-        // Same activity - just navigate to it
-        console.log("Same activity, navigating directly")
-        router.push(`/homes/${homeId}/activities/${type}/track`)
+        // Same activity - show confirmation modal before continuing
+        console.log("Same activity, showing confirmation")
+        setPendingActivityType(type)
+        setShowConfirmation(true)
         return
       }
       
@@ -59,9 +62,10 @@ export default function StartActivityPage({ params }: StartActivityPageProps) {
       setPendingActivityType(type)
       setShowSwitchDialog(true)
     } else {
-      // No active activity - proceed directly
-      console.log("No active activity, proceeding directly")
-      router.push(`/homes/${homeId}/activities/${type}/track`)
+      // No active activity - show confirmation modal
+      console.log("No active activity, showing confirmation")
+      setPendingActivityType(type)
+      setShowConfirmation(true)
     }
   }
 
@@ -72,8 +76,8 @@ export default function StartActivityPage({ params }: StartActivityPageProps) {
     clearActiveActivity(currentActivity.storageKey)
     setShowSwitchDialog(false)
     setCurrentActivity(null)
-    setPendingActivityType(null)
-    router.push(`/homes/${homeId}/activities/${pendingActivityType}/track`)
+    // Show confirmation modal before navigating
+    setShowConfirmation(true)
   }
 
   const handleDiscardAndSwitch = () => {
@@ -83,7 +87,13 @@ export default function StartActivityPage({ params }: StartActivityPageProps) {
     clearActiveActivity(currentActivity.storageKey)
     setShowSwitchDialog(false)
     setCurrentActivity(null)
-    setPendingActivityType(null)
+    // Show confirmation modal before navigating
+    setShowConfirmation(true)
+  }
+
+  const handleConfirmAndStart = () => {
+    if (!pendingActivityType || !homeId) return
+    setShowConfirmation(false)
     router.push(`/homes/${homeId}/activities/${pendingActivityType}/track`)
   }
 
@@ -147,6 +157,18 @@ export default function StartActivityPage({ params }: StartActivityPageProps) {
           onCancel={handleCancelSwitch}
         />
       )}
+
+      {/* Pre-Activity Confirmation Modal */}
+      <PreActivityConfirmationModal
+        open={showConfirmation}
+        onClose={() => {
+          setShowConfirmation(false)
+          setPendingActivityType(null)
+        }}
+        onConfirm={handleConfirmAndStart}
+        homeCode={homeCode}
+        homeName={homeName}
+      />
     </>
   )
 }

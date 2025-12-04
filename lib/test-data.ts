@@ -404,10 +404,719 @@ export function getUpcomingBookings(days: number = 7): Booking[] {
 /**
  * Get property hierarchy for a specific home
  */
+/**
+ * Create a default comprehensive hierarchy structure
+ * This can be customized per home code if needed
+ */
+function createDefaultHierarchy(homeCode: string, homeName?: string): PropertyHierarchyNode {
+  return {
+    id: `unit-${homeCode.toLowerCase()}`,
+    label: homeCode,
+    type: "unit",
+    icon: "Home",
+    children: [
+      {
+        id: "building-1",
+        label: "Main Building",
+        type: "building",
+        icon: "Building",
+        children: [
+          // First Floor
+          {
+            id: "floor-1",
+            label: "First Floor",
+            type: "floor",
+            icon: "Layers",
+            children: [
+              {
+                id: "room-master",
+                label: "Master Bedroom",
+                type: "room",
+                icon: "Bed",
+                metadata: "15 items",
+                children: [
+                  {
+                    id: "item-king-bed",
+                    label: "King Bed",
+                    type: "item",
+                    icon: "Bed",
+                    instructions: "Change linens weekly. Check mattress for stains.",
+                    details: {
+                      "Size": "King",
+                      "Last Updated": "2024-01-14"
+                    }
+                  },
+                  {
+                    id: "item-left-bedside",
+                    label: "Left Bedside Table",
+                    type: "item",
+                    icon: "Table",
+                    instructions: "Check drawer contents. Dust weekly.",
+                    children: [
+                      {
+                        id: "item-left-drawer",
+                        label: "Drawer",
+                        type: "item",
+                        icon: "Package",
+                        instructions: "Contains remote controls and reading materials."
+                      }
+                    ]
+                  },
+                  {
+                    id: "item-right-bedside",
+                    label: "Right Bedside Table",
+                    type: "item",
+                    icon: "Table",
+                    instructions: "Check drawer contents. Dust weekly.",
+                    children: [
+                      {
+                        id: "item-right-drawer",
+                        label: "Drawer",
+                        type: "item",
+                        icon: "Package",
+                        instructions: "Contains remote controls and reading materials."
+                      }
+                    ]
+                  },
+                  {
+                    id: "item-wardrobe",
+                    label: "Built-in Wardrobe",
+                    type: "item",
+                    icon: "Package",
+                    instructions: "Check hanging space. Organize shelves.",
+                    children: [
+                      {
+                        id: "item-hanging-left",
+                        label: "Hanging Rail Left",
+                        type: "item",
+                        icon: "Package"
+                      },
+                      {
+                        id: "item-hanging-right",
+                        label: "Hanging Rail Right",
+                        type: "item",
+                        icon: "Package"
+                      },
+                      {
+                        id: "item-top-shelf",
+                        label: "Top Shelf",
+                        type: "item",
+                        icon: "Package"
+                      },
+                      {
+                        id: "item-shoe-rack",
+                        label: "Shoe Rack",
+                        type: "item",
+                        icon: "Package"
+                      },
+                      {
+                        id: "item-wardrobe-drawers",
+                        label: "Drawers",
+                        type: "item",
+                        icon: "Package"
+                      }
+                    ]
+                  },
+                  {
+                    id: "item-dressing-table",
+                    label: "Dressing Table",
+                    type: "item",
+                    icon: "Table",
+                    children: [
+                      {
+                        id: "item-mirror",
+                        label: "Mirror",
+                        type: "item",
+                        icon: "Eye"
+                      },
+                      {
+                        id: "item-dressing-drawers",
+                        label: "Drawers",
+                        type: "item",
+                        icon: "Package"
+                      }
+                    ]
+                  },
+                  {
+                    id: "item-window-area",
+                    label: "Window Area",
+                    type: "item",
+                    icon: "Window",
+                    children: [
+                      {
+                        id: "item-curtains",
+                        label: "Curtains/Blinds",
+                        type: "item",
+                        icon: "Window"
+                      },
+                      {
+                        id: "item-window-sill",
+                        label: "Window Sill",
+                        type: "item",
+                        icon: "Window"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: "room-guest",
+                label: "Guest Bedroom",
+                type: "room",
+                icon: "Bed",
+                metadata: "8 items",
+                children: [
+                  {
+                    id: "item-double-bed",
+                    label: "Double Bed",
+                    type: "item",
+                    icon: "Bed"
+                  },
+                  {
+                    id: "item-guest-bedside",
+                    label: "Bedside Table",
+                    type: "item",
+                    icon: "Table",
+                    children: [
+                      {
+                        id: "item-guest-drawer",
+                        label: "Drawer",
+                        type: "item",
+                        icon: "Package"
+                      }
+                    ]
+                  },
+                  {
+                    id: "item-guest-wardrobe",
+                    label: "Wardrobe",
+                    type: "item",
+                    icon: "Package",
+                    children: [
+                      {
+                        id: "item-guest-hanging",
+                        label: "Hanging Rail",
+                        type: "item",
+                        icon: "Package"
+                      },
+                      {
+                        id: "item-guest-shelf",
+                        label: "Top Shelf",
+                        type: "item",
+                        icon: "Package"
+                      }
+                    ]
+                  },
+                  {
+                    id: "item-chest",
+                    label: "Chest of Drawers",
+                    type: "item",
+                    icon: "Package"
+                  },
+                  {
+                    id: "item-guest-window",
+                    label: "Window Area",
+                    type: "item",
+                    icon: "Window"
+                  }
+                ]
+              },
+              {
+                id: "room-hall-1",
+                label: "Hall",
+                type: "room",
+                icon: "Door",
+                children: [
+                  {
+                    id: "item-linen",
+                    label: "Linen Cupboard",
+                    type: "item",
+                    icon: "Package",
+                    children: [
+                      {
+                        id: "item-linen-top",
+                        label: "Top Shelf",
+                        type: "item",
+                        icon: "Package"
+                      },
+                      {
+                        id: "item-linen-middle",
+                        label: "Middle Shelf",
+                        type: "item",
+                        icon: "Package"
+                      },
+                      {
+                        id: "item-linen-bottom",
+                        label: "Bottom Shelf",
+                        type: "item",
+                        icon: "Package"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          // Ground Floor / Entrance Level
+          {
+            id: "floor-ground",
+            label: "Ground Floor",
+            type: "floor",
+            icon: "Layers",
+            children: [
+              {
+                id: "room-entrance",
+                label: "Entrance Hall",
+                type: "room",
+                icon: "Door"
+              },
+              {
+                id: "room-sitting",
+                label: "Sitting Room",
+                type: "room",
+                icon: "Sofa",
+                metadata: "12 items",
+                children: [
+                  {
+                    id: "item-sofa",
+                    label: "Sofa",
+                    type: "item",
+                    icon: "Sofa",
+                    instructions: "Vacuum weekly. Spot clean with fabric cleaner.",
+                    details: {
+                      "Material": "Fabric",
+                      "Last Updated": "2024-01-08"
+                    }
+                  },
+                  {
+                    id: "item-tv",
+                    label: "TV",
+                    type: "item",
+                    icon: "Tv",
+                    instructions: "Remote control in drawer. Check HDMI connections.",
+                    details: {
+                      "Model": "Samsung 65\" QLED",
+                      "Last Updated": "2024-01-05"
+                    }
+                  }
+                ]
+              },
+              {
+                id: "room-kitchen",
+                label: "Kitchen",
+                type: "room",
+                icon: "ChefHat",
+                metadata: "25 items",
+                children: [
+                  {
+                    id: "zone-cooking",
+                    label: "Cooking Zone",
+                    type: "item",
+                    icon: "ChefHat",
+                    children: [
+                      {
+                        id: "item-oven",
+                        label: "Oven",
+                        type: "item",
+                        icon: "ChefHat",
+                        instructions: "Self-cleaning function available. Use oven cleaner for stubborn stains.",
+                        details: {
+                          "Model": "GE Profile PGS930",
+                          "Last Updated": "2024-01-12"
+                        }
+                      },
+                      {
+                        id: "item-hob",
+                        label: "Hob/Cooktop",
+                        type: "item",
+                        icon: "ChefHat",
+                        instructions: "Clean after each use. Check gas connections."
+                      },
+                      {
+                        id: "item-microwave",
+                        label: "Microwave",
+                        type: "item",
+                        icon: "ChefHat",
+                        instructions: "Clean interior weekly. Check door seal."
+                      },
+                      {
+                        id: "item-kettle",
+                        label: "Kettle",
+                        type: "item",
+                        icon: "ChefHat",
+                        instructions: "Descale monthly. Check for leaks."
+                      },
+                      {
+                        id: "item-toaster",
+                        label: "Toaster",
+                        type: "item",
+                        icon: "ChefHat",
+                        instructions: "Clean crumb tray weekly."
+                      }
+                    ]
+                  },
+                  {
+                    id: "zone-sink",
+                    label: "Sink Area",
+                    type: "item",
+                    icon: "Droplet",
+                    children: [
+                      {
+                        id: "item-sink",
+                        label: "Main Sink",
+                        type: "item",
+                        icon: "Droplet",
+                        instructions: "Check water pressure. Clean drain monthly."
+                      },
+                      {
+                        id: "item-dishwasher",
+                        label: "Dishwasher",
+                        type: "item",
+                        icon: "Refrigerator",
+                        instructions: "Use eco-friendly detergent. Run empty cycle monthly.",
+                        details: {
+                          "Model": "Bosch SMS24AW00G",
+                          "Last Updated": "2024-01-15",
+                          "Serial Number": "BSH-12345"
+                        },
+                        photos: [
+                          { id: "photo-1", url: "/placeholder-dishwasher.jpg", caption: "Dishwasher front view" }
+                        ]
+                      },
+                      {
+                        id: "item-under-sink",
+                        label: "Under-sink Storage",
+                        type: "item",
+                        icon: "Package"
+                      }
+                    ]
+                  },
+                  {
+                    id: "zone-fridge",
+                    label: "Refrigeration",
+                    type: "item",
+                    icon: "Refrigerator",
+                    children: [
+                      {
+                        id: "item-fridge",
+                        label: "Fridge/Freezer",
+                        type: "item",
+                        icon: "Refrigerator",
+                        instructions: "Check temperature daily. Clean condenser coils monthly.",
+                        details: {
+                          "Model": "Samsung RF28R7351SG",
+                          "Last Updated": "2024-01-10"
+                        }
+                      },
+                      {
+                        id: "item-wine-cooler",
+                        label: "Wine Cooler",
+                        type: "item",
+                        icon: "Refrigerator"
+                      }
+                    ]
+                  },
+                  {
+                    id: "item-upper-cabinets",
+                    label: "Upper Cabinets",
+                    type: "item",
+                    icon: "Package",
+                    children: [
+                      {
+                        id: "item-glassware",
+                        label: "Glassware Cabinet",
+                        type: "item",
+                        icon: "Package"
+                      },
+                      {
+                        id: "item-plates",
+                        label: "Plates & Bowls Cabinet",
+                        type: "item",
+                        icon: "Package"
+                      },
+                      {
+                        id: "item-mugs",
+                        label: "Mugs & Cups Cabinet",
+                        type: "item",
+                        icon: "Package"
+                      }
+                    ]
+                  },
+                  {
+                    id: "item-lower-cabinets",
+                    label: "Lower Cabinets",
+                    type: "item",
+                    icon: "Package",
+                    children: [
+                      {
+                        id: "item-pots",
+                        label: "Pots & Pans Drawer",
+                        type: "item",
+                        icon: "Package"
+                      },
+                      {
+                        id: "item-utensils",
+                        label: "Utensils Drawer",
+                        type: "item",
+                        icon: "Package"
+                      },
+                      {
+                        id: "item-tupperware",
+                        label: "Tupperware Cabinet",
+                        type: "item",
+                        icon: "Package"
+                      }
+                    ]
+                  },
+                  {
+                    id: "item-pantry",
+                    label: "Pantry",
+                    type: "item",
+                    icon: "Package",
+                    children: [
+                      {
+                        id: "item-dry-goods",
+                        label: "Dry Goods Shelf",
+                        type: "item",
+                        icon: "Package"
+                      },
+                      {
+                        id: "item-spices",
+                        label: "Spices & Condiments Shelf",
+                        type: "item",
+                        icon: "Package"
+                      },
+                      {
+                        id: "item-baking",
+                        label: "Baking Supplies Shelf",
+                        type: "item",
+                        icon: "Package"
+                      },
+                      {
+                        id: "item-coffee",
+                        label: "Coffee & Tea Station",
+                        type: "item",
+                        icon: "Package"
+                      }
+                    ]
+                  },
+                  {
+                    id: "item-countertops",
+                    label: "Countertops",
+                    type: "item",
+                    icon: "Table",
+                    children: [
+                      {
+                        id: "item-coffee-machine",
+                        label: "Coffee Machine",
+                        type: "item",
+                        icon: "ChefHat",
+                        instructions: "Descale monthly. Clean portafilter after use."
+                      },
+                      {
+                        id: "item-knife-block",
+                        label: "Knife Block",
+                        type: "item",
+                        icon: "Package"
+                      },
+                      {
+                        id: "item-fruit-bowl",
+                        label: "Fruit Bowl",
+                        type: "item",
+                        icon: "Package"
+                      }
+                    ]
+                  },
+                  {
+                    id: "item-island",
+                    label: "Kitchen Island",
+                    type: "item",
+                    icon: "Table",
+                    children: [
+                      {
+                        id: "item-bar-stools",
+                        label: "Bar Stools",
+                        type: "item",
+                        icon: "Table"
+                      }
+                    ]
+                  },
+                  {
+                    id: "zone-bin",
+                    label: "Bin Area",
+                    type: "item",
+                    icon: "Trash2",
+                    children: [
+                      {
+                        id: "item-waste",
+                        label: "General Waste Bin",
+                        type: "item",
+                        icon: "Trash2"
+                      },
+                      {
+                        id: "item-recycling",
+                        label: "Recycling Bin",
+                        type: "item",
+                        icon: "Trash2"
+                      },
+                      {
+                        id: "item-food-waste",
+                        label: "Food Waste Bin",
+                        type: "item",
+                        icon: "Trash2"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          // Lower Ground Floor
+          {
+            id: "floor-lower",
+            label: "Lower Ground Floor",
+            type: "floor",
+            icon: "Layers",
+            children: [
+              {
+                id: "room-dining",
+                label: "Dining Room",
+                type: "room",
+                icon: "Utensils",
+                children: [
+                  {
+                    id: "item-dining-table",
+                    label: "Dining Table",
+                    type: "item",
+                    icon: "Table"
+                  },
+                  {
+                    id: "item-sideboard",
+                    label: "Sideboard",
+                    type: "item",
+                    icon: "Table"
+                  },
+                  {
+                    id: "item-display-cabinet",
+                    label: "Display Cabinet",
+                    type: "item",
+                    icon: "Package"
+                  }
+                ]
+              },
+              {
+                id: "room-utility",
+                label: "Utility Room",
+                type: "room",
+                icon: "WashingMachine",
+                children: [
+                  {
+                    id: "item-washing",
+                    label: "Washing Machine",
+                    type: "item",
+                    icon: "WashingMachine",
+                    instructions: "Check detergent drawer. Clean filter monthly.",
+                    details: {
+                      "Model": "Bosch WAN28200GB",
+                      "Last Updated": "2024-01-06"
+                    }
+                  },
+                  {
+                    id: "item-dryer",
+                    label: "Tumble Dryer",
+                    type: "item",
+                    icon: "WashingMachine",
+                    instructions: "Clean lint filter after each use.",
+                    details: {
+                      "Model": "Bosch WTW87561GB",
+                      "Last Updated": "2024-01-06"
+                    }
+                  },
+                  {
+                    id: "item-cleaning",
+                    label: "Cleaning Supplies Storage",
+                    type: "item",
+                    icon: "Package"
+                  },
+                  {
+                    id: "item-ironing",
+                    label: "Ironing Board & Iron",
+                    type: "item",
+                    icon: "Package"
+                  },
+                  {
+                    id: "item-vault-right",
+                    label: "Right Vault",
+                    type: "item",
+                    icon: "Lock"
+                  },
+                  {
+                    id: "item-vault-left",
+                    label: "Left Vault",
+                    type: "item",
+                    icon: "Lock"
+                  }
+                ]
+              }
+            ]
+          },
+          // Exterior
+          {
+            id: "floor-exterior",
+            label: "Exterior / Other Areas",
+            type: "floor",
+            icon: "Layers",
+            children: [
+              {
+                id: "room-patio",
+                label: "Patio",
+                type: "room",
+                icon: "Home"
+              }
+            ]
+          }
+        ]
+      },
+      // Special Categories (top-level nodes)
+      {
+        id: "category-bedding",
+        label: "Host Bedding",
+        type: "item",
+        icon: "Bed",
+        instructions: "Bedding items that move between rooms."
+      },
+      {
+        id: "category-plants",
+        label: "Host Plants",
+        type: "item",
+        icon: "Flower",
+        instructions: "Plants that require regular care."
+      }
+    ]
+  }
+}
+
 export function getPropertyHierarchy(homeId: string): PropertyHierarchyNode | null {
   // Mock hierarchy data - in production this would come from API
-  const hierarchies: Record<string, PropertyHierarchyNode> = {
-    "home-1": {
+  // Expanded based on Notion blueprint example
+  
+  // Extract home code from homeId (format: "home-{code}-{index}")
+  // Or use homeId directly if it's a simple code
+  let homeCode = homeId
+  
+  if (homeId.startsWith("home-")) {
+    // Extract code from "home-{code}-{index}" format
+    const parts = homeId.split("-")
+    if (parts.length >= 3) {
+      // Rejoin the middle parts (in case code has hyphens)
+      homeCode = parts.slice(1, -1).join("-").toUpperCase()
+    } else if (parts.length === 2) {
+      homeCode = parts[1].toUpperCase()
+    }
+  }
+  
+  // Check for specific hierarchies (can be customized per home code)
+  const specificHierarchies: Record<string, PropertyHierarchyNode> = {
+    "COS285": {
       id: "unit-1",
       label: "COS285",
       type: "unit",
@@ -419,67 +1128,263 @@ export function getPropertyHierarchy(homeId: string): PropertyHierarchyNode | nu
           type: "building",
           icon: "Building",
           children: [
+            // First Floor
             {
               id: "floor-1",
+              label: "First Floor",
+              type: "floor",
+              icon: "Layers",
+              children: [
+                {
+                  id: "room-master",
+                  label: "Master Bedroom",
+                  type: "room",
+                  icon: "Bed",
+                  metadata: "15 items",
+                  children: [
+                    {
+                      id: "item-king-bed",
+                      label: "King Bed",
+                      type: "item",
+                      icon: "Bed",
+                      instructions: "Change linens weekly. Check mattress for stains.",
+                      details: {
+                        "Size": "King",
+                        "Last Updated": "2024-01-14"
+                      }
+                    },
+                    {
+                      id: "item-left-bedside",
+                      label: "Left Bedside Table",
+                      type: "item",
+                      icon: "Table",
+                      instructions: "Check drawer contents. Dust weekly.",
+                      children: [
+                        {
+                          id: "item-left-drawer",
+                          label: "Drawer",
+                          type: "item",
+                          icon: "Package",
+                          instructions: "Contains remote controls and reading materials."
+                        }
+                      ]
+                    },
+                    {
+                      id: "item-right-bedside",
+                      label: "Right Bedside Table",
+                      type: "item",
+                      icon: "Table",
+                      instructions: "Check drawer contents. Dust weekly.",
+                      children: [
+                        {
+                          id: "item-right-drawer",
+                          label: "Drawer",
+                          type: "item",
+                          icon: "Package",
+                          instructions: "Contains remote controls and reading materials."
+                        }
+                      ]
+                    },
+                    {
+                      id: "item-wardrobe",
+                      label: "Built-in Wardrobe",
+                      type: "item",
+                      icon: "Package",
+                      instructions: "Check hanging space. Organize shelves.",
+                      children: [
+                        {
+                          id: "item-hanging-left",
+                          label: "Hanging Rail Left",
+                          type: "item",
+                          icon: "Package"
+                        },
+                        {
+                          id: "item-hanging-right",
+                          label: "Hanging Rail Right",
+                          type: "item",
+                          icon: "Package"
+                        },
+                        {
+                          id: "item-top-shelf",
+                          label: "Top Shelf",
+                          type: "item",
+                          icon: "Package"
+                        },
+                        {
+                          id: "item-shoe-rack",
+                          label: "Shoe Rack",
+                          type: "item",
+                          icon: "Package"
+                        },
+                        {
+                          id: "item-wardrobe-drawers",
+                          label: "Drawers",
+                          type: "item",
+                          icon: "Package"
+                        }
+                      ]
+                    },
+                    {
+                      id: "item-dressing-table",
+                      label: "Dressing Table",
+                      type: "item",
+                      icon: "Table",
+                      children: [
+                        {
+                          id: "item-mirror",
+                          label: "Mirror",
+                          type: "item",
+                          icon: "Eye"
+                        },
+                        {
+                          id: "item-dressing-drawers",
+                          label: "Drawers",
+                          type: "item",
+                          icon: "Package"
+                        }
+                      ]
+                    },
+                    {
+                      id: "item-window-area",
+                      label: "Window Area",
+                      type: "item",
+                      icon: "Window",
+                      children: [
+                        {
+                          id: "item-curtains",
+                          label: "Curtains/Blinds",
+                          type: "item",
+                          icon: "Window"
+                        },
+                        {
+                          id: "item-window-sill",
+                          label: "Window Sill",
+                          type: "item",
+                          icon: "Window"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  id: "room-guest",
+                  label: "Guest Bedroom",
+                  type: "room",
+                  icon: "Bed",
+                  metadata: "8 items",
+                  children: [
+                    {
+                      id: "item-double-bed",
+                      label: "Double Bed",
+                      type: "item",
+                      icon: "Bed"
+                    },
+                    {
+                      id: "item-guest-bedside",
+                      label: "Bedside Table",
+                      type: "item",
+                      icon: "Table",
+                      children: [
+                        {
+                          id: "item-guest-drawer",
+                          label: "Drawer",
+                          type: "item",
+                          icon: "Package"
+                        }
+                      ]
+                    },
+                    {
+                      id: "item-guest-wardrobe",
+                      label: "Wardrobe",
+                      type: "item",
+                      icon: "Package",
+                      children: [
+                        {
+                          id: "item-guest-hanging",
+                          label: "Hanging Rail",
+                          type: "item",
+                          icon: "Package"
+                        },
+                        {
+                          id: "item-guest-shelf",
+                          label: "Top Shelf",
+                          type: "item",
+                          icon: "Package"
+                        }
+                      ]
+                    },
+                    {
+                      id: "item-chest",
+                      label: "Chest of Drawers",
+                      type: "item",
+                      icon: "Package"
+                    },
+                    {
+                      id: "item-guest-window",
+                      label: "Window Area",
+                      type: "item",
+                      icon: "Window"
+                    }
+                  ]
+                },
+                {
+                  id: "room-hall-1",
+                  label: "Hall",
+                  type: "room",
+                  icon: "Door",
+                  children: [
+                    {
+                      id: "item-linen",
+                      label: "Linen Cupboard",
+                      type: "item",
+                      icon: "Package",
+                      children: [
+                        {
+                          id: "item-linen-top",
+                          label: "Top Shelf",
+                          type: "item",
+                          icon: "Package"
+                        },
+                        {
+                          id: "item-linen-middle",
+                          label: "Middle Shelf",
+                          type: "item",
+                          icon: "Package"
+                        },
+                        {
+                          id: "item-linen-bottom",
+                          label: "Bottom Shelf",
+                          type: "item",
+                          icon: "Package"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            // Ground Floor / Entrance Level
+            {
+              id: "floor-ground",
               label: "Ground Floor",
               type: "floor",
               icon: "Layers",
               children: [
                 {
-                  id: "room-1",
-                  label: "Kitchen",
+                  id: "room-entrance",
+                  label: "Entrance Hall",
                   type: "room",
-                  icon: "ChefHat",
-                  metadata: "8 items",
-                  children: [
-                    {
-                      id: "item-1",
-                      label: "Dishwasher",
-                      type: "item",
-                      icon: "Refrigerator",
-                      instructions: "Use eco-friendly detergent. Run empty cycle monthly.",
-                      details: {
-                        "Model": "Bosch SMS24AW00G",
-                        "Last Updated": "2024-01-15",
-                        "Serial Number": "BSH-12345"
-                      },
-                      photos: [
-                        { id: "photo-1", url: "/placeholder-dishwasher.jpg", caption: "Dishwasher front view" }
-                      ]
-                    },
-                    {
-                      id: "item-2",
-                      label: "Refrigerator",
-                      type: "item",
-                      icon: "Refrigerator",
-                      instructions: "Check temperature daily. Clean condenser coils monthly.",
-                      details: {
-                        "Model": "Samsung RF28R7351SG",
-                        "Last Updated": "2024-01-10"
-                      }
-                    },
-                    {
-                      id: "item-3",
-                      label: "Oven",
-                      type: "item",
-                      icon: "ChefHat",
-                      instructions: "Self-cleaning function available. Use oven cleaner for stubborn stains.",
-                      details: {
-                        "Model": "GE Profile PGS930",
-                        "Last Updated": "2024-01-12"
-                      }
-                    }
-                  ]
+                  icon: "Door"
                 },
                 {
-                  id: "room-2",
-                  label: "Living Room",
+                  id: "room-sitting",
+                  label: "Sitting Room",
                   type: "room",
                   icon: "Sofa",
                   metadata: "12 items",
                   children: [
                     {
-                      id: "item-4",
+                      id: "item-sofa",
                       label: "Sofa",
                       type: "item",
                       icon: "Sofa",
@@ -490,7 +1395,7 @@ export function getPropertyHierarchy(homeId: string): PropertyHierarchyNode | nu
                       }
                     },
                     {
-                      id: "item-5",
+                      id: "item-tv",
                       label: "TV",
                       type: "item",
                       icon: "Tv",
@@ -501,80 +1406,397 @@ export function getPropertyHierarchy(homeId: string): PropertyHierarchyNode | nu
                       }
                     }
                   ]
+                },
+                {
+                  id: "room-kitchen",
+                  label: "Kitchen",
+                  type: "room",
+                  icon: "ChefHat",
+                  metadata: "25 items",
+                  children: [
+                    {
+                      id: "zone-cooking",
+                      label: "Cooking Zone",
+                      type: "item",
+                      icon: "ChefHat",
+                      children: [
+                        {
+                          id: "item-oven",
+                          label: "Oven",
+                          type: "item",
+                          icon: "ChefHat",
+                          instructions: "Self-cleaning function available. Use oven cleaner for stubborn stains.",
+                          details: {
+                            "Model": "GE Profile PGS930",
+                            "Last Updated": "2024-01-12"
+                          }
+                        },
+                        {
+                          id: "item-hob",
+                          label: "Hob/Cooktop",
+                          type: "item",
+                          icon: "ChefHat",
+                          instructions: "Clean after each use. Check gas connections."
+                        },
+                        {
+                          id: "item-microwave",
+                          label: "Microwave",
+                          type: "item",
+                          icon: "ChefHat",
+                          instructions: "Clean interior weekly. Check door seal."
+                        },
+                        {
+                          id: "item-kettle",
+                          label: "Kettle",
+                          type: "item",
+                          icon: "ChefHat",
+                          instructions: "Descale monthly. Check for leaks."
+                        },
+                        {
+                          id: "item-toaster",
+                          label: "Toaster",
+                          type: "item",
+                          icon: "ChefHat",
+                          instructions: "Clean crumb tray weekly."
+                        }
+                      ]
+                    },
+                    {
+                      id: "zone-sink",
+                      label: "Sink Area",
+                      type: "item",
+                      icon: "Droplet",
+                      children: [
+                        {
+                          id: "item-sink",
+                          label: "Main Sink",
+                          type: "item",
+                          icon: "Droplet",
+                          instructions: "Check water pressure. Clean drain monthly."
+                        },
+                        {
+                          id: "item-dishwasher",
+                          label: "Dishwasher",
+                          type: "item",
+                          icon: "Refrigerator",
+                          instructions: "Use eco-friendly detergent. Run empty cycle monthly.",
+                          details: {
+                            "Model": "Bosch SMS24AW00G",
+                            "Last Updated": "2024-01-15",
+                            "Serial Number": "BSH-12345"
+                          },
+                          photos: [
+                            { id: "photo-1", url: "/placeholder-dishwasher.jpg", caption: "Dishwasher front view" }
+                          ]
+                        },
+                        {
+                          id: "item-under-sink",
+                          label: "Under-sink Storage",
+                          type: "item",
+                          icon: "Package"
+                        }
+                      ]
+                    },
+                    {
+                      id: "zone-fridge",
+                      label: "Refrigeration",
+                      type: "item",
+                      icon: "Refrigerator",
+                      children: [
+                        {
+                          id: "item-fridge",
+                          label: "Fridge/Freezer",
+                          type: "item",
+                          icon: "Refrigerator",
+                          instructions: "Check temperature daily. Clean condenser coils monthly.",
+                          details: {
+                            "Model": "Samsung RF28R7351SG",
+                            "Last Updated": "2024-01-10"
+                          }
+                        },
+                        {
+                          id: "item-wine-cooler",
+                          label: "Wine Cooler",
+                          type: "item",
+                          icon: "Refrigerator"
+                        }
+                      ]
+                    },
+                    {
+                      id: "item-upper-cabinets",
+                      label: "Upper Cabinets",
+                      type: "item",
+                      icon: "Package",
+                      children: [
+                        {
+                          id: "item-glassware",
+                          label: "Glassware Cabinet",
+                          type: "item",
+                          icon: "Package"
+                        },
+                        {
+                          id: "item-plates",
+                          label: "Plates & Bowls Cabinet",
+                          type: "item",
+                          icon: "Package"
+                        },
+                        {
+                          id: "item-mugs",
+                          label: "Mugs & Cups Cabinet",
+                          type: "item",
+                          icon: "Package"
+                        }
+                      ]
+                    },
+                    {
+                      id: "item-lower-cabinets",
+                      label: "Lower Cabinets",
+                      type: "item",
+                      icon: "Package",
+                      children: [
+                        {
+                          id: "item-pots",
+                          label: "Pots & Pans Drawer",
+                          type: "item",
+                          icon: "Package"
+                        },
+                        {
+                          id: "item-utensils",
+                          label: "Utensils Drawer",
+                          type: "item",
+                          icon: "Package"
+                        },
+                        {
+                          id: "item-tupperware",
+                          label: "Tupperware Cabinet",
+                          type: "item",
+                          icon: "Package"
+                        }
+                      ]
+                    },
+                    {
+                      id: "item-pantry",
+                      label: "Pantry",
+                      type: "item",
+                      icon: "Package",
+                      children: [
+                        {
+                          id: "item-dry-goods",
+                          label: "Dry Goods Shelf",
+                          type: "item",
+                          icon: "Package"
+                        },
+                        {
+                          id: "item-spices",
+                          label: "Spices & Condiments Shelf",
+                          type: "item",
+                          icon: "Package"
+                        },
+                        {
+                          id: "item-baking",
+                          label: "Baking Supplies Shelf",
+                          type: "item",
+                          icon: "Package"
+                        },
+                        {
+                          id: "item-coffee",
+                          label: "Coffee & Tea Station",
+                          type: "item",
+                          icon: "Package"
+                        }
+                      ]
+                    },
+                    {
+                      id: "item-countertops",
+                      label: "Countertops",
+                      type: "item",
+                      icon: "Table",
+                      children: [
+                        {
+                          id: "item-coffee-machine",
+                          label: "Coffee Machine",
+                          type: "item",
+                          icon: "ChefHat",
+                          instructions: "Descale monthly. Clean portafilter after use."
+                        },
+                        {
+                          id: "item-knife-block",
+                          label: "Knife Block",
+                          type: "item",
+                          icon: "Package"
+                        },
+                        {
+                          id: "item-fruit-bowl",
+                          label: "Fruit Bowl",
+                          type: "item",
+                          icon: "Package"
+                        }
+                      ]
+                    },
+                    {
+                      id: "item-island",
+                      label: "Kitchen Island",
+                      type: "item",
+                      icon: "Table",
+                      children: [
+                        {
+                          id: "item-bar-stools",
+                          label: "Bar Stools",
+                          type: "item",
+                          icon: "Table"
+                        }
+                      ]
+                    },
+                    {
+                      id: "zone-bin",
+                      label: "Bin Area",
+                      type: "item",
+                      icon: "Trash2",
+                      children: [
+                        {
+                          id: "item-waste",
+                          label: "General Waste Bin",
+                          type: "item",
+                          icon: "Trash2"
+                        },
+                        {
+                          id: "item-recycling",
+                          label: "Recycling Bin",
+                          type: "item",
+                          icon: "Trash2"
+                        },
+                        {
+                          id: "item-food-waste",
+                          label: "Food Waste Bin",
+                          type: "item",
+                          icon: "Trash2"
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             },
+            // Lower Ground Floor
             {
-              id: "floor-2",
-              label: "First Floor",
+              id: "floor-lower",
+              label: "Lower Ground Floor",
               type: "floor",
               icon: "Layers",
               children: [
                 {
-                  id: "room-3",
-                  label: "Master Bedroom",
+                  id: "room-dining",
+                  label: "Dining Room",
                   type: "room",
-                  icon: "Bed",
-                  metadata: "15 items",
+                  icon: "Utensils",
                   children: [
                     {
-                      id: "item-6",
-                      label: "Bed",
+                      id: "item-dining-table",
+                      label: "Dining Table",
                       type: "item",
-                      icon: "Bed",
-                      instructions: "Change linens weekly. Check mattress for stains.",
-                      details: {
-                        "Size": "King",
-                        "Last Updated": "2024-01-14"
-                      }
+                      icon: "Table"
                     },
                     {
-                      id: "item-7",
-                      label: "Air Conditioning Unit",
+                      id: "item-sideboard",
+                      label: "Sideboard",
                       type: "item",
-                      icon: "Wind",
-                      instructions: "Clean filters monthly. Set to 22°C when occupied.",
-                      details: {
-                        "Model": "Daikin FTXS35LVMA",
-                        "Last Updated": "2024-01-11"
-                      }
+                      icon: "Table"
+                    },
+                    {
+                      id: "item-display-cabinet",
+                      label: "Display Cabinet",
+                      type: "item",
+                      icon: "Package"
                     }
                   ]
                 },
                 {
-                  id: "room-4",
-                  label: "Master Bathroom",
+                  id: "room-utility",
+                  label: "Utility Room",
                   type: "room",
-                  icon: "Droplet",
-                  metadata: "10 items",
+                  icon: "WashingMachine",
                   children: [
                     {
-                      id: "item-8",
-                      label: "Shower",
+                      id: "item-washing",
+                      label: "Washing Machine",
                       type: "item",
-                      icon: "Droplet",
-                      instructions: "Check water pressure. Clean showerhead monthly.",
+                      icon: "WashingMachine",
+                      instructions: "Check detergent drawer. Clean filter monthly.",
                       details: {
-                        "Type": "Rain Shower",
-                        "Last Updated": "2024-01-09"
+                        "Model": "Bosch WAN28200GB",
+                        "Last Updated": "2024-01-06"
                       }
                     },
                     {
-                      id: "item-9",
-                      label: "Toilet",
+                      id: "item-dryer",
+                      label: "Tumble Dryer",
                       type: "item",
-                      icon: "Droplet",
-                      instructions: "Check for leaks. Clean thoroughly.",
+                      icon: "WashingMachine",
+                      instructions: "Clean lint filter after each use.",
                       details: {
-                        "Model": "Toto CST744SL",
-                        "Last Updated": "2024-01-13"
+                        "Model": "Bosch WTW87561GB",
+                        "Last Updated": "2024-01-06"
                       }
+                    },
+                    {
+                      id: "item-cleaning",
+                      label: "Cleaning Supplies Storage",
+                      type: "item",
+                      icon: "Package"
+                    },
+                    {
+                      id: "item-ironing",
+                      label: "Ironing Board & Iron",
+                      type: "item",
+                      icon: "Package"
+                    },
+                    {
+                      id: "item-vault-right",
+                      label: "Right Vault",
+                      type: "item",
+                      icon: "Lock"
+                    },
+                    {
+                      id: "item-vault-left",
+                      label: "Left Vault",
+                      type: "item",
+                      icon: "Lock"
                     }
                   ]
                 }
               ]
+            },
+            // Exterior
+            {
+              id: "floor-exterior",
+              label: "Exterior / Other Areas",
+              type: "floor",
+              icon: "Layers",
+              children: [
+                {
+                  id: "room-patio",
+                  label: "Patio",
+                  type: "room",
+                  icon: "Home"
+                }
+              ]
             }
           ]
+        },
+        // Special Categories (top-level nodes)
+        {
+          id: "category-bedding",
+          label: "Host Bedding",
+          type: "item",
+          icon: "Bed",
+          instructions: "Bedding items that move between rooms."
+        },
+        {
+          id: "category-plants",
+          label: "Host Plants",
+          type: "item",
+          icon: "Flower",
+          instructions: "Plants that require regular care."
         }
       ]
     },
@@ -623,7 +1845,18 @@ export function getPropertyHierarchy(homeId: string): PropertyHierarchyNode | nu
     }
   }
 
-  return hierarchies[homeId] || null
+  // Check for specific hierarchy first (by home code, e.g., "COS285")
+  if (specificHierarchies[homeCode]) {
+    return specificHierarchies[homeCode]
+  }
+  
+  // Check by homeId as fallback
+  if (specificHierarchies[homeId]) {
+    return specificHierarchies[homeId]
+  }
+  
+  // Use default comprehensive hierarchy for all other homes
+  return createDefaultHierarchy(homeCode)
 }
 
 /**

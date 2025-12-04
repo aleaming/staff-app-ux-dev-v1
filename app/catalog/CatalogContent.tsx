@@ -105,45 +105,27 @@ export default function CatalogContent() {
                   <Link key={home.id} href={`/homes/${home.id}`}>
                     <Card className="hover:bg-white dark:hover:bg-neutral-900 hover:border-muted-foreground dark:border-primary/20 transition-colors">
                       <CardContent className="p-3">
-                        <div className="flex items-start gap-3">
-                          <div className={`p-2 rounded-lg ${statusInfo.color} text-white`}>
-                            <Home className="h-5 w-5" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between gap-2">
-                              <div>
-                                <h3 className="font-semibold">{home.code}</h3>
-                                {home.name && (
-                                  <p className="text-sm text-muted-foreground">{home.name}</p>
-                                )}
-                                <button
-                                  onClick={(e) => handleShowMap(e, home.code)}
-                                  className="flex items-start gap-1 mt-1 text-sm text-muted-foreground hover:text-primary transition-colors text-left"
-                                >
-                                  <MapPin className="h-3 w-3 mt-0.5 flex-shrink-0" />
-                                  <span className="underline line-clamp-2">{home.address}, {home.city}</span>
-                                </button>
-                                {home.distance !== undefined && (
-                                  <div className="flex items-center gap-1 mt-1 text-sm text-muted-foreground">
-                                    <Navigation className="h-3 w-3" />
-                                    <span>{home.distance.toFixed(1)} km away</span>
-                                  </div>
-                                )}
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <h3 className="text-base font-semibold mb-1">
+                              <span className="text-primary">{home.code}</span>
+                              {home.name && (
+                                <span className="text-xs text-muted-foreground ml-2">• {home.name}</span>
+                              )}
+                            </h3>
+                            <button
+                              onClick={(e) => handleShowMap(e, home.code)}
+                              className="flex items-start gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mb-1 text-left"
+                            >
+                              <MapPin className="h-3 w-3 mt-0.5 flex-shrink-0" />
+                              <span className="underline line-clamp-2">{home.address}, {home.city}</span>
+                            </button>
+                            {home.distance !== undefined && (
+                              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                <Navigation className="h-3 w-3" />
+                                <span>{home.distance.toFixed(1)} km away</span>
                               </div>
-                              {/*<Badge variant={statusInfo.variant}>
-                                {statusInfo.label}
-                              </Badge>*/}
-                            </div>
-                            {/* 
-                            <div className="flex items-center gap-4 mt-3">
-                              <div className="text-sm text-muted-foreground">
-                                {home.activeBookings} booking{home.activeBookings !== 1 ? 's' : ''}
-                              </div>
-                              <div className="text-sm text-muted-foreground">
-                                {home.pendingActivities} activit{home.pendingActivities !== 1 ? 'ies' : 'y'}
-                              </div>
-                            </div>
-                            */}
+                            )}
                           </div>
                         </div>
                       </CardContent>
@@ -167,16 +149,18 @@ export default function CatalogContent() {
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                              <h3 className="font-semibold">{booking.bookingId}</h3>
+                              <h3 className="text-base font-semibold">
+                                <span className="text-primary">{booking.bookingId}</span>
+                              </h3>
                               <Badge className={statusInfo.className}>
                                 {statusInfo.label}
                               </Badge>
                             </div>
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
                               <User className="h-3 w-3" />
                               <span>{booking.guestName}</span>
                             </div>
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
                               <Home className="h-3 w-3" />
                               {home ? (
                                 <span onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} className="flex items-center gap-1.5">
@@ -206,13 +190,13 @@ export default function CatalogContent() {
                             {home && (
                               <button
                                 onClick={(e) => handleShowMap(e, booking.homeCode)}
-                                className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mb-1"
+                                className="flex items-start gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mb-1 text-left"
                               >
-                                <MapPin className="h-3 w-3" />
+                                <MapPin className="h-3 w-3 mt-0.5" />
                                 <span className="underline">{home.address}, {home.city}</span>
                               </button>
                             )}
-                            <div className="flex items-center gap-4 text-sm">
+                            <div className="flex items-center gap-4 text-xs">
                               <div className="flex items-center gap-1 text-muted-foreground">
                                 <Calendar className="h-3 w-3" />
                                 <span>

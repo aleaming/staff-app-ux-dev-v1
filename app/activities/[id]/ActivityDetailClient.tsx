@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { MapPin } from "lucide-react"
 import { MapSheet } from "@/components/map/MapSheet"
+import { HomeInfoSheet } from "@/components/homes/HomeInfoSheet"
 import Link from "next/link"
 import type { Home } from "@/lib/test-data"
 
@@ -19,24 +20,45 @@ export function HomeInformationCard({ home }: HomeInformationCardProps) {
     <>
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MapPin className="h-5 w-5" />
+          <CardTitle className="flex items-center gap-2 px-1">
+            
             Home Information
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            <div>
-              <h3 className="text-sm font-semibold">{home.code}</h3>
-              {home.name && <p className="text-sm text-muted-foreground">{home.name}</p>}
+            <div className="flex items-center gap-1">
+              <HomeInfoSheet
+                homeId={home.id}
+                homeCode={home.code}
+                homeName={home.name}
+              >
+                <button className="text-sm font-semibold text-primary underline hover:text-primary/80 transition-colors text-left">
+                  {home.code}
+                </button>
+              </HomeInfoSheet>
+              {home.name && (
+                <>
+                  <span className="text-sm text-muted-foreground">•</span>
+                  <HomeInfoSheet
+                    homeId={home.id}
+                    homeCode={home.code}
+                    homeName={home.name}
+                  >
+                    <button className="text-sm text-muted-foreground underline hover:text-primary/80 transition-colors text-left">
+                      {home.name}
+                    </button>
+                  </HomeInfoSheet>
+                </>
+              )}
             </div>
             <div>
-              <p className="text-sm text-muted-foreground mb-1">Address</p>
+       
               <button
                 onClick={() => setMapSheetOpen(true)}
-                className="flex items-center gap-1 text-sm font-medium hover:text-primary transition-colors"
+                className="flex items-start gap-1 text-sm font-medium hover:text-primary transition-colors text-left"
               >
-                <MapPin className="h-3 w-3" />
+                <MapPin className="h-5 w-5" />
                 <span className="underline">{home.address}, {home.city}</span>
               </button>
             </div>

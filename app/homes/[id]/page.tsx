@@ -1,9 +1,12 @@
-import { notFound } from "next/navigation"
-import { testHomes, getBookingsForHome, getActivitiesForHome } from "@/lib/test-data"
+"use client"
+
+import { use } from "react"
+import { useData } from "@/lib/data/DataProvider"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Breadcrumbs } from "@/components/navigation/Breadcrumbs"
 import { BackButton } from "@/components/navigation/BackButton"
 import { HomeEssentials } from "@/components/homes/HomeEssentials"
@@ -30,16 +33,52 @@ interface HomeDetailPageProps {
   params: Promise<{ id: string }>
 }
 
-export default async function HomeDetailPage({ params }: HomeDetailPageProps) {
-  const { id } = await params
-  const home = testHomes.find(h => h.id === id)
+function HomeDetailSkeleton() {
+  return (
+    <div className="container mx-auto px-4 py-6 md:py-8">
+      <div className="space-y-4">
+        <Skeleton className="h-6 w-48" />
+        <div className="flex items-start gap-4">
+          <div className="flex-1">
+            <Skeleton className="h-8 w-3/4" />
+            <Skeleton className="h-4 w-1/2 mt-1" />
+          </div>
+          <Skeleton className="h-6 w-24" />
+        </div>
+        <Skeleton className="h-64 w-full" />
+      </div>
+    </div>
+  )
+}
 
-  if (!home) {
-    notFound()
+function HomeNotFound() {
+  return (
+    <div className="container mx-auto px-4 py-6 md:py-8 text-center">
+      <h1 className="text-2xl font-bold mb-4">Home Not Found</h1>
+      <p className="text-muted-foreground mb-6">The home you are looking for does not exist or has been removed.</p>
+      <Link href="/catalog?tab=homes">
+        <Button>Go to Homes Catalog</Button>
+      </Link>
+    </div>
+  )
+}
+
+export default function HomeDetailPage({ params }: HomeDetailPageProps) {
+  const { id } = use(params)
+  const { homes, bookings, activities, isLoading } = useData()
+
+  if (isLoading) {
+    return <HomeDetailSkeleton />
   }
 
-  const bookings = getBookingsForHome(id)
-  const activities = getActivitiesForHome(id)
+  const home = homes.find(h => h.id === id)
+
+  if (!home) {
+    return <HomeNotFound />
+  }
+
+  const homeBookings = bookings.filter(b => b.homeCode === home.code)
+  const homeActivities = activities.filter(a => a.homeCode === home.code)
   const statusInfo = statusConfig[home.status]
 
   const breadcrumbs = [
@@ -48,22 +87,24 @@ export default async function HomeDetailPage({ params }: HomeDetailPageProps) {
   ]
 
   return (
-    <div className="container mx-auto px-4 py-6 md:py-8">
-      <div className="space-y-6">
+    <div className="container mx-auto px-4 py-4 md:py-4">
+      <div className="space-y-4">
         {/* Breadcrumbs */}
         <Breadcrumbs items={breadcrumbs} />
 
         {/* Header */}
         <div className="flex items-start gap-4">
-         
           <div className="flex-1">
-            <h1 className="text-2xl font-bold">{home.code}</h1>
-            {home.name && <p className="text-muted-foreground mt-1">{home.name}</p>}
+            <h1 className="text-lg font-bold">
+              <span className="text-primary">{home.code}</span>
+              {home.name && (
+                <span className="text-muted-foreground ml-2">• {home.name}</span>
+              )}
+            </h1>
           </div>
-          <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           {/* Home Activities CTA */}
           <HomeActivitiesSheet 
             homeId={home.id} 
@@ -110,32 +151,32 @@ export default async function HomeDetailPage({ params }: HomeDetailPageProps) {
               <Tabs defaultValue="bookings" className="w-full">
                 <TabsList>
                   <TabsTrigger value="bookings">
-                    Bookings ({bookings.length})
+                    Bookings ({homeBookings.length})
                   </TabsTrigger>
                   <TabsTrigger value="activities">
-                    Activities ({activities.length})
+                    Activities ({homeActivities.length})
                   </TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="bookings" className="space-y-4 mt-4">
-                  {bookings.length === 0 ? (
+                  {homeBookings.length === 0 ? (
                     <Card>
                       <CardContent className="p-8 text-center">
                         <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
-                        <p className="text-muted-foreground">No bookings for this home</p>
+                        <p className="text-xs text-muted-foreground">No bookings for this home</p>
                       </CardContent>
                     </Card>
                   ) : (
-                    bookings.map((booking) => (
+                    homeBookings.map((booking) => (
                       <Card key={booking.id}>
                         <CardContent className="p-4">
                           <div className="flex items-center justify-between">
                             <div>
                               <Link href={`/bookings/${booking.id}`}>
-                                <h3 className="font-semibold hover:underline">{booking.bookingId}</h3>
+                                <h3 className="text-xl font-semibold hover:underline">{booking.bookingId}</h3>
                               </Link>
-                              <p className="text-sm text-muted-foreground">{booking.guestName}</p>
-                              <div className="flex items-center gap-4 mt-2 text-sm">
+                              <p className="text-xs text-muted-foreground">{booking.guestName}</p>
+                              <div className="flex items-center gap-4 mt-2 text-xs">
                                 <span>
                                   Check-in: {booking.checkIn.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                                 </span>
@@ -155,23 +196,23 @@ export default async function HomeDetailPage({ params }: HomeDetailPageProps) {
                 </TabsContent>
 
                 <TabsContent value="activities" className="space-y-4 mt-4">
-                  {activities.length === 0 ? (
+                  {homeActivities.length === 0 ? (
                     <Card>
                       <CardContent className="p-8 text-center">
                         <Target className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
-                        <p className="text-muted-foreground">No activities for this home</p>
+                        <p className="text-xs text-muted-foreground">No activities for this home</p>
                       </CardContent>
                     </Card>
                   ) : (
-                    activities.map((activity) => (
+                    homeActivities.map((activity) => (
                       <Card key={activity.id}>
                         <CardContent className="p-4">
                           <div className="flex items-center justify-between">
                             <div>
                               <Link href={`/activities/${activity.id}`}>
-                                <h3 className="font-semibold hover:underline">{activity.title}</h3>
+                                <h3 className="text-xl font-semibold hover:underline">{activity.title}</h3>
                               </Link>
-                              <p className="text-sm text-muted-foreground">
+                              <p className="text-xs text-muted-foreground">
                                 {activity.scheduledTime.toLocaleDateString('en-US', { 
                                   month: 'short', 
                                   day: 'numeric',
@@ -205,7 +246,7 @@ export default async function HomeDetailPage({ params }: HomeDetailPageProps) {
             </div>
 
             {/* Sidebar */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               <Card>
                 <CardHeader>
                   <CardTitle>Quick Actions</CardTitle>

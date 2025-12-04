@@ -219,11 +219,11 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
               <div className="flex items-start justify-between gap-4">
                 {/* Left: Title and Details */}
                 <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-base">
+                    <h3 className="font-bold text-lg">
                       {typeConfig.label}
                     </h3>
                     <div className="gap-1">
-                      <div className="text-sm text-muted-foreground mb-2">
+                      <div className="text-xs text-muted-foreground mb-2">
                         <HomeInfoSheet
                           homeId={home?.id || activity.homeCode}
                           homeCode={activity.homeCode}
@@ -240,9 +240,9 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
                       {home && (
                         <button
                           onClick={(e) => handleShowMap(e, activity.homeCode)}
-                          className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mb-2"
+                          className="flex items-start gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mb-2 text-left"
                         >
-                          <MapPin className="h-3 w-3" />
+                          <MapPin className="h-5 w-5" />
                           <span className="underline">{home.address}, {home.city}</span>
                         </button>
                       )}
@@ -270,7 +270,7 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
                     {statusInfo.label}
                   </Badge>
 
-                  <div className="text-sm text-muted-foreground pr-1">
+                  <div className="text-xs text-muted-foreground pr-1">
                     <span>{timeString}</span>
                   </div>
                 </div>
@@ -282,7 +282,7 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
                   <Button
                     size="lg"
                     variant="secondary"
-                    className="w-full h-12 rounded-lg font-medium text-base"
+                    className="w-full h-10 rounded-lg font-medium text-base"
                   >
                     {typeConfig.label}
                   </Button>
@@ -293,7 +293,7 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
                   <Button
                     size="lg"
                     variant="secondary"
-                    className="w-full h-12 rounded-lg font-medium text-base gap-2"
+                    className="w-full h-10 rounded-lg font-medium text-base gap-2"
                   >
                     <Pause className="h-4 w-4" />
                     {typeConfig.label}
