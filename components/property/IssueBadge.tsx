@@ -12,10 +12,11 @@ interface IssueBadgeProps {
 export function IssueBadge({ count, priority = "medium", className }: IssueBadgeProps) {
   if (count === 0) return null
 
-  const variantClasses = {
-    low: "bg-orange-500 text-white",
+  const variantClasses: Record<PropertyIssuePriority, string> = {
+    urgent: "bg-red-600 text-white animate-pulse",
+    high: "bg-red-500 text-white",
     medium: "bg-orange-500 text-white",
-    high: "bg-red-500 text-white"
+    low: "bg-yellow-500 text-white"
   }
 
   return (

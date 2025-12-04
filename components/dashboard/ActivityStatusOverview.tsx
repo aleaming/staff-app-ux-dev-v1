@@ -27,6 +27,7 @@ export function ActivityStatusOverview({
     paused: displayActivities.filter(a => a.status === "paused").length,
     abandoned: displayActivities.filter(a => a.status === "abandoned").length,
     cancelled: displayActivities.filter(a => a.status === "cancelled").length,
+    ignored: displayActivities.filter(a => a.status === "ignored").length,
   }
 
   const statusConfig = {
@@ -64,6 +65,12 @@ export function ActivityStatusOverview({
       label: "Cancelled",
       icon: AlertCircle,
       color: "bg-gray-500 dark:bg-gray-600",
+      variant: "outline" as const
+    },
+    ignored: {
+      label: "Ignored",
+      icon: AlertCircle,
+      color: "bg-slate-400 dark:bg-slate-600",
       variant: "outline" as const
     },
   }

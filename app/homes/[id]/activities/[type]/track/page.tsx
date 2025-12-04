@@ -22,14 +22,21 @@ export default function TrackActivityPage({ params }: TrackActivityPageProps) {
     params.then(async (p) => {
       setHomeId(p.id)
 
-      // Validate activity type
+      // Validate activity type - includes all documented types
       const validTypes: ActivityType[] = [
-        "adhoc",
-        "deprovisioning",
-        "meet-greet",
-        "maid-service",
         "provisioning",
-        "turn"
+        "deprovisioning",
+        "turn",
+        "maid-service",
+        "mini-maid",
+        "touch-up",
+        "quality-check",
+        "meet-greet",
+        "additional-greet",
+        "bag-drop",
+        "service-recovery",
+        "home-viewing",
+        "adhoc"
       ]
 
       if (validTypes.includes(p.type as ActivityType)) {

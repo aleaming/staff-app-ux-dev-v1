@@ -1,10 +1,13 @@
-import { notFound } from "next/navigation"
-import { getActivityById, getHomeByCode, getBookingByBookingId, type ActivityStatus } from "@/lib/test-data"
+"use client"
+
+import { use } from "react"
+import { useData } from "@/lib/data/DataProvider"
+import type { ActivityStatus } from "@/lib/test-data"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Breadcrumbs } from "@/components/navigation/Breadcrumbs"
-import { BackButton } from "@/components/navigation/BackButton"
 import { ReportIssueButton } from "@/components/property/ReportIssueButton"
 import { HomeInformationCard } from "./ActivityDetailClient"
 import {
@@ -17,51 +20,121 @@ import {
   RefreshCw,
   X,
   AlertCircle,
-  CheckCircle2
+  CheckCircle2,
+  AlertTriangle
 } from "lucide-react"
 import Link from "next/link"
 
-const activityTypeConfig = {
+const activityTypeConfig: Record<string, { label: string; icon: typeof Package; color: string }> = {
+  // Home preparation
   "provisioning": { label: "Provisioning", icon: Package, color: "var(--activity-provisioning)" },
-  "meet-greet": { label: "Meet & Greet", icon: Handshake, color: "var(--activity-greet)" },
+  "deprovisioning": { label: "Deprovisioning", icon: X, color: "var(--activity-deprovision)" },
   "turn": { label: "Turn", icon: RefreshCw, color: "var(--activity-turn)" },
-  "deprovision": { label: "Deprovision", icon: X, color: "var(--activity-deprovision)" },
-  "ad-hoc": { label: "Ad-hoc", icon: AlertCircle, color: "var(--activity-adhoc)" },
+  "maid-service": { label: "Maid Service", icon: RefreshCw, color: "var(--activity-maid)" },
+  "mini-maid": { label: "Mini-Maid", icon: RefreshCw, color: "var(--activity-mini-maid)" },
+  "touch-up": { label: "Touch-Up", icon: RefreshCw, color: "var(--activity-touch-up)" },
+  "quality-check": { label: "Quality Check", icon: AlertCircle, color: "var(--activity-quality-check)" },
+  // Guest welcoming
+  "meet-greet": { label: "Meet & Greet", icon: Handshake, color: "var(--activity-greet)" },
+  "additional-greet": { label: "Additional Greet", icon: Handshake, color: "var(--activity-additional-greet)" },
+  "bag-drop": { label: "Bag Drop", icon: Package, color: "var(--activity-bag-drop)" },
+  "service-recovery": { label: "Service Recovery", icon: AlertCircle, color: "var(--activity-service-recovery)" },
+  "home-viewing": { label: "Home Viewing", icon: Handshake, color: "var(--activity-home-viewing)" },
+  // Other
+  "adhoc": { label: "Ad-hoc", icon: AlertCircle, color: "var(--activity-adhoc)" },
 }
 
-// Map test-data activity types to template activity types
+// Map activity types to template types (unified)
 const activityTypeToTemplateType: Record<string, string> = {
   "provisioning": "provisioning",
-  "meet-greet": "meet-greet",
+  "deprovisioning": "deprovisioning",
   "turn": "turn",
-  "deprovision": "deprovisioning",
-  "ad-hoc": "adhoc",
+  "maid-service": "maid-service",
+  "mini-maid": "mini-maid",
+  "touch-up": "touch-up",
+  "quality-check": "quality-check",
+  "meet-greet": "meet-greet",
+  "additional-greet": "additional-greet",
+  "bag-drop": "bag-drop",
+  "service-recovery": "service-recovery",
+  "home-viewing": "home-viewing",
+  "adhoc": "adhoc",
 }
 
 const statusConfig: Record<ActivityStatus, { label: string; variant: "default" | "destructive" | "outline" | "secondary" }> = {
-  "to-start": { label: "To start", variant: "secondary" as const },
-  "in-progress": { label: "In progress", variant: "default" as const },
+  "to-start": { label: "To Start", variant: "secondary" as const },
+  "in-progress": { label: "In Progress", variant: "default" as const },
   "paused": { label: "Paused", variant: "secondary" as const },
   "abandoned": { label: "Abandoned", variant: "destructive" as const },
   "completed": { label: "Completed", variant: "outline" as const },
   "cancelled": { label: "Cancelled", variant: "outline" as const },
+  "ignored": { label: "Ignored", variant: "outline" as const },
+}
+
+function ActivityDetailSkeleton() {
+  return (
+    <div className="container mx-auto px-4 py-6 md:py-8">
+      <div className="space-y-6">
+        <Skeleton className="h-6 w-64" />
+        <div className="flex items-start gap-4">
+          <div className="flex-1">
+            <Skeleton className="h-8 w-48 mb-2" />
+            <Skeleton className="h-4 w-32" />
+          </div>
+          <Skeleton className="h-6 w-20" />
+        </div>
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2 space-y-6">
+            <Skeleton className="h-48 w-full rounded-lg" />
+            <Skeleton className="h-40 w-full rounded-lg" />
+          </div>
+          <Skeleton className="h-32 w-full rounded-lg" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ActivityNotFound() {
+  return (
+    <div className="container mx-auto px-4 py-6 md:py-8">
+      <div className="flex flex-col items-center justify-center min-h-[50vh] text-center">
+        <AlertTriangle className="h-16 w-16 text-muted-foreground mb-4" />
+        <h1 className="text-2xl font-bold mb-2">Activity Not Found</h1>
+        <p className="text-muted-foreground mb-6">
+          The activity you're looking for doesn't exist or has been removed.
+        </p>
+        <Button asChild>
+          <Link href="/activities">Back to Activities</Link>
+        </Button>
+      </div>
+    </div>
+  )
 }
 
 interface ActivityDetailPageProps {
   params: Promise<{ id: string }>
 }
 
-export default async function ActivityDetailPage({ params }: ActivityDetailPageProps) {
-  const { id } = await params
-  const activity = getActivityById(id)
+export default function ActivityDetailPage({ params }: ActivityDetailPageProps) {
+  const { id } = use(params)
+  const { activities, homes, bookings, isLoading } = useData()
 
-  if (!activity) {
-    notFound()
+  if (isLoading) {
+    return <ActivityDetailSkeleton />
   }
 
-  const home = getHomeByCode(activity.homeCode)
-  const booking = activity.bookingId ? getBookingByBookingId(activity.bookingId) : null
-  const typeConfig = activityTypeConfig[activity.type]
+  const activity = activities.find(a => a.id === id)
+
+  if (!activity) {
+    return <ActivityNotFound />
+  }
+
+  const home = homes.find(h => h.code === activity.homeCode)
+  const booking = activity.bookingId 
+    ? bookings.find(b => b.bookingId === activity.bookingId) 
+    : null
+  const typeConfig = activityTypeConfig[activity.type] || activityTypeConfig["adhoc"]
   const statusInfo = statusConfig[activity.status]
   const TypeIcon = typeConfig.icon
 
@@ -232,4 +305,3 @@ export default async function ActivityDetailPage({ params }: ActivityDetailPageP
     </div>
   )
 }
-

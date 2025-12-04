@@ -90,6 +90,8 @@ export function PlanMyDay() {
         return <Badge variant="destructive">Abandoned</Badge>
       case "cancelled":
         return <Badge variant="outline" className="bg-gray-50 dark:bg-gray-950 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-800">Cancelled</Badge>
+      case "ignored":
+        return <Badge variant="outline" className="bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-800">Ignored</Badge>
       default:
         return null
     }

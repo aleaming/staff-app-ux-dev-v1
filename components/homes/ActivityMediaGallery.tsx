@@ -26,10 +26,11 @@ import {
   Filter
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import type { ActivityType } from "@/lib/activity-templates"
 
 interface ActivityFolder {
   id: string
-  activityType: "provisioning" | "meet-greet" | "turn" | "deprovision" | "ad-hoc"
+  activityType: ActivityType
   date: Date
   status: "pending" | "in-progress" | "completed"
   photoCount: number

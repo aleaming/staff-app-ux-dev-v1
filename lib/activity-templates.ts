@@ -3,13 +3,24 @@
  * Defines the structure for each activity type with their required tasks
  */
 
+// Activity types - aligned with test-data.ts
+// Home preparation: provisioning, deprovisioning, turn, maid-service, mini-maid, touch-up, quality-check
+// Guest welcoming: meet-greet, additional-greet, bag-drop, service-recovery, home-viewing
+// Other: adhoc
 export type ActivityType = 
-  | "adhoc"
-  | "deprovisioning"
-  | "meet-greet"
-  | "maid-service"
   | "provisioning"
+  | "deprovisioning"
   | "turn"
+  | "maid-service"
+  | "mini-maid"
+  | "touch-up"
+  | "quality-check"
+  | "meet-greet"
+  | "additional-greet"
+  | "bag-drop"
+  | "service-recovery"
+  | "home-viewing"
+  | "adhoc"
 
 export type TaskAction = 
   | "Check"
@@ -465,6 +476,278 @@ export const activityTemplates: Record<ActivityType, ActivityTemplate> = {
         dependencies: ["turn-6"]
       }
     ]
+  },
+  "mini-maid": {
+    type: "mini-maid",
+    name: "Mini-maid",
+    description: "Light cleaning and tidying during a stay",
+    estimatedTotalTime: 45,
+    tasks: [
+      {
+        id: "mm-1",
+        name: "Tidy Living Areas",
+        description: "Straighten up living room and common areas",
+        required: true,
+        estimatedTime: 10,
+        photoRequired: false,
+        order: 1
+      },
+      {
+        id: "mm-2",
+        name: "Light Bathroom Clean",
+        description: "Wipe down surfaces, refresh towels",
+        required: true,
+        estimatedTime: 15,
+        photoRequired: true,
+        photoCount: 1,
+        order: 2
+      },
+      {
+        id: "mm-3",
+        name: "Kitchen Surface Wipe",
+        description: "Wipe down kitchen counters and sink",
+        required: true,
+        estimatedTime: 10,
+        photoRequired: false,
+        order: 3
+      },
+      {
+        id: "mm-4",
+        name: "Rubbish Removal",
+        description: "Empty bins and remove any refuse",
+        required: true,
+        estimatedTime: 10,
+        photoRequired: false,
+        order: 4
+      }
+    ]
+  },
+  "touch-up": {
+    type: "touch-up",
+    name: "Touch-up",
+    description: "Minor adjustments or quick fixes",
+    estimatedTotalTime: 20,
+    tasks: [
+      {
+        id: "tu-1",
+        name: "Identify Area",
+        description: "Locate the area requiring a touch-up",
+        required: true,
+        estimatedTime: 5,
+        photoRequired: true,
+        photoCount: 1,
+        order: 1
+      },
+      {
+        id: "tu-2",
+        name: "Perform Touch-up",
+        description: "Execute the necessary minor fix or adjustment",
+        required: true,
+        estimatedTime: 10,
+        photoRequired: true,
+        photoCount: 1,
+        order: 2
+      },
+      {
+        id: "tu-3",
+        name: "Verify Result",
+        description: "Ensure the touch-up is satisfactory",
+        required: true,
+        estimatedTime: 5,
+        photoRequired: false,
+        order: 3
+      }
+    ]
+  },
+  "quality-check": {
+    type: "quality-check",
+    name: "Quality Check",
+    description: "Final quality inspection of the home",
+    estimatedTotalTime: 30,
+    tasks: [
+      {
+        id: "qc-1",
+        name: "Overall Cleanliness Check",
+        description: "Verify all areas are clean and tidy",
+        required: true,
+        estimatedTime: 10,
+        photoRequired: true,
+        photoCount: 3,
+        order: 1
+      },
+      {
+        id: "qc-2",
+        name: "Functionality Check",
+        description: "Test appliances, lights, and electronics",
+        required: true,
+        estimatedTime: 10,
+        photoRequired: false,
+        order: 2
+      },
+      {
+        id: "qc-3",
+        name: "Amenity Stock Check",
+        description: "Ensure all amenities are stocked and presented correctly",
+        required: true,
+        estimatedTime: 5,
+        photoRequired: true,
+        photoCount: 2,
+        order: 3
+      },
+      {
+        id: "qc-4",
+        name: "Security Check",
+        description: "Verify all doors and windows are secure",
+        required: true,
+        estimatedTime: 5,
+        photoRequired: false,
+        order: 4
+      }
+    ]
+  },
+  "additional-greet": {
+    type: "additional-greet",
+    name: "Additional Greet",
+    description: "Greeting for additional guests or follow-up",
+    estimatedTotalTime: 20,
+    tasks: [
+      {
+        id: "ag-1",
+        name: "Welcome Additional Guest",
+        description: "Greet and assist additional arriving guests",
+        required: true,
+        estimatedTime: 10,
+        photoRequired: false,
+        order: 1
+      },
+      {
+        id: "ag-2",
+        name: "Provide Information",
+        description: "Answer questions and provide any needed information",
+        required: true,
+        estimatedTime: 10,
+        photoRequired: false,
+        order: 2
+      }
+    ]
+  },
+  "bag-drop": {
+    type: "bag-drop",
+    name: "Bag Drop",
+    description: "Guest bag drop-off service",
+    estimatedTotalTime: 15,
+    tasks: [
+      {
+        id: "bd-1",
+        name: "Receive Bags",
+        description: "Collect guest luggage and store securely",
+        required: true,
+        estimatedTime: 5,
+        photoRequired: true,
+        photoCount: 2,
+        order: 1
+      },
+      {
+        id: "bd-2",
+        name: "Document Drop-off",
+        description: "Record bag count and condition",
+        required: true,
+        estimatedTime: 5,
+        photoRequired: true,
+        photoCount: 1,
+        order: 2
+      },
+      {
+        id: "bd-3",
+        name: "Confirm Storage",
+        description: "Ensure bags are safely stored until guest arrival",
+        required: true,
+        estimatedTime: 5,
+        photoRequired: false,
+        order: 3
+      }
+    ]
+  },
+  "service-recovery": {
+    type: "service-recovery",
+    name: "Service Recovery",
+    description: "Addressing guest issues or complaints",
+    estimatedTotalTime: 45,
+    tasks: [
+      {
+        id: "sr-1",
+        name: "Understand Issue",
+        description: "Listen to guest's concern and understand the problem",
+        required: true,
+        estimatedTime: 10,
+        photoRequired: false,
+        order: 1
+      },
+      {
+        id: "sr-2",
+        name: "Propose Solution",
+        description: "Offer a solution or course of action",
+        required: true,
+        estimatedTime: 15,
+        photoRequired: false,
+        order: 2
+      },
+      {
+        id: "sr-3",
+        name: "Implement Solution",
+        description: "Execute the agreed-upon solution",
+        required: true,
+        estimatedTime: 15,
+        photoRequired: true,
+        photoCount: 2,
+        order: 3
+      },
+      {
+        id: "sr-4",
+        name: "Follow-up",
+        description: "Ensure guest satisfaction after resolution",
+        required: true,
+        estimatedTime: 5,
+        photoRequired: false,
+        order: 4
+      }
+    ]
+  },
+  "home-viewing": {
+    type: "home-viewing",
+    name: "Home Viewing",
+    description: "Preparing and conducting a home viewing for potential clients",
+    estimatedTotalTime: 60,
+    tasks: [
+      {
+        id: "hv-1",
+        name: "Prepare Home",
+        description: "Ensure home is clean, tidy, and presentable for viewing",
+        required: true,
+        estimatedTime: 20,
+        photoRequired: true,
+        photoCount: 3,
+        order: 1
+      },
+      {
+        id: "hv-2",
+        name: "Conduct Tour",
+        description: "Guide potential clients through the property, highlighting key features",
+        required: true,
+        estimatedTime: 30,
+        photoRequired: false,
+        order: 2
+      },
+      {
+        id: "hv-3",
+        name: "Answer Questions",
+        description: "Address any queries from clients",
+        required: true,
+        estimatedTime: 10,
+        photoRequired: false,
+        order: 3
+      }
+    ]
   }
 }
 
@@ -474,17 +757,16 @@ export const activityTemplates: Record<ActivityType, ActivityTemplate> = {
  * @param propertyCode Optional property code for property-specific templates (e.g., "COS285", "ALB134")
  */
 export function getActivityTemplate(type: ActivityType, propertyCode?: string): ActivityTemplate {
-  // For provisioning with a property code, check for property-specific data
-  if (type === "provisioning" && propertyCode) {
+  // For provisioning activities, always use the phased template as default
+  if (type === "provisioning") {
     try {
-      // Try to load property-specific provisioning data
-      // For now, we only have COS285
-      if (propertyCode === "COS285") {
-        const { cos285ProvisioningData } = require("./provisioning-data/cos285")
-        return cos285ProvisioningData
-      }
+      // Use COS285 phased template as the default for all provisioning activities
+      // This provides a comprehensive arrive/during/depart phased checklist
+      const { cos285ProvisioningData } = require("./provisioning-data/cos285")
+      return cos285ProvisioningData
     } catch (error) {
-      console.warn(`No property-specific data found for ${propertyCode}, using default template`)
+      console.warn(`Failed to load provisioning template, using default`, error)
+      return activityTemplates[type]
     }
   }
   

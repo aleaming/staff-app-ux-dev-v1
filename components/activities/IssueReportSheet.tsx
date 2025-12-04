@@ -27,8 +27,8 @@ import {
   RadioGroupItem,
 } from "@/components/ui/radio-group"
 
-export type IssueType = "damage" | "malfunction" | "maintenance" | "missing-item" | "cleaning" | "other"
-export type IssuePriority = "low" | "medium" | "high"
+export type IssueType = "damage" | "malfunction" | "maintenance" | "missing-item" | "cleaning"
+export type IssuePriority = "urgent" | "high" | "medium" | "low"
 
 interface IssueReportSheetProps {
   homeId: string
@@ -65,8 +65,14 @@ export function IssueReportSheet({
     { value: "malfunction", label: "Malfunction" },
     { value: "maintenance", label: "Maintenance Needed" },
     { value: "missing-item", label: "Missing Item" },
-    { value: "cleaning", label: "Cleaning Issue" },
-    { value: "other", label: "Other" }
+    { value: "cleaning", label: "Cleaning Issue" }
+  ]
+
+  const priorityOptions: { value: IssuePriority; label: string; description: string }[] = [
+    { value: "urgent", label: "Urgent", description: "Safety hazard" },
+    { value: "high", label: "High", description: "Affects guest stay" },
+    { value: "medium", label: "Medium", description: "Should be addressed" },
+    { value: "low", label: "Low", description: "Minor issue" }
   ]
 
   const locationOptions = [
@@ -102,17 +108,21 @@ export function IssueReportSheet({
   }
 
   const handleSubmit = async () => {
-    if (!issueType || !location || !itemAffected || !description.trim()) {
-      alert("Please fill in all required fields")
+    if (!issueType || !location || !itemAffected || !description.trim() || photos.length === 0) {
+      alert("Please fill in all required fields and add at least one photo")
       return
     }
 
     setIsSubmitting(true)
 
     try {
+      // Generate ticket number: ISS-{timestamp in base36}
+      const ticketNumber = `ISS-${Date.now().toString(36).toUpperCase()}`
+      
       // Save issue report to localStorage (in production, this would be an API call)
       const issueReport = {
         id: `issue-${Date.now()}`,
+        ticketNumber,
         homeId,
         homeCode,
         homeName,
@@ -141,8 +151,8 @@ export function IssueReportSheet({
         localStorage.setItem(issuesKey, JSON.stringify([...existingIssues, issueReport]))
       }
 
-      // Show success message
-      alert("Issue reported successfully!")
+      // Show success message with ticket number
+      alert(`Issue #${ticketNumber} created successfully!`)
       
       // Close the sheet
       onClose()
@@ -154,7 +164,7 @@ export function IssueReportSheet({
     }
   }
 
-  const canSubmit = issueType && location && itemAffected.trim() && description.trim()
+  const canSubmit = issueType && location && itemAffected.trim() && description.trim() && photos.length > 0
 
   return (
     <div className="space-y-6 pb-24">
@@ -246,24 +256,15 @@ export function IssueReportSheet({
         </CardHeader>
         <CardContent>
           <RadioGroup value={priority} onValueChange={(value) => setPriority(value as IssuePriority)}>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="low" id="low" />
-              <Label htmlFor="low" className="font-normal cursor-pointer">
-                Low
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="medium" id="medium" />
-              <Label htmlFor="medium" className="font-normal cursor-pointer">
-                Medium
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="high" id="high" />
-              <Label htmlFor="high" className="font-normal cursor-pointer">
-                High
-              </Label>
-            </div>
+            {priorityOptions.map((option) => (
+              <div key={option.value} className="flex items-start space-x-2 py-1">
+                <RadioGroupItem value={option.value} id={option.value} className="mt-0.5" />
+                <Label htmlFor={option.value} className="font-normal cursor-pointer flex flex-col">
+                  <span className="font-medium">{option.label}</span>
+                  <span className="text-xs text-muted-foreground">{option.description}</span>
+                </Label>
+              </div>
+            ))}
           </RadioGroup>
         </CardContent>
       </Card>
@@ -271,7 +272,8 @@ export function IssueReportSheet({
       {/* Photos */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Photos (Optional)</CardTitle>
+          <CardTitle className="text-base">Photos (Required)</CardTitle>
+          <p className="text-xs text-muted-foreground">At least 1 photo is required</p>
         </CardHeader>
         <CardContent className="space-y-4">
           <PhotoUploader

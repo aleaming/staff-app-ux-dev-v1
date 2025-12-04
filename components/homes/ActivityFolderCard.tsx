@@ -17,9 +17,11 @@ import {
 } from "lucide-react"
 import { ActivityMediaGallery } from "./ActivityMediaGallery"
 
+import type { ActivityType } from "@/lib/activity-templates"
+
 interface ActivityFolder {
   id: string
-  activityType: "provisioning" | "meet-greet" | "turn" | "deprovision" | "ad-hoc"
+  activityType: ActivityType
   date: Date
   status: "pending" | "in-progress" | "completed"
   photoCount: number
@@ -32,32 +34,23 @@ interface ActivityFolderCardProps {
   homeCode: string
 }
 
-const activityTypeConfig = {
-  "provisioning": { 
-    label: "Provisioning", 
-    icon: Package, 
-    color: "var(--activity-provisioning)" 
-  },
-  "meet-greet": { 
-    label: "Meet & Greet", 
-    icon: Handshake, 
-    color: "var(--activity-greet)" 
-  },
-  "turn": { 
-    label: "Turn", 
-    icon: RefreshCw, 
-    color: "var(--activity-turn)" 
-  },
-  "deprovision": { 
-    label: "Deprovision", 
-    icon: XIcon, 
-    color: "var(--activity-deprovision)" 
-  },
-  "ad-hoc": { 
-    label: "Ad-hoc", 
-    icon: AlertCircle, 
-    color: "var(--activity-adhoc)" 
-  },
+const activityTypeConfig: Record<string, { label: string; icon: typeof Package; color: string }> = {
+  // Home preparation
+  "provisioning": { label: "Provisioning", icon: Package, color: "var(--activity-provisioning)" },
+  "deprovisioning": { label: "Deprovisioning", icon: XIcon, color: "var(--activity-deprovision)" },
+  "turn": { label: "Turn", icon: RefreshCw, color: "var(--activity-turn)" },
+  "maid-service": { label: "Maid Service", icon: RefreshCw, color: "var(--activity-maid)" },
+  "mini-maid": { label: "Mini-Maid", icon: RefreshCw, color: "var(--activity-mini-maid)" },
+  "touch-up": { label: "Touch-Up", icon: RefreshCw, color: "var(--activity-touch-up)" },
+  "quality-check": { label: "Quality Check", icon: AlertCircle, color: "var(--activity-quality-check)" },
+  // Guest welcoming
+  "meet-greet": { label: "Meet & Greet", icon: Handshake, color: "var(--activity-greet)" },
+  "additional-greet": { label: "Additional Greet", icon: Handshake, color: "var(--activity-additional-greet)" },
+  "bag-drop": { label: "Bag Drop", icon: Package, color: "var(--activity-bag-drop)" },
+  "service-recovery": { label: "Service Recovery", icon: AlertCircle, color: "var(--activity-service-recovery)" },
+  "home-viewing": { label: "Home Viewing", icon: Handshake, color: "var(--activity-home-viewing)" },
+  // Other
+  "adhoc": { label: "Ad-hoc", icon: AlertCircle, color: "var(--activity-adhoc)" },
 }
 
 export function ActivityFolderCard({ activity, homeCode }: ActivityFolderCardProps) {

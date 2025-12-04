@@ -40,9 +40,13 @@ interface ActiveActivity {
 export function BottomNav() {
   const { trigger } = useHapticFeedback()
   const pathname = usePathname()
+  // Initialize with null to match SSR - will be updated in useEffect
   const [activeActivity, setActiveActivity] = useState<ActiveActivity | null>(null)
+  const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
+    setIsMounted(true)
+    
     // Check for active activity in localStorage
     const checkForActiveActivity = () => {
       if (typeof window === "undefined") return
@@ -109,7 +113,8 @@ export function BottomNav() {
     }
   }, [])
 
-  const currentActivityHref = activeActivity
+  // Use a consistent href during SSR and initial client render
+  const currentActivityHref = isMounted && activeActivity
     ? `/homes/${activeActivity.homeId}/activities/${activeActivity.activityType}/track${activeActivity.bookingId ? `?bookingId=${activeActivity.bookingId}` : ''}`
     : "/activities"
 
@@ -185,6 +190,7 @@ export function BottomNav() {
               !activeActivity && "opacity-50"
             )}
             aria-label="Current Activity"
+            suppressHydrationWarning
           >
             <div className="relative">
               <Play className={cn(
