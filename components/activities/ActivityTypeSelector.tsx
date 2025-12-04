@@ -22,13 +22,20 @@ interface ActivityTypeSelectorProps {
   onCancel?: () => void
 }
 
-const activityIcons = {
+const activityIcons: Record<string, typeof Wrench> = {
   "adhoc": Wrench,
   "deprovisioning": LogOut,
   "meet-greet": Handshake,
   "maid-service": Sparkles,
   "provisioning": Package,
-  "turn": RefreshCw
+  "turn": RefreshCw,
+  "quality-check": CheckCircle2,
+  "mini-maid": Sparkles,
+  "touch-up": Sparkles,
+  "additional-greet": Handshake,
+  "bag-drop": Package,
+  "service-recovery": Wrench,
+  "home-viewing": Handshake,
 }
 
 export function ActivityTypeSelector({ 
@@ -37,13 +44,14 @@ export function ActivityTypeSelector({
   onSelect, 
   onCancel 
 }: ActivityTypeSelectorProps) {
+  // Show only the main activity types that have templates
   const activityTypes: ActivityType[] = [
-    "adhoc",
-    "deprovisioning",
-    "meet-greet",
-    "maid-service",
     "provisioning",
-    "turn"
+    "deprovisioning",
+    "turn",
+    "maid-service",
+    "meet-greet",
+    "adhoc"
   ]
 
   return (

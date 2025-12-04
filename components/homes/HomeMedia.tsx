@@ -65,7 +65,7 @@ const mockActivityFolders = [
   },
   {
     id: "4",
-    activityType: "deprovision" as const,
+    activityType: "deprovisioning" as const,
     date: new Date("2024-01-05T11:00:00"),
     status: "completed" as const,
     photoCount: 18,
@@ -74,7 +74,7 @@ const mockActivityFolders = [
   },
   {
     id: "5",
-    activityType: "ad-hoc" as const,
+    activityType: "adhoc" as const,
     date: new Date("2024-01-03T13:30:00"),
     status: "completed" as const,
     photoCount: 5,
@@ -119,10 +119,11 @@ export function HomeMedia({ homeCode }: HomeMediaProps) {
 
   const activityTypes = [
     { type: "provisioning", label: "Provisioning", icon: Package },
-    { type: "meet-greet", label: "Meet & Greet", icon: Handshake },
+    { type: "deprovisioning", label: "Deprovisioning", icon: XIcon },
     { type: "turn", label: "Turn", icon: RefreshCw },
-    { type: "deprovision", label: "Deprovision", icon: XIcon },
-    { type: "ad-hoc", label: "Ad-hoc", icon: AlertCircle }
+    { type: "maid-service", label: "Maid Service", icon: RefreshCw },
+    { type: "meet-greet", label: "Meet & Greet", icon: Handshake },
+    { type: "adhoc", label: "Ad-hoc", icon: AlertCircle }
   ]
 
   const toggleFilter = (type: string) => {

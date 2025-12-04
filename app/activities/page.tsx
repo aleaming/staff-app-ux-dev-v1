@@ -1,12 +1,13 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { testActivities, testBookings, testHomes } from "@/lib/test-data"
+import { useData } from "@/lib/data/DataProvider"
 import { getIncompleteActivities } from "@/lib/activity-utils"
 import type { Activity } from "@/lib/test-data"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Package,
   Handshake,
@@ -20,33 +21,72 @@ import {
 import Link from "next/link"
 import { HomeInfoSheet } from "@/components/homes/HomeInfoSheet"
 
-const activityTypeConfig = {
+const activityTypeConfig: Record<string, { label: string; icon: typeof Package; color: string }> = {
+  // Home preparation
   "provisioning": { label: "Provisioning", icon: Package, color: "var(--activity-provisioning)" },
-  "meet-greet": { label: "Meet & Greet", icon: Handshake, color: "var(--activity-greet)" },
+  "deprovisioning": { label: "Deprovisioning", icon: X, color: "var(--activity-deprovision)" },
   "turn": { label: "Turn", icon: RefreshCw, color: "var(--activity-turn)" },
-  "deprovision": { label: "Deprovision", icon: X, color: "var(--activity-deprovision)" },
-  "ad-hoc": { label: "Ad-hoc", icon: AlertCircle, color: "var(--activity-adhoc)" },
+  "maid-service": { label: "Maid Service", icon: RefreshCw, color: "var(--activity-maid)" },
+  "mini-maid": { label: "Mini-Maid", icon: RefreshCw, color: "var(--activity-mini-maid)" },
+  "touch-up": { label: "Touch-Up", icon: RefreshCw, color: "var(--activity-touch-up)" },
+  "quality-check": { label: "Quality Check", icon: AlertCircle, color: "var(--activity-quality-check)" },
+  // Guest welcoming
+  "meet-greet": { label: "Meet & Greet", icon: Handshake, color: "var(--activity-greet)" },
+  "additional-greet": { label: "Additional Greet", icon: Handshake, color: "var(--activity-additional-greet)" },
+  "bag-drop": { label: "Bag Drop", icon: Package, color: "var(--activity-bag-drop)" },
+  "service-recovery": { label: "Service Recovery", icon: AlertCircle, color: "var(--activity-service-recovery)" },
+  "home-viewing": { label: "Home Viewing", icon: Handshake, color: "var(--activity-home-viewing)" },
+  // Other
+  "adhoc": { label: "Ad-hoc", icon: AlertCircle, color: "var(--activity-adhoc)" },
 }
 
-// Map test-data activity types to template activity types
+// Map activity types to template types (unified, but kept for backwards compatibility)
 const activityTypeToTemplateType: Record<string, string> = {
   "provisioning": "provisioning",
-  "meet-greet": "meet-greet",
+  "deprovisioning": "deprovisioning",
   "turn": "turn",
-  "deprovision": "deprovisioning",
-  "ad-hoc": "adhoc",
+  "maid-service": "maid-service",
+  "mini-maid": "mini-maid",
+  "touch-up": "touch-up",
+  "quality-check": "quality-check",
+  "meet-greet": "meet-greet",
+  "additional-greet": "additional-greet",
+  "bag-drop": "bag-drop",
+  "service-recovery": "service-recovery",
+  "home-viewing": "home-viewing",
+  "adhoc": "adhoc",
 }
 
 const statusConfig = {
-  "to-start": { label: "To start", variant: "secondary" as const },
-  "in-progress": { label: "In progress", variant: "default" as const },
+  "to-start": { label: "To Start", variant: "secondary" as const },
+  "in-progress": { label: "In Progress", variant: "default" as const },
   "paused": { label: "Paused", variant: "secondary" as const },
   "abandoned": { label: "Abandoned", variant: "destructive" as const },
   "completed": { label: "Completed", variant: "outline" as const },
   "cancelled": { label: "Cancelled", variant: "outline" as const },
+  "ignored": { label: "Ignored", variant: "outline" as const },
+}
+
+function ActivitiesSkeleton() {
+  return (
+    <div className="container mx-auto px-4 py-8 max-w-full">
+      <div className="space-y-8">
+        <div className="space-y-4">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-4 w-64" />
+          <div className="flex flex-col gap-4">
+            {[...Array(3)].map((_, i) => (
+              <Skeleton key={i} className="h-32 w-full rounded-lg" />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export default function ActivitiesPage() {
+  const { activities, homes, bookings, isLoading } = useData()
   const [incompleteActivities, setIncompleteActivities] = useState<Activity[]>([])
 
   useEffect(() => {
@@ -54,10 +94,14 @@ export default function ActivitiesPage() {
     setIncompleteActivities(incomplete)
   }, [])
 
+  if (isLoading) {
+    return <ActivitiesSkeleton />
+  }
+
   // Filter activities by category
-  const startedActivities = [...incompleteActivities, ...testActivities.filter(a => a.status === "in-progress")]
-  const myActivities = testActivities.filter(a => a.assignedTo === "Alex" && a.status !== "completed")
-  const allActivities = testActivities
+  const startedActivities = [...incompleteActivities, ...activities.filter(a => a.status === "in-progress")]
+  const myActivities = activities.filter(a => a.assignedTo === "Alex" && a.status !== "completed")
+  const allActivities = activities
 
   const renderActivity = (activity: Activity) => {
     const typeConfig = activityTypeConfig[activity.type as keyof typeof activityTypeConfig]
@@ -65,9 +109,8 @@ export default function ActivitiesPage() {
 
     if (!typeConfig || !statusInfo) return null
 
-    const TypeIcon = typeConfig.icon
-    const home = testHomes.find(h => h.code === activity.homeCode)
-    const booking = activity.bookingId ? testBookings.find(b => b.bookingId === activity.bookingId) : null
+    const home = homes.find(h => h.code === activity.homeCode)
+    const booking = activity.bookingId ? bookings.find(b => b.bookingId === activity.bookingId) : null
     const timeString = activity.scheduledTime.toLocaleTimeString('en-US', {
       hour: 'numeric',
       minute: '2-digit'
@@ -75,20 +118,16 @@ export default function ActivitiesPage() {
 
     return (
       <div key={activity.id} className="pb-4 last:pb-0">
-        <Card className="hover:bg-white/80 dark:hover:bg-black/50 transition-colors">
+        <Card 
+          className="hover:bg-white/80 dark:hover:bg-black/50 transition-colors overflow-hidden border-l-[6px]"
+          style={{ borderLeftColor: typeConfig.color }}
+        >
           <CardContent className="p-4 sm:p-5">
             <div className="space-y-4">
-              {/* Top Section: Icon, Title, and Right Side Info */}
+              {/* Top Section: Title and Right Side Info */}
               <div className="flex items-start justify-between gap-4 mb-3">
-                {/* Left: Icon and Title */}
-                <div className="flex items-start gap-2 flex-1 min-w-0">
-                  {/* Icon */}
-                  <div className="p-1.5 rounded-lg text-background flex-shrink-0" style={{ backgroundColor: typeConfig.color }}>
-                    <TypeIcon className="h-4 w-4" />
-                  </div>
-
-                  {/* Title and Details */}
-                  <div className="flex-1 min-w-0">
+                {/* Left: Title and Details */}
+                <div className="flex-1 min-w-0">
                     <h3 className="font-bold text-lg">
                       {typeConfig.label}
                     </h3>
@@ -120,7 +159,6 @@ export default function ActivitiesPage() {
                       )}
                     </div>
                   </div>
-                </div>
 
                 {/* Right: Status Badges, Time */}
                 <div className="flex flex-col items-end gap-1.5 flex-shrink-0">

@@ -2,13 +2,14 @@
 
 import { useSearchParams } from "next/navigation"
 import { useState } from "react"
-import { testHomes, testBookings } from "@/lib/test-data"
+import { useData } from "@/lib/data/DataProvider"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { HomeInfoSheet } from "@/components/homes/HomeInfoSheet"
 import { MapPin, Navigation, Home, Calendar, User } from "lucide-react"
 import { MapSheet } from "@/components/map/MapSheet"
+import { Skeleton } from "@/components/ui/skeleton"
 import Link from "next/link"
 
 const homeStatusConfig = {
@@ -24,9 +25,29 @@ const bookingStatusConfig = {
   "completed": { label: "Completed", className: "bg-[#AFABAB] text-gray-900 border-[#AFABAB] hover:bg-[#AFABAB]" },
 }
 
+function CatalogSkeleton() {
+  return (
+    <div className="container mx-auto px-4 py-4">
+      <div className="space-y-4">
+        <div>
+          <Skeleton className="h-8 w-32 mb-2" />
+          <Skeleton className="h-4 w-48" />
+        </div>
+        <Skeleton className="h-10 w-full" />
+        <div className="flex flex-col gap-2 sm:grid sm:grid-cols-2 lg:grid-cols-3">
+          {[...Array(6)].map((_, i) => (
+            <Skeleton key={i} className="h-24 w-full rounded-lg" />
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function CatalogContent() {
   const searchParams = useSearchParams()
   const tab = searchParams.get('tab') || 'homes'
+  const { homes, bookings, isLoading } = useData()
   
   const [mapSheetOpen, setMapSheetOpen] = useState(false)
   const [selectedHome, setSelectedHome] = useState<{
@@ -40,7 +61,7 @@ export default function CatalogContent() {
   const handleShowMap = (e: React.MouseEvent, homeCode: string) => {
     e.preventDefault()
     e.stopPropagation()
-    const home = testHomes.find(h => h.code === homeCode)
+    const home = homes.find(h => h.code === homeCode)
     if (home) {
       setSelectedHome({
         code: home.code,
@@ -51,6 +72,10 @@ export default function CatalogContent() {
       })
       setMapSheetOpen(true)
     }
+  }
+
+  if (isLoading) {
+    return <CatalogSkeleton />
   }
 
   return (
@@ -64,16 +89,16 @@ export default function CatalogContent() {
         <Tabs defaultValue={tab} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="homes">
-              Homes ({testHomes.length})
+              Homes ({homes.length})
             </TabsTrigger>
             <TabsTrigger value="bookings">
-              Bookings ({testBookings.length})
+              Bookings ({bookings.length})
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="homes" className="mt-6">
-            <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
-              {testHomes.map((home) => {
+            <div className="flex flex-col gap-2 sm:grid sm:grid-cols-2 lg:grid-cols-3">
+              {homes.map((home) => {
                 const statusInfo = homeStatusConfig[home.status]
                 
                 return (
@@ -93,10 +118,10 @@ export default function CatalogContent() {
                                 )}
                                 <button
                                   onClick={(e) => handleShowMap(e, home.code)}
-                                  className="flex items-center gap-1 mt-1 text-sm text-muted-foreground hover:text-primary transition-colors"
+                                  className="flex items-start gap-1 mt-1 text-sm text-muted-foreground hover:text-primary transition-colors text-left"
                                 >
-                                  <MapPin className="h-3 w-3" />
-                                  <span className="truncate underline">{home.address}, {home.city}</span>
+                                  <MapPin className="h-3 w-3 mt-0.5 flex-shrink-0" />
+                                  <span className="underline line-clamp-2">{home.address}, {home.city}</span>
                                 </button>
                                 {home.distance !== undefined && (
                                   <div className="flex items-center gap-1 mt-1 text-sm text-muted-foreground">
@@ -131,9 +156,9 @@ export default function CatalogContent() {
 
           <TabsContent value="bookings" className="mt-6">
             <div className="flex flex-col gap-2">
-              {testBookings.map((booking) => {
+              {bookings.map((booking) => {
                 const statusInfo = bookingStatusConfig[booking.status]
-                const home = testHomes.find(h => h.code === booking.homeCode)
+                const home = homes.find(h => h.code === booking.homeCode)
 
                 return (
                   <Link key={booking.id} href={`/bookings/${booking.id}`}>

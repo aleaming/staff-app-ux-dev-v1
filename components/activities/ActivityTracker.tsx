@@ -51,10 +51,10 @@ export interface Photo {
 }
 
 interface TaskIssueReport {
-  issueType?: "damage" | "malfunction" | "maintenance" | "missing-item" | "cleaning" | "other"
+  issueType?: "damage" | "malfunction" | "maintenance" | "missing-item" | "cleaning"
   location?: string
   itemAffected?: string
-  priority?: "low" | "medium" | "high"
+  priority?: "urgent" | "high" | "medium" | "low"
 }
 
 interface TaskState {

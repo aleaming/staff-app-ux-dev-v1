@@ -73,10 +73,10 @@ interface Photo {
 }
 
 interface TaskIssueReport {
-  issueType?: "damage" | "malfunction" | "maintenance" | "missing-item" | "cleaning" | "other"
+  issueType?: "damage" | "malfunction" | "maintenance" | "missing-item" | "cleaning"
   location?: string
   itemAffected?: string
-  priority?: "low" | "medium" | "high"
+  priority?: "urgent" | "high" | "medium" | "low"
 }
 
 interface TaskCardProps {
@@ -440,7 +440,6 @@ export function TaskCard({
                         <SelectItem value="maintenance">Maintenance Needed</SelectItem>
                         <SelectItem value="missing-item">Missing Item</SelectItem>
                         <SelectItem value="cleaning">Cleaning Issue</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -495,17 +494,33 @@ export function TaskCard({
                         priority: value as TaskIssueReport["priority"]
                       })}
                     >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="low" id={`priority-low-${task.id}`} />
-                        <Label htmlFor={`priority-low-${task.id}`} className="text-xs font-normal cursor-pointer">Low</Label>
+                      <div className="flex items-start space-x-2 py-0.5">
+                        <RadioGroupItem value="urgent" id={`priority-urgent-${task.id}`} className="mt-0.5" />
+                        <Label htmlFor={`priority-urgent-${task.id}`} className="text-xs font-normal cursor-pointer flex flex-col">
+                          <span className="font-medium">Urgent</span>
+                          <span className="text-muted-foreground">Safety hazard</span>
+                        </Label>
                       </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="medium" id={`priority-medium-${task.id}`} />
-                        <Label htmlFor={`priority-medium-${task.id}`} className="text-xs font-normal cursor-pointer">Medium</Label>
+                      <div className="flex items-start space-x-2 py-0.5">
+                        <RadioGroupItem value="high" id={`priority-high-${task.id}`} className="mt-0.5" />
+                        <Label htmlFor={`priority-high-${task.id}`} className="text-xs font-normal cursor-pointer flex flex-col">
+                          <span className="font-medium">High</span>
+                          <span className="text-muted-foreground">Affects guest stay</span>
+                        </Label>
                       </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="high" id={`priority-high-${task.id}`} />
-                        <Label htmlFor={`priority-high-${task.id}`} className="text-xs font-normal cursor-pointer">High</Label>
+                      <div className="flex items-start space-x-2 py-0.5">
+                        <RadioGroupItem value="medium" id={`priority-medium-${task.id}`} className="mt-0.5" />
+                        <Label htmlFor={`priority-medium-${task.id}`} className="text-xs font-normal cursor-pointer flex flex-col">
+                          <span className="font-medium">Medium</span>
+                          <span className="text-muted-foreground">Should be addressed</span>
+                        </Label>
+                      </div>
+                      <div className="flex items-start space-x-2 py-0.5">
+                        <RadioGroupItem value="low" id={`priority-low-${task.id}`} className="mt-0.5" />
+                        <Label htmlFor={`priority-low-${task.id}`} className="text-xs font-normal cursor-pointer flex flex-col">
+                          <span className="font-medium">Low</span>
+                          <span className="text-muted-foreground">Minor issue</span>
+                        </Label>
                       </div>
                     </RadioGroup>
                   </div>

@@ -82,8 +82,14 @@ export function PropertyIssueReportSheet({
     { value: "not-working", label: "Not Working" },
     { value: "damaged", label: "Damaged" },
     { value: "missing", label: "Missing" },
-    { value: "needs-cleaning", label: "Needs Cleaning" },
-    { value: "other", label: "Other" }
+    { value: "needs-cleaning", label: "Needs Cleaning" }
+  ]
+
+  const priorityOptions: { value: PropertyIssuePriority; label: string; description: string }[] = [
+    { value: "urgent", label: "Urgent", description: "Safety hazard" },
+    { value: "high", label: "High", description: "Affects guest stay" },
+    { value: "medium", label: "Medium", description: "Should be addressed" },
+    { value: "low", label: "Low", description: "Minor issue" }
   ]
 
   const handlePhotoAdd = (file: File, thumbnail?: string) => {
@@ -107,8 +113,8 @@ export function PropertyIssueReportSheet({
   }
 
   const handleSubmit = async () => {
-    if (!issueType || !description.trim()) {
-      toast.error("Please fill in all required fields")
+    if (!issueType || !description.trim() || photos.length === 0) {
+      toast.error("Please fill in all required fields and add at least one photo")
       return
     }
 
@@ -117,7 +123,9 @@ export function PropertyIssueReportSheet({
     setIsSubmitting(true)
 
     try {
-      const issueId = item ? item.id : `home-${homeId || 'general'}-${Date.now()}`
+      // Generate ticket number: ISS-{timestamp in base36}
+      const ticketNumber = `ISS-${Date.now().toString(36).toUpperCase()}`
+      
       const queueKey = item 
         ? `property-issue-queue-${item.id.split("-")[0]}`
         : `property-issue-queue-${homeId || 'general'}`
@@ -129,6 +137,7 @@ export function PropertyIssueReportSheet({
           : []
         
         const queuedIssue = {
+          ticketNumber,
           itemId: item ? item.id : undefined,
           homeId,
           homeCode,
@@ -149,7 +158,7 @@ export function PropertyIssueReportSheet({
           localStorage.setItem(queueKey, JSON.stringify([...existingQueue, queuedIssue]))
         }
 
-        toast.success("Issue queued for submission when connection is restored")
+        toast.success(`Issue #${ticketNumber} queued for submission when connection is restored`)
         onClose()
         return
       }
@@ -163,10 +172,12 @@ export function PropertyIssueReportSheet({
           priority,
           photos
         })
+        toast.success(`Issue #${ticketNumber} created successfully!`)
       } else {
         // Otherwise, save directly to localStorage (for Quick Links)
         const issueData = {
           id: `issue-${Date.now()}-${Math.random()}`,
+          ticketNumber,
           itemId: item?.id,
           homeId,
           homeCode,
@@ -207,9 +218,8 @@ export function PropertyIssueReportSheet({
             localStorage.setItem(issuesKey, JSON.stringify([...existing, issueData]))
           }
         }
+        toast.success(`Issue #${ticketNumber} created successfully!`)
       }
-
-      toast.success("Issue reported successfully!")
       onClose()
     } catch (error) {
       console.error("Error submitting issue:", error)
@@ -219,7 +229,7 @@ export function PropertyIssueReportSheet({
     }
   }
 
-  const canSubmit = !!issueType && description.trim().length > 0
+  const canSubmit = !!issueType && description.trim().length > 0 && photos.length > 0
 
   return (
     <Sheet open={true} onOpenChange={onClose}>
@@ -284,30 +294,22 @@ export function PropertyIssueReportSheet({
           <div className="space-y-3">
             <Label>Priority</Label>
             <RadioGroup value={priority} onValueChange={(value) => setPriority(value as PropertyIssuePriority)}>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="low" id="low" />
-                <Label htmlFor="low" className="font-normal cursor-pointer">
-                  Low
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="medium" id="medium" />
-                <Label htmlFor="medium" className="font-normal cursor-pointer">
-                  Medium
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="high" id="high" />
-                <Label htmlFor="high" className="font-normal cursor-pointer">
-                  High
-                </Label>
-              </div>
+              {priorityOptions.map((option) => (
+                <div key={option.value} className="flex items-start space-x-2 py-1">
+                  <RadioGroupItem value={option.value} id={option.value} className="mt-0.5" />
+                  <Label htmlFor={option.value} className="font-normal cursor-pointer flex flex-col">
+                    <span className="font-medium">{option.label}</span>
+                    <span className="text-xs text-muted-foreground">{option.description}</span>
+                  </Label>
+                </div>
+              ))}
             </RadioGroup>
           </div>
 
           {/* Photos */}
           <div className="space-y-3">
-            <Label>Photos (Optional, max 5)</Label>
+            <Label>Photos (Required)</Label>
+            <p className="text-xs text-muted-foreground">At least 1 photo is required (max 5)</p>
             <PhotoUploader
               onPhotoSelect={handlePhotoAdd}
               multiple={true}

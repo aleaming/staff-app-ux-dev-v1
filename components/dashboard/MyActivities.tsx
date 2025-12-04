@@ -24,8 +24,22 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { MapSheet } from "@/components/map/MapSheet"
 import { HomeInfoSheet } from "@/components/homes/HomeInfoSheet"
 
-export type ActivityType = "provisioning" | "meet-greet" | "turn" | "deprovision" | "ad-hoc"
-export type ActivityStatus = "to-start" | "in-progress" | "paused" | "abandoned" | "completed" | "cancelled"
+// Activity types - aligned with lib/test-data.ts and lib/activity-templates.ts
+export type ActivityType = 
+  | "provisioning"
+  | "deprovisioning"
+  | "turn"
+  | "maid-service"
+  | "mini-maid"
+  | "touch-up"
+  | "quality-check"
+  | "meet-greet"
+  | "additional-greet"
+  | "bag-drop"
+  | "service-recovery"
+  | "home-viewing"
+  | "adhoc"
+export type ActivityStatus = "to-start" | "in-progress" | "paused" | "abandoned" | "completed" | "cancelled" | "ignored"
 
 export interface Activity {
   id: string
@@ -37,6 +51,13 @@ export interface Activity {
   scheduledTime: Date
   status: ActivityStatus
   priority?: "high" | "normal"
+  description?: string
+  assignedTo?: string
+  // Activity attributes (sub-statuses/tags)
+  confirmed?: boolean
+  onTime?: boolean
+  delayed?: boolean
+  hasIssues?: boolean
 }
 
 interface MyActivitiesProps {
@@ -44,30 +65,50 @@ interface MyActivitiesProps {
   isLoading?: boolean
 }
 
-// Map test-data activity types to template activity types
+// Map activity types to template types (now unified, but kept for backwards compatibility)
 const activityTypeToTemplateType: Record<string, string> = {
   "provisioning": "provisioning",
-  "meet-greet": "meet-greet",
+  "deprovisioning": "deprovisioning",
   "turn": "turn",
-  "deprovision": "deprovisioning",
-  "ad-hoc": "adhoc",
+  "maid-service": "maid-service",
+  "mini-maid": "mini-maid",
+  "touch-up": "touch-up",
+  "quality-check": "quality-check",
+  "meet-greet": "meet-greet",
+  "additional-greet": "additional-greet",
+  "bag-drop": "bag-drop",
+  "service-recovery": "service-recovery",
+  "home-viewing": "home-viewing",
+  "adhoc": "adhoc",
 }
 
-const activityTypeConfig = {
+const activityTypeConfig: Record<string, { label: string; icon: typeof Package; color: string }> = {
+  // Home preparation
   "provisioning": { label: "Provisioning", icon: Package, color: "var(--activity-provisioning)" },
-  "meet-greet": { label: "Meet & Greet", icon: Handshake, color: "var(--activity-greet)" },
+  "deprovisioning": { label: "Deprovisioning", icon: X, color: "var(--activity-deprovision)" },
   "turn": { label: "Turn", icon: RefreshCw, color: "var(--activity-turn)" },
-  "deprovision": { label: "Deprovision", icon: X, color: "var(--activity-deprovision)" },
-  "ad-hoc": { label: "Ad-hoc", icon: AlertCircle, color: "var(--activity-adhoc)" },
+  "maid-service": { label: "Maid Service", icon: RefreshCw, color: "var(--activity-maid)" },
+  "mini-maid": { label: "Mini-Maid", icon: RefreshCw, color: "var(--activity-mini-maid)" },
+  "touch-up": { label: "Touch-Up", icon: RefreshCw, color: "var(--activity-touch-up)" },
+  "quality-check": { label: "Quality Check", icon: AlertCircle, color: "var(--activity-quality-check)" },
+  // Guest welcoming
+  "meet-greet": { label: "Meet & Greet", icon: Handshake, color: "var(--activity-greet)" },
+  "additional-greet": { label: "Additional Greet", icon: Handshake, color: "var(--activity-additional-greet)" },
+  "bag-drop": { label: "Bag Drop", icon: Package, color: "var(--activity-bag-drop)" },
+  "service-recovery": { label: "Service Recovery", icon: AlertCircle, color: "var(--activity-service-recovery)" },
+  "home-viewing": { label: "Home Viewing", icon: Handshake, color: "var(--activity-home-viewing)" },
+  // Other
+  "adhoc": { label: "Ad-hoc", icon: AlertCircle, color: "var(--activity-adhoc)" },
 }
 
 const statusConfig = {
-  "to-start": { label: "To start", variant: "secondary" as const },
-  "in-progress": { label: "In progress", variant: "default" as const },
+  "to-start": { label: "To Start", variant: "secondary" as const },
+  "in-progress": { label: "In Progress", variant: "default" as const },
   "paused": { label: "Paused", variant: "secondary" as const },
   "abandoned": { label: "Abandoned", variant: "destructive" as const },
   "completed": { label: "Completed", variant: "outline" as const },
   "cancelled": { label: "Cancelled", variant: "outline" as const },
+  "ignored": { label: "Ignored", variant: "outline" as const },
 }
 
 export function MyActivities({ activities = [], isLoading = false }: MyActivitiesProps) {
@@ -104,7 +145,8 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
       "to-start": 2,
       "abandoned": 3,
       "cancelled": 4,
-      "completed": 5
+      "completed": 5,
+      "ignored": 6
     }
     const aPriority = priorityOrder[a.status] ?? 99
     const bPriority = priorityOrder[b.status] ?? 99
@@ -154,7 +196,6 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
                 return null
               }
 
-              const TypeIcon = typeConfig.icon
               const timeString = activity.scheduledTime.toLocaleTimeString('en-US', { 
                 hour: 'numeric', 
                 minute: '2-digit' 
@@ -168,19 +209,16 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
 
     return (
       <div key={activity.id} className="pb-4 last:pb-0">
-        <Card className="hover:bg-white/80 dark:hover:bg-black/50 transition-colors">
+        <Card 
+          className="hover:bg-white/80 dark:hover:bg-black/50 transition-colors overflow-hidden border-l-[6px]"
+          style={{ borderLeftColor: typeConfig.color }}
+        >
           <CardContent className="p-4 sm:p-5">
             <div className="space-y-4">
-              {/* Top Section: Icon, Title, and Right Side Info */}
+              {/* Top Section: Title and Right Side Info */}
               <div className="flex items-start justify-between gap-4">
-                {/* Left: Icon and Title */}
-                <div className="flex items-start gap-2 flex-1 min-w-0">
-                  {/* Icon */}
-                  <div className="p-1.5 rounded-lg text-background flex-shrink-0" style={{ backgroundColor: typeConfig.color }}>
-                    <TypeIcon className="h-4 w-4" />
-                  </div>
-                  {/* Title and Details */}
-                  <div className="flex-1 min-w-0">
+                {/* Left: Title and Details */}
+                <div className="flex-1 min-w-0">
                     <h3 className="font-bold text-base">
                       {typeConfig.label}
                     </h3>
@@ -221,7 +259,6 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
                       )}
                     </div>
                   </div>
-                </div>
 
                 {/* Right: Status Badges, Time */}
                 <div className="flex flex-col items-end gap-1.5 flex-shrink-0">

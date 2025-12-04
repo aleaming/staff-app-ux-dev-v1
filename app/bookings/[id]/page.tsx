@@ -209,13 +209,15 @@ export default async function BookingDetailPage({ params }: BookingDetailPagePro
                             activity.status === "in-progress" ? "default" :
                             activity.status === "paused" ? "secondary" :
                             activity.status === "completed" ? "outline" :
-                            activity.status === "cancelled" ? "outline" : "destructive"
+                            activity.status === "cancelled" ? "outline" :
+                            activity.status === "ignored" ? "outline" : "destructive"
                           }>
-                            {activity.status === "to-start" ? "To start" :
-                             activity.status === "in-progress" ? "In progress" :
+                            {activity.status === "to-start" ? "To Start" :
+                             activity.status === "in-progress" ? "In Progress" :
                              activity.status === "paused" ? "Paused" :
                              activity.status === "abandoned" ? "Abandoned" :
-                             activity.status === "completed" ? "Completed" : "Cancelled"}
+                             activity.status === "completed" ? "Completed" :
+                             activity.status === "ignored" ? "Ignored" : "Cancelled"}
                           </Badge>
                         </div>
                       </CardContent>

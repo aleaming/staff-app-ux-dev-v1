@@ -4,6 +4,7 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme/ThemeProvider"
 import { HapticProvider } from "@/components/haptic/HapticProvider"
 import { LayoutClient } from "@/components/layout/LayoutClient"
+import { DataProvider } from "@/lib/data/DataProvider"
 
 // Zalando Sans is loaded via @import in globals.css
 
@@ -40,7 +41,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <HapticProvider>
-            <LayoutClient>{children}</LayoutClient>
+            <DataProvider>
+              <LayoutClient>{children}</LayoutClient>
+            </DataProvider>
           </HapticProvider>
         </ThemeProvider>
       </body>
