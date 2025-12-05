@@ -103,6 +103,7 @@ interface TaskCardProps {
   onIssueReportChange?: (issueReport: TaskIssueReport) => void
   onAnnotatePhoto?: (photoId: string, annotations: PhotoAnnotation[]) => void
   onRetryUpload?: (photoId: string) => void
+  onDeletePhoto?: (photoId: string) => void
   onExpandedChange?: (expanded: boolean) => void
 }
 
@@ -125,6 +126,7 @@ export function TaskCard({
   onIssueReportChange,
   onAnnotatePhoto,
   onRetryUpload,
+  onDeletePhoto,
   onExpandedChange
 }: TaskCardProps) {
   const { trigger } = useHapticFeedback()
@@ -435,6 +437,7 @@ export function TaskCard({
                       photos={photos}
                       onAnnotate={onAnnotatePhoto ? handleAnnotate : undefined}
                       onRetryUpload={onRetryUpload}
+                      onDeletePhoto={onDeletePhoto}
                     />
                   )}
 

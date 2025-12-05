@@ -157,19 +157,19 @@ export function HomeEssentials({ homeCode }: HomeEssentialsProps) {
           <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
             <div>
               <p className="text-sm text-muted-foreground">No. of Bedrooms</p>
-              <p className="text-2xl font-bold">{essentials.homeOverview.bedrooms}</p>
+              <p className="text-lg font-bold">{essentials.homeOverview.bedrooms}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">No. of Bathrooms</p>
-              <p className="text-2xl font-bold">{essentials.homeOverview.bathrooms}</p>
+              <p className="text-lg font-bold">{essentials.homeOverview.bathrooms}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Sleeps</p>
-              <p className="text-2xl font-bold">{essentials.homeOverview.sleeps}</p>
+              <p className="text-lg font-bold">{essentials.homeOverview.sleeps}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Max. Sleeps</p>
-              <p className="text-2xl font-bold">{essentials.homeOverview.maxSleeps}</p>
+              <p className="text-lg font-bold">{essentials.homeOverview.maxSleeps}</p>
             </div>
           </div>
         </CardContent>

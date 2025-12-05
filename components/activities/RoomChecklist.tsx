@@ -39,6 +39,7 @@ interface RoomChecklistProps {
   onTaskIssueReportChange: (taskId: string, report: TaskState["issueReport"]) => void
   onTaskAnnotatePhoto: (taskId: string, photoId: string) => void
   onTaskRetryUpload: (taskId: string, photoId: string) => void
+  onTaskDeletePhoto?: (taskId: string, photoId: string) => void
   onExpandedChange?: (taskId: string | null) => void
   className?: string
 }
@@ -57,6 +58,7 @@ export function RoomChecklist({
   onTaskIssueReportChange,
   onTaskAnnotatePhoto,
   onTaskRetryUpload,
+  onTaskDeletePhoto,
   onExpandedChange,
   className
 }: RoomChecklistProps) {
@@ -131,6 +133,7 @@ export function RoomChecklist({
               onIssueReportChange={(report) => onTaskIssueReportChange(task.id, report)}
               onAnnotatePhoto={(photoId) => onTaskAnnotatePhoto(task.id, photoId)}
               onRetryUpload={(photoId) => onTaskRetryUpload(task.id, photoId)}
+              onDeletePhoto={onTaskDeletePhoto ? (photoId) => onTaskDeletePhoto(task.id, photoId) : undefined}
               onExpandedChange={(expanded) => onExpandedChange?.(expanded ? task.id : null)}
             />
           )

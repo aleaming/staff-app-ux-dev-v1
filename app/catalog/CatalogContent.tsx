@@ -82,8 +82,8 @@ export default function CatalogContent() {
     <div className="container mx-auto px-4 py-4">
       <div className="space-y-4">
         <div>
-          <h1 className="text-2xl font-bold mb-0">Catalog</h1>
-          <p className="text-muted-foreground">Browse homes and bookings</p>
+          <h1 className="text-lg font-bold mb-0">Catalog</h1>
+          <p className="text-muted-foreground text-sm">Browse homes and bookings</p>
         </div>
 
         <Tabs defaultValue={tab} className="w-full">
@@ -96,7 +96,7 @@ export default function CatalogContent() {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="homes" className="mt-6">
+          <TabsContent value="homes" className="mt-4">
             <div className="flex flex-col gap-2 sm:grid sm:grid-cols-2 lg:grid-cols-3">
               {homes.map((home) => {
                 const statusInfo = homeStatusConfig[home.status]
@@ -104,21 +104,21 @@ export default function CatalogContent() {
                 return (
                   <Link key={home.id} href={`/homes/${home.id}`}>
                     <Card className="hover:bg-white dark:hover:bg-neutral-900 hover:border-muted-foreground dark:border-primary/20 transition-colors">
-                      <CardContent className="p-3">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h3 className="text-base font-semibold mb-1">
+                      <CardContent className="px-3 py-2">
+                        <div className="flex items-start justify-between min-w-0">
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-sm font-semibold mb-1 flex items-center">
                               <span className="text-primary">{home.code}</span>
                               {home.name && (
-                                <span className="text-xs text-muted-foreground ml-2">• {home.name}</span>
+                                <span className="text-sm text-muted-foreground ml-2">{home.name}</span>
                               )}
                             </h3>
                             <button
                               onClick={(e) => handleShowMap(e, home.code)}
-                              className="flex items-start gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mb-1 text-left"
+                              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mb-1 text-left max-w-full"
                             >
-                              <MapPin className="h-3 w-3 mt-0.5 flex-shrink-0" />
-                              <span className="underline line-clamp-2">{home.address}, {home.city}</span>
+                              <MapPin className="h-3 w-3 flex-shrink-0" />
+                              <span className="underline truncate">{home.address}, {home.city}</span>
                             </button>
                             {home.distance !== undefined && (
                               <div className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -136,7 +136,7 @@ export default function CatalogContent() {
             </div>
           </TabsContent>
 
-          <TabsContent value="bookings" className="mt-6">
+          <TabsContent value="bookings" className="mt-4">
             <div className="flex flex-col gap-2">
               {bookings.map((booking) => {
                 const statusInfo = bookingStatusConfig[booking.status]
@@ -145,11 +145,11 @@ export default function CatalogContent() {
                 return (
                   <Link key={booking.id} href={`/bookings/${booking.id}`}>
                     <Card className="hover:bg-white dark:hover:bg-neutral-900 transition-colors">
-                      <CardContent className="p-3">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
+                      <CardContent className="px-3 py-2">
+                        <div className="flex items-start justify-between min-w-0">
+                          <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
-                              <h3 className="text-base font-semibold">
+                              <h3 className="text-sm font-semibold">
                                 <span className="text-primary">{booking.bookingId}</span>
                               </h3>
                               <Badge className={statusInfo.className}>
@@ -157,13 +157,13 @@ export default function CatalogContent() {
                               </Badge>
                             </div>
                             <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
-                              <User className="h-3 w-3" />
-                              <span>{booking.guestName}</span>
+                              <User className="h-3 w-3 flex-shrink-0" />
+                              <span className="truncate">{booking.guestName}</span>
                             </div>
-                            <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
-                              <Home className="h-3 w-3" />
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1 min-w-0">
+                              <Home className="h-3 w-3 flex-shrink-0" />
                               {home ? (
-                                <span onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} className="flex items-center gap-1.5">
+                                <span onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} className="flex items-center gap-1.5 min-w-0">
                                   <HomeInfoSheet
                                     homeId={home.id}
                                     homeCode={home.code}
@@ -171,15 +171,15 @@ export default function CatalogContent() {
                                   >
                                     <button
                                       type="button"
-                                      className="text-primary underline hover:text-primary/80 transition-colors"
+                                      className="text-primary underline hover:text-primary/80 transition-colors flex-shrink-0"
                                     >
                                       {booking.homeCode}
                                     </button>
                                   </HomeInfoSheet>
                                   {home.name && (
                                     <>
-                                      <span>•</span>
-                                      <span>{home.name}</span>
+                                      <span className="flex-shrink-0">•</span>
+                                      <span className="truncate">{home.name}</span>
                                     </>
                                   )}
                                 </span>
@@ -190,10 +190,10 @@ export default function CatalogContent() {
                             {home && (
                               <button
                                 onClick={(e) => handleShowMap(e, booking.homeCode)}
-                                className="flex items-start gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mb-1 text-left"
+                                className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mb-1 text-left max-w-full"
                               >
-                                <MapPin className="h-3 w-3 mt-0.5" />
-                                <span className="underline">{home.address}, {home.city}</span>
+                                <MapPin className="h-3 w-3 flex-shrink-0" />
+                                <span className="underline truncate">{home.address}, {home.city}</span>
                               </button>
                             )}
                             <div className="flex items-center gap-4 text-xs">

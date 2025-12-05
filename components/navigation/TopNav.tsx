@@ -84,11 +84,18 @@ export function TopNav({ onOpenSearch }: TopNavProps = { onOpenSearch: undefined
             <nav className="flex flex-col gap-4 mt-8">
               <Link href="/" className="mb-4">
                 <Image 
-                  src="/logo.svg" 
-                  alt="onefinestay" 
-                  width={101} 
-                  height={33}
-                  className="h-8 w-auto"
+                  src="/hosted-logo-light-mode.svg" 
+                  alt="Hosted" 
+                  width={120} 
+                  height={32}
+                  className="h-8 w-auto block dark:hidden"
+                />
+                <Image 
+                  src="/hosted-logo-dark-mode.svg" 
+                  alt="Hosted" 
+                  width={120} 
+                  height={32}
+                  className="h-8 w-auto hidden dark:block"
                 />
               </Link>
               <Link href="/manage" className="text-sm font-medium">
@@ -116,11 +123,18 @@ export function TopNav({ onOpenSearch }: TopNavProps = { onOpenSearch: undefined
         {/* Logo/Brand - Centered */}
         <Link href="/" className="absolute left-1/2 -translate-x-1/2">
           <Image 
-            src="/logo.svg" 
-            alt="onefinestay" 
-            width={101} 
-            height={33}
-            className="h-8 w-auto"
+            src="/hosted-logo-light-mode.svg" 
+            alt="Hosted" 
+            width={120} 
+            height={32}
+            className="h-8 w-auto block dark:hidden"
+          />
+          <Image 
+            src="/hosted-logo-dark-mode.svg" 
+            alt="Hosted" 
+            width={120} 
+            height={32}
+            className="h-8 w-auto hidden dark:block"
           />
         </Link>
 

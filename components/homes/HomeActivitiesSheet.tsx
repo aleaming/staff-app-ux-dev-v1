@@ -107,7 +107,7 @@ export function HomeActivitiesSheet({
             </Button>
           )}
         </SheetTrigger>
-        <SheetContent side="bottom" className="h-[calc(100vh-8rem)] max-h-[calc(100vh-4rem)] overflow-y-auto">
+        <SheetContent side="bottom" className="h-[calc(100vh-8rem)] max-h-[calc(100vh-4rem)] overflow-y-auto pb-48">
           <SheetHeader className="mb-4">
             <SheetTitle className="sr-only">{buttonText}</SheetTitle>
           </SheetHeader>

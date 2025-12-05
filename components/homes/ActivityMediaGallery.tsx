@@ -148,7 +148,7 @@ export function ActivityMediaGallery({
           <SheetHeader className="mb-4">
             <SheetTitle className="flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-bold">{activity.activityType} Photos</h2>
+                <h2 className="text-lg font-bold">{activity.activityType} Photos</h2>
                 <p className="text-sm text-muted-foreground font-normal">
                   {homeCode} • {activity.date.toLocaleDateString('en-US', { 
                     month: 'short', 
@@ -202,7 +202,7 @@ export function ActivityMediaGallery({
           </div>
 
           {/* Photo Grid */}
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto pb-48">
             {selectedRoom === "all" ? (
               // Group by room when showing all
               <div className="space-y-6">
@@ -213,7 +213,7 @@ export function ActivityMediaGallery({
                       {room}
                       <Badge variant="secondary">{photos.length} photos</Badge>
                     </h3>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-2">
                       {photos.map((photo) => (
                         <div
                           key={photo.id}
@@ -238,7 +238,7 @@ export function ActivityMediaGallery({
               </div>
             ) : (
               // Show filtered photos
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-2">
                 {filteredPhotos.map((photo) => (
                   <div
                     key={photo.id}

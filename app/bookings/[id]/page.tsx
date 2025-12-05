@@ -55,7 +55,7 @@ function BookingDetailSkeleton() {
 function BookingNotFound() {
   return (
     <div className="container mx-auto px-4 py-6 md:py-8 text-center">
-      <h1 className="text-2xl font-bold mb-4">Booking Not Found</h1>
+      <h1 className="text-lg font-bold mb-4">Booking Not Found</h1>
       <p className="text-muted-foreground mb-6">The booking you are looking for does not exist or has been removed.</p>
       <Link href="/catalog?tab=bookings">
         <Button>Go to Bookings Catalog</Button>
@@ -114,9 +114,9 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
 
        
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           {/* Main Content */}
-          <div className="space-y-6 w-full">
+          <div className="space-y-4 w-full">
             <Tabs defaultValue="details" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full">
               <TabsList>
                 <TabsTrigger value="details">Details</TabsTrigger>
@@ -126,7 +126,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                 <TabsTrigger value="home">Home</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="details" className="space-y-6">
+              <TabsContent value="details" className="space-y-3">
                 {/* Guest Information */}
                 <Card>
                   <CardHeader>
@@ -138,7 +138,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                   <CardContent className="space-y-4">
                     <div>
                       <p className="text-xs text-muted-foreground">Guest Name</p>
-                      <p className="font-semibold text-xl">{booking.guestName}</p>
+                      <p className="font-semibold text-lg">{booking.guestName}</p>
                     </div>
                     
                     {booking.guestEmail && (
@@ -236,12 +236,12 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                     <div className="grid gap-4 md:grid-cols-2">
                       <div>
                         <p className="text-xs text-muted-foreground">Check-in</p>
-                        <p className="font-semibold text-xl">{formatDate(booking.checkIn)}</p>
+                        <p className="font-semibold text-lg">{formatDate(booking.checkIn)}</p>
                         <p className="text-xs text-muted-foreground mt-1">{getDaysUntil(booking.checkIn)}</p>
                       </div>
                       <div>
                         <p className="text-xs text-muted-foreground">Check-out</p>
-                        <p className="font-semibold text-xl">{formatDate(booking.checkOut)}</p>
+                        <p className="font-semibold text-lg">{formatDate(booking.checkOut)}</p>
                         <p className="text-xs text-muted-foreground mt-1">{getDaysUntil(booking.checkOut)}</p>
                       </div>
                     </div>
@@ -276,7 +276,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                         <div className="flex items-center justify-between">
                           <div>
                             <Link href={`/activities/${activity.id}`}>
-                              <h3 className="text-xl font-semibold hover:underline">{activity.title}</h3>
+                              <h3 className="text-lg font-semibold hover:underline">{activity.title}</h3>
                             </Link>
                             <p className="text-xs text-muted-foreground">
                               {activity.scheduledTime.toLocaleDateString('en-US', { 
@@ -315,7 +315,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                     <CardContent className="p-6">
                       <div className="space-y-4">
                         <div>
-                          <h3 className="font-semibold text-xl">{home.code}</h3>
+                          <h3 className="font-semibold text-lg">{home.code}</h3>
                           {home.name && <p className="text-xs text-muted-foreground">{home.name}</p>}
                         </div>
                         <div className="flex items-center gap-2 text-xs text-muted-foreground">

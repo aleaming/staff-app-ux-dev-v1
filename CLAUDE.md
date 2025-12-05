@@ -22,52 +22,91 @@ npm run build
 npm start
 
 # Lint
-npm lint
+npm run lint
 ```
 
 **Important**: Use `npm run dev:network` when you need to test on mobile devices or access from other computers on the local network (runs on 0.0.0.0).
 
 ## Architecture Overview
 
-### Data Layer (Currently Mock Data)
+### Data Layer
 
-This app currently uses **mock test data** in `lib/test-data.ts`. In production, this would be replaced with API calls. All data access should go through the helper functions provided in:
+The app uses a **CSV-based data loading system** with React Context for state management:
 
-- `lib/test-data.ts` - Core data types and mock datasets for homes, bookings, activities, notifications
-- `lib/activity-templates.ts` - Activity workflow definitions (provisioning, turn, meet-greet, etc.)
-- `lib/activity-utils.ts` - Activity state management (incomplete activities, localStorage)
-- `lib/photo-utils.ts` - Photo upload and management utilities
-- `lib/pdf-generator.ts` - PDF report generation
+#### Data Provider (`lib/data/DataProvider.tsx`)
+- Central React Context providing homes, bookings, and activities data to all components
+- Handles async loading state and error handling
+- Exposes hooks: `useData()`, `useHomes()`, `useBookings()`, `useActivities()`
+- Data is refreshed via `refresh()` function in context
+
+#### Data Loaders (`lib/data/`)
+- `homes-loader.ts` - Loads homes from `/data/homes.csv`, handles geocoding
+- `bookings-loader.ts` - Loads bookings from `/data/bookings.csv`
+- `activities-loader.ts` - Loads activities from `/data/activities.csv`
+- Each loader has sync and async variants with caching
+
+#### Legacy Support (`lib/test-data.ts`)
+- Re-exports CSV data for backward compatibility
+- Contains TypeScript interfaces for all data types
+- Includes helper functions: `getActivitiesForHome()`, `getBookingsForHome()`, `getHomeByCode()`, etc.
+- Contains mock data for notifications and recent items (not from CSV)
+- **Property Hierarchy System** - Defines `PropertyHierarchyNode`, `PropertyIssue`, and related types
 
 ### Activity System Architecture
 
 The activity system is the core of the app. Activities follow a template-based workflow:
 
-1. **Activity Templates** (`lib/activity-templates.ts`):
-   - Each activity type (provisioning, turn, meet-greet, deprovisioning, maid-service, adhoc) has a predefined template
-   - Templates define tasks with dependencies, photo requirements, and estimated times
-   - Activities are tracked via `ActivityTracker` component
+#### Activity Types (aligned across files)
+**Home Preparation:**
+- `provisioning`, `deprovisioning`, `turn`, `maid-service`, `mini-maid`, `touch-up`, `quality-check`
 
-2. **Activity State Management**:
-   - Active activities are stored in localStorage with key pattern: `activity-tracker-draft-{homeId}-{activityType}`
-   - Incomplete activities (saved but not completed) are stored in: `incomplete-activities`
-   - When an activity is "closed" (saved without completing), it's marked with: `activity-closed-{homeId}-{activityType}`
-   - Resume functionality rebuilds state from localStorage
+**Guest Welcoming:**
+- `meet-greet`, `additional-greet`, `bag-drop`, `service-recovery`, `home-viewing`
 
-3. **FloatingActivityIsland**:
-   - Persistent UI element that shows active activity progress
-   - Automatically detects any active activity from localStorage
-   - Provides quick access to resume or save/close activities
-   - Minimizes/expands based on scroll behavior
-   - Hides on activity tracker pages to avoid redundancy
+**Other:**
+- `adhoc`
 
-4. **Activity Workflow**:
-   ```
-   Start Activity → Track Progress → [Save & Close (Incomplete)] OR [Complete Activity]
-   ```
-   - Incomplete activities appear in "My Activities" with orange badge
-   - Activities can have photo requirements, task dependencies, and time estimates
-   - All task states persist to localStorage automatically
+#### Activity Templates (`lib/activity-templates.ts`)
+- Each activity type has a predefined template with phases (arrive, during, depart)
+- Templates define tasks with dependencies, photo requirements, and estimated times
+- Tasks have actions like "Check", "Prepare For Guest", "Verify", "Photograph", etc.
+- Supports conditional tasks (season, occupancy-based)
+
+#### Activity State Management (`lib/activity-utils.ts`)
+- Active activities stored in localStorage: `activity-tracker-draft-{homeId}-{activityType}`
+- Incomplete activities (saved but not completed): `incomplete-activities`
+- Closed activities marked with: `activity-closed-{homeId}-{activityType}`
+- Resume functionality rebuilds state from localStorage
+
+#### Key Activity Components
+- `ActivityTracker` - Main activity workflow UI
+- `ActivityCard` (`components/activities/ActivityCard.tsx`) - Reusable activity display card with status, home info, booking links
+- `ActivityTypeSelector` - Choose activity type to start
+- `TaskCard`, `PhaseSection`, `RoomChecklist` - Activity workflow UI elements
+
+### Property Browser System
+
+A comprehensive property inventory and issue reporting system:
+
+#### Components (`components/property/`)
+- `PropertyBrowser.tsx` - Main hierarchical browser with offline support
+- `HierarchicalListItem.tsx` - List item with navigation and issue badges
+- `ItemDetailsSheet.tsx` - Detailed view of property items
+- `PropertyIssueReportSheet.tsx` - Issue reporting with photo upload
+- `PropertySearch.tsx` - Search within property hierarchy
+- `IssueBadge.tsx`, `ReportIssueButton.tsx` - UI helpers
+
+#### Property Data Types (`lib/test-data.ts`)
+- `PropertyNodeType`: "unit" | "building" | "floor" | "room" | "item"
+- `PropertyIssueType`: "not-working" | "damaged" | "missing" | "needs-cleaning" | "other"
+- `PropertyIssuePriority`: "urgent" | "high" | "medium" | "low"
+
+#### Features
+- Hierarchical navigation (Building → Floor → Room → Item)
+- Issue tracking with photo requirements
+- Offline queue support (syncs when back online)
+- Cached hierarchy data (24-hour expiry)
+- Issue count bubbling to parent nodes
 
 ### Component Organization
 
@@ -75,28 +114,55 @@ The activity system is the core of the app. Activities follow a template-based w
 components/
 ├── ui/              # Shadcn UI primitives (Button, Card, Sheet, etc.)
 ├── navigation/      # TopNav, BottomNav, Breadcrumbs, SearchBar, BackButton
-├── dashboard/       # Dashboard-specific components (MyActivities, DashboardHeader, etc.)
-├── activities/      # Activity tracking, photo upload, issue reporting
-├── homes/           # Home details, access info, damages, media
-├── settings/        # Settings and preferences
-└── theme/           # Theme provider and toggle
+├── dashboard/       # DashboardHeader, MyActivities, BookingOverview, DashboardMap, etc.
+├── activities/      # ActivityTracker, ActivityCard, PhotoUploader, TaskCard, etc.
+├── homes/           # HomeInfoSheet, HomeAccess, HomeMedia, DamagesSheet, etc.
+├── bookings/        # BookingInfoSheet - booking details in bottom sheet
+├── property/        # PropertyBrowser, HierarchicalListItem, ItemDetailsSheet, etc.
+├── map/             # MapSheet - location/directions sheet
+├── haptic/          # HapticProvider - haptic feedback context
+├── layout/          # LayoutClient - client-side layout wrapper
+├── settings/        # HapticSettings, PlanMyDay
+└── theme/           # ThemeProvider, ThemeToggle
 ```
 
-### Navigation Structure
+### Route Structure
+
+```
+app/
+├── page.tsx                          # Dashboard (home)
+├── activities/
+│   ├── page.tsx                      # Activities list
+│   └── [id]/page.tsx                 # Activity detail
+├── bookings/
+│   └── [id]/page.tsx                 # Booking detail
+├── catalog/page.tsx                  # Property catalog
+├── homes/
+│   └── [id]/
+│       ├── page.tsx                  # Home detail
+│       ├── start-activity/page.tsx   # Activity selector
+│       └── activities/[type]/track/  # Activity tracker
+├── keys/page.tsx                     # Key management
+├── login/page.tsx                    # Login
+├── manage/page.tsx                   # Management
+├── notifications/page.tsx            # Notifications
+├── profile/page.tsx                  # User profile
+└── settings/page.tsx                 # Settings
+```
+
+### Navigation Pattern
 
 The app uses a mobile-first navigation pattern:
-
 - **TopNav**: Displays on all pages, contains breadcrumbs and user menu
 - **BottomNav**: Mobile navigation bar with 5 main sections (Home, Activities, Search, Manage, Profile)
 - **Breadcrumbs**: Automatic breadcrumb generation based on route structure
 
 ### Toast Notifications
 
-The app uses **Sonner** for toast notifications. The `<Toaster />` is configured in `app/layout.tsx` with:
+Uses **Sonner** for toast notifications. Configured in `app/layout.tsx`:
 - Position: top-center
 - Rich colors enabled
 
-Usage:
 ```tsx
 import { toast } from "sonner"
 
@@ -106,44 +172,24 @@ toast.success("Success message", {
 })
 ```
 
-### Recent Searches Feature
+### Haptic Feedback System
 
-Search functionality (`app/search/page.tsx`) includes recent searches:
-- Stored in localStorage with key: `recent-searches`
-- Max 5 searches saved
-- Dropdown appears on input focus
-- Individual remove and "Clear all" functionality
-- Click-outside detection to close dropdown
+Mobile haptic feedback support via `lib/use-haptic.ts`:
+- Patterns: `light`, `medium`, `success`, `error`, `warning`
+- User preference stored in localStorage: `haptics-enabled`
+- Uses Web Vibration API
 
-### localStorage Keys Reference
-
-Understanding localStorage keys is critical for debugging:
-
-- `activity-tracker-draft-{homeId}-{activityType}` - Active activity draft data
-- `activity-closed-{homeId}-{activityType}` - Marks activity as closed (won't show in FloatingActivityIsland)
-- `incomplete-activities` - Array of saved incomplete activities
-- `recent-searches` - Array of recent search queries (max 5)
-
-### Styling Approach
-
-- **Tailwind CSS** for all styling
-- **Shadcn UI** components use `class-variance-authority` for variant management
-- Mobile-first responsive design using Tailwind breakpoints (sm, md, lg)
-- Dark mode support via `next-themes` (system, light, dark)
-- Utility function `cn()` from `lib/utils.ts` for conditional class merging
-
-### Important Data Type Mismatches
-
-Note: There's a discrepancy between activity types in different files:
-- `lib/test-data.ts` uses: `"provisioning" | "meet-greet" | "turn" | "deprovision" | "ad-hoc"`
-- `lib/activity-templates.ts` uses: `"adhoc" | "deprovisioning" | "meet-greet" | "maid-service" | "provisioning" | "turn"`
-
-When working with activities, prefer the template types and ensure consistency.
+```tsx
+const { trigger, isEnabled, toggleEnabled, isSupported } = useHaptic()
+trigger('success') // Trigger haptic
+```
 
 ### Photo Upload System
 
 Photos are managed through:
 - `PhotoUploader` component for capturing/uploading photos
+- `PhotoAnnotation` for marking up photos
+- `PhotoGallery` for viewing photo collections
 - `UploadQueue` for batch upload management
 - Photos stored per-task in activity state
 - Photo status: "uploading" | "uploaded" | "failed"
@@ -153,23 +199,75 @@ Photos are managed through:
 - **Property maps**: Uses OpenStreetMap embed in `components/homes/HomeAccess.tsx`
 - **Directions**: Google Maps Directions API integration
 - **Area overview**: Leaflet map in `components/dashboard/DashboardMap.tsx` (collapsible)
+- **MapSheet**: Bottom sheet with map and directions (`components/map/MapSheet.tsx`)
+- **Geocoding**: `lib/geocoding.ts` handles location-to-coordinates conversion
+
+### localStorage Keys Reference
+
+Understanding localStorage keys is critical for debugging:
+
+**Activity System:**
+- `activity-tracker-draft-{homeId}-{activityType}` - Active activity draft data
+- `activity-closed-{homeId}-{activityType}` - Marks activity as closed
+- `incomplete-activities` - Array of saved incomplete activities
+
+**Property System:**
+- `property-hierarchy-{homeId}` - Cached property hierarchy (24hr)
+- `property-issues-{homeId}` - Issues for a property
+- `property-issue-queue-{homeId}` - Offline issue queue
+- `home-issues-{homeId}` - General home issues
+
+**User Preferences:**
+- `recent-searches` - Array of recent search queries (max 5)
+- `haptics-enabled` - Haptic feedback preference
+
+### Styling Approach
+
+- **Tailwind CSS** for all styling
+- **Shadcn UI** components use `class-variance-authority` for variant management
+- Mobile-first responsive design using Tailwind breakpoints (sm, md, lg)
+- Dark mode support via `next-themes` (system, light, dark)
+- Utility function `cn()` from `lib/utils.ts` for conditional class merging
+- **Activity color CSS variables**: `--activity-provisioning`, `--activity-turn`, etc.
 
 ## Common Patterns
 
-### Reading Files in This Codebase
+### Accessing Data in Components
 
-When making changes:
-1. Always read the file first before editing
-2. Check related type definitions in `lib/test-data.ts` and `lib/activity-templates.ts`
-3. Verify localStorage key patterns in `lib/activity-utils.ts`
-4. Test on mobile viewport (the primary use case)
+```tsx
+// Using React Context (recommended)
+import { useData, useHomes, useActivities } from "@/lib/data/DataProvider"
+
+function MyComponent() {
+  const { homes, bookings, activities, isLoading, error, refresh } = useData()
+  // or for specific data:
+  const { homes, isLoading, error } = useHomes()
+  
+  if (isLoading) return <Skeleton />
+  // ...
+}
+```
+
+### Creating Info Sheets
+
+Use bottom sheets for detail views:
+```tsx
+<HomeInfoSheet homeId={home.id} homeCode={home.code} homeName={home.name}>
+  <button>View Home</button>
+</HomeInfoSheet>
+
+<BookingInfoSheet booking={booking} home={home}>
+  <button>View Booking</button>
+</BookingInfoSheet>
+```
 
 ### Adding New Activity Types
 
 1. Update `ActivityType` in `lib/activity-templates.ts`
 2. Add template definition in `activityTemplates` object
 3. Update `ActivityType` in `lib/test-data.ts` (keep in sync)
-4. Add icon and color config in `components/dashboard/MyActivities.tsx` (`activityTypeConfig`)
+4. Add icon and color config in `components/activities/ActivityCard.tsx` (`activityTypeConfig`)
+5. Add CSS variable for color in `globals.css`
 
 ### Working with Forms
 
@@ -178,7 +276,6 @@ Forms use:
 - `zod` for validation
 - Shadcn UI form components from `components/ui/form.tsx`
 
-Example pattern:
 ```tsx
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -193,6 +290,17 @@ const form = useForm({
 })
 ```
 
+### Loading States
+
+Use Skeleton components for loading states:
+```tsx
+import { Skeleton } from "@/components/ui/skeleton"
+
+if (isLoading) {
+  return <Skeleton className="h-32 w-full rounded-lg" />
+}
+```
+
 ## Key Features to Preserve
 
 1. **Incomplete Activity Tracking**: Users can save and close activities mid-workflow
@@ -203,6 +311,9 @@ const form = useForm({
 6. **Photo Requirements**: Activities enforce required photo counts per task
 7. **Task Dependencies**: Some tasks cannot be started until dependencies complete
 8. **localStorage Persistence**: All activity progress survives page refreshes
+9. **Property Hierarchy**: Hierarchical item tracking with issue reporting
+10. **Offline Support**: Property issues queued when offline
+11. **Haptic Feedback**: Mobile vibration patterns for user feedback
 
 ## Testing Considerations
 
@@ -211,3 +322,17 @@ const form = useForm({
 - Test localStorage persistence by refreshing during activities
 - Test network access using `npm run dev:network` for mobile device testing
 - Verify FloatingActivityIsland shows/hides correctly based on activity state
+- Test offline behavior for property issue reporting
+- Test haptic feedback on supported devices
+
+## Key Dependencies
+
+- `next` ^16 - React framework
+- `react-hook-form` ^7 - Form handling
+- `zod` ^4 - Schema validation
+- `sonner` ^2 - Toast notifications
+- `lucide-react` - Icons
+- `papaparse` ^5 - CSV parsing
+- `jspdf` ^3 - PDF generation
+- `next-themes` - Dark mode
+- `class-variance-authority` - Component variants

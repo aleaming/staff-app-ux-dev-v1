@@ -145,7 +145,7 @@ export function WeatherWidget({ latitude = 51.5074, longitude = -0.1278, city = 
               </div>
               <div>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-2xl sm:text-3xl font-bold">{weather.temperature}</span>
+                  <span className="text-lg sm:text-lg font-bold">{weather.temperature}</span>
                   <span className="text-muted-foreground text-base sm:text-lg">°C</span>
                 </div>
                 <p className="text-xs sm:text-sm text-muted-foreground break-words">{weather.condition}</p>

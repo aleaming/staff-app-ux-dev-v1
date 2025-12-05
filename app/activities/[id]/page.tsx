@@ -168,7 +168,7 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
 
   return (
     <div className="container mx-auto px-4 py-6 md:py-8">
-      <div className="space-y-6">
+      <div className="space-y-4">
         {/* Breadcrumbs */}
         <Breadcrumbs items={breadcrumbs} />
 

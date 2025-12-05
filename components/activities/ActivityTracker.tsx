@@ -295,6 +295,18 @@ export function ActivityTracker({
     }, 2000)
   }
 
+  const deletePhotoFromTask = (taskId: string, photoId: string) => {
+    setTaskStates(prev => ({
+      ...prev,
+      [taskId]: {
+        ...prev[taskId],
+        photos: (prev[taskId]?.photos || []).filter(p => p.id !== photoId)
+      }
+    }))
+    saveToLocalStorage()
+    toast.success("Photo removed")
+  }
+
   const annotatePhoto = (taskId: string, photoId: string, annotations: PhotoAnnotation[]) => {
     setTaskStates(prev => ({
       ...prev,
@@ -629,7 +641,7 @@ export function ActivityTracker({
               <TabsTrigger value="media">Media</TabsTrigger>
             </TabsList>
 
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto pb-48">
               <TabsContent value="browse" className="mt-0">
                 <PropertyBrowser homeId={homeId} homeCode={homeCode} homeName={homeName} />
               </TabsContent>
@@ -781,6 +793,7 @@ export function ActivityTracker({
                     }
                   }}
                   onTaskRetryUpload={(taskId, photoId) => retryPhotoUpload(taskId, photoId)}
+                  onTaskDeletePhoto={(taskId, photoId) => deletePhotoFromTask(taskId, photoId)}
                   onExpandedChange={(taskId) => setExpandedTaskId(taskId)}
                   currentSeason={currentSeason}
                   currentOccupancy={currentOccupancy}
@@ -818,6 +831,7 @@ export function ActivityTracker({
                   onIssueReportChange={(issueReport) => updateIssueReport(task.id, issueReport)}
                   onAnnotatePhoto={(photoId, annotations) => annotatePhoto(task.id, photoId, annotations)}
                   onRetryUpload={(photoId) => retryPhotoUpload(task.id, photoId)}
+                  onDeletePhoto={(photoId) => deletePhotoFromTask(task.id, photoId)}
                   onExpandedChange={(expanded) => setExpandedTaskId(expanded ? task.id : null)}
                 />
               )
