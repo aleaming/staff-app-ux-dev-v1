@@ -85,9 +85,9 @@ export function DamagesNotificationBanner() {
 
       <SheetContent side="bottom" className="h-screen max-h-[calc(100vh-8rem)] flex flex-col bg-secondary dark:bg-secondary-foreground">
         <SheetHeader className="mb-1">
-          <SheetTitle className="text-2xl text-left">Known Damages</SheetTitle>
+          <SheetTitle className="text-lg font-bold text-left">Known Damages</SheetTitle>
         </SheetHeader>
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto pb-48">
           <DamagesSheet homeId={homeId} damages={damages} />
         </div>
       </SheetContent>

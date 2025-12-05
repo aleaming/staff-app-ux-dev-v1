@@ -24,10 +24,11 @@ import {
   Package,
   Handshake,
   RefreshCw,
-  X as XIcon,
+  X,
   AlertCircle,
   Calendar
 } from "lucide-react"
+import { toast } from "sonner"
 import { ActivityFolderCard } from "./ActivityFolderCard"
 
 interface HomeMediaProps {
@@ -87,14 +88,16 @@ export function HomeMedia({ homeCode }: HomeMediaProps) {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedFilters, setSelectedFilters] = useState<string[]>([])
   
-  // Mock data for property media
+  // State for property media photos (can be added/deleted)
+  const [propertyPhotos, setPropertyPhotos] = useState([
+    { id: "1", url: "/placeholder-image.jpg", caption: "Living Room" },
+    { id: "2", url: "/placeholder-image.jpg", caption: "Kitchen" },
+    { id: "3", url: "/placeholder-image.jpg", caption: "Master Bedroom" },
+    { id: "4", url: "/placeholder-image.jpg", caption: "Bathroom" }
+  ])
+
+  // Mock data for other property media
   const media = {
-    photos: [
-      { id: "1", url: "/placeholder-image.jpg", caption: "Living Room" },
-      { id: "2", url: "/placeholder-image.jpg", caption: "Kitchen" },
-      { id: "3", url: "/placeholder-image.jpg", caption: "Master Bedroom" },
-      { id: "4", url: "/placeholder-image.jpg", caption: "Bathroom" }
-    ],
     videos: [
       { id: "1", url: "/placeholder-video.mp4", title: "Property Tour" }
     ],
@@ -102,6 +105,11 @@ export function HomeMedia({ homeCode }: HomeMediaProps) {
       { id: "1", name: "Property Manual", type: "PDF" },
       { id: "2", name: "Emergency Contacts", type: "PDF" }
     ]
+  }
+
+  const handleDeletePhoto = (photoId: string) => {
+    setPropertyPhotos(prev => prev.filter(p => p.id !== photoId))
+    toast.success("Photo removed")
   }
 
   // Filter activities based on search and filters
@@ -119,7 +127,7 @@ export function HomeMedia({ homeCode }: HomeMediaProps) {
 
   const activityTypes = [
     { type: "provisioning", label: "Provisioning", icon: Package },
-    { type: "deprovisioning", label: "Deprovisioning", icon: XIcon },
+    { type: "deprovisioning", label: "Deprovisioning", icon: X },
     { type: "turn", label: "Turn", icon: RefreshCw },
     { type: "maid-service", label: "Maid Service", icon: RefreshCw },
     { type: "meet-greet", label: "Meet & Greet", icon: Handshake },
@@ -239,8 +247,8 @@ export function HomeMedia({ homeCode }: HomeMediaProps) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
-              {media.photos.map((photo) => (
+            <div className="grid gap-2 grid-cols-3 md:grid-cols-4">
+              {propertyPhotos.map((photo) => (
                 <div key={photo.id} className="relative aspect-video bg-muted rounded-lg overflow-hidden group">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <Image className="h-12 w-12 text-muted-foreground" />
@@ -248,6 +256,16 @@ export function HomeMedia({ homeCode }: HomeMediaProps) {
                   <div className="absolute bottom-0 left-0 right-0 bg-black/50 dark:bg-black/70 text-white p-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <p className="text-sm">{photo.caption}</p>
                   </div>
+                  {/* Delete Button */}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-1 right-1 h-6 w-6 rounded-full bg-black/50 dark:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive"
+                    onClick={() => handleDeletePhoto(photo.id)}
+                    aria-label="Delete photo"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
                 </div>
               ))}
             </div>

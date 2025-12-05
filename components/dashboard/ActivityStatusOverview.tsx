@@ -2,11 +2,11 @@
 
 import Link from "next/link"
 import { testActivities } from "@/lib/test-data"
+import type { Activity } from "@/lib/test-data"
 import { Clock, CheckCircle2, AlertCircle, PlayCircle } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import type { Activity, ActivityStatus } from "./MyActivities"
 
 interface ActivityStatusOverviewProps {
   activities?: Activity[]
@@ -105,7 +105,7 @@ export function ActivityStatusOverview({
       <CardContent className="p-4 sm:p-6 pt-0">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4">
           {Object.entries(statusCounts).map(([status, count]) => {
-            const config = statusConfig[status as ActivityStatus]
+            const config = statusConfig[status as keyof typeof statusConfig]
             const Icon = config.icon
 
             return (
@@ -121,7 +121,7 @@ export function ActivityStatusOverview({
                         <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
                       </div>
                       <div className="text-center">
-                        <p className="text-xl sm:text-2xl font-bold">{count}</p>
+                        <p className="text-lg sm:text-lg font-bold">{count}</p>
                         <p className="text-xs sm:text-sm text-muted-foreground break-words">{config.label}</p>
                       </div>
                     </div>

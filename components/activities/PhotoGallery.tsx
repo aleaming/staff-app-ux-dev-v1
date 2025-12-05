@@ -21,9 +21,10 @@ interface PhotoGalleryProps {
   photos: Photo[]
   onAnnotate?: (photoId: string, annotations: PhotoAnnotation[]) => void
   onRetryUpload?: (photoId: string) => void
+  onDeletePhoto?: (photoId: string) => void
 }
 
-export function PhotoGallery({ photos, onAnnotate, onRetryUpload }: PhotoGalleryProps) {
+export function PhotoGallery({ photos, onAnnotate, onRetryUpload, onDeletePhoto }: PhotoGalleryProps) {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const [showAnnotations, setShowAnnotations] = useState(false)
 
@@ -113,6 +114,22 @@ export function PhotoGallery({ photos, onAnnotate, onRetryUpload }: PhotoGallery
             <div className="absolute inset-0 bg-black/50 dark:bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
               <Edit3 className="h-6 w-6 text-background" />
             </div>
+
+            {/* Delete Button */}
+            {onDeletePhoto && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-1 right-1 h-6 w-6 rounded-full bg-black/50 dark:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onDeletePhoto(photo.id)
+                }}
+                aria-label="Delete photo"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
 
             {/* Failed Upload Retry */}
             {photo.status === "failed" && onRetryUpload && (

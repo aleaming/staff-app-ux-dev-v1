@@ -46,6 +46,7 @@ interface PhaseSectionProps {
   onTaskIssueReportChange: (taskId: string, report: TaskState["issueReport"]) => void
   onTaskAnnotatePhoto: (taskId: string, photoId: string) => void
   onTaskRetryUpload: (taskId: string, photoId: string) => void
+  onTaskDeletePhoto?: (taskId: string, photoId: string) => void
   onExpandedChange?: (taskId: string | null) => void
   currentSeason?: "summer" | "winter"
   currentOccupancy?: "booking" | "empty" | "host"
@@ -67,6 +68,7 @@ export function PhaseSection({
   onTaskIssueReportChange,
   onTaskAnnotatePhoto,
   onTaskRetryUpload,
+  onTaskDeletePhoto,
   onExpandedChange,
   currentSeason,
   currentOccupancy,
@@ -215,6 +217,7 @@ export function PhaseSection({
                           onTaskIssueReportChange={onTaskIssueReportChange}
                           onTaskAnnotatePhoto={onTaskAnnotatePhoto}
                           onTaskRetryUpload={onTaskRetryUpload}
+                          onTaskDeletePhoto={onTaskDeletePhoto}
                           onExpandedChange={onExpandedChange}
                         />
                       )
@@ -269,6 +272,7 @@ export function PhaseSection({
                             onIssueReportChange={(report) => onTaskIssueReportChange(task.id, report)}
                             onAnnotatePhoto={(photoId) => onTaskAnnotatePhoto(task.id, photoId)}
                             onRetryUpload={(photoId) => onTaskRetryUpload(task.id, photoId)}
+                            onDeletePhoto={onTaskDeletePhoto ? (photoId) => onTaskDeletePhoto(task.id, photoId) : undefined}
                             onExpandedChange={(expanded) => onExpandedChange?.(expanded ? task.id : null)}
                           />
                         )

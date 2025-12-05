@@ -173,7 +173,7 @@ export default function HomeDetailPage({ params }: HomeDetailPageProps) {
                           <div className="flex items-center justify-between">
                             <div>
                               <Link href={`/bookings/${booking.id}`}>
-                                <h3 className="text-xl font-semibold hover:underline">{booking.bookingId}</h3>
+                                <h3 className="text-lg font-semibold hover:underline">{booking.bookingId}</h3>
                               </Link>
                               <p className="text-xs text-muted-foreground">{booking.guestName}</p>
                               <div className="flex items-center gap-4 mt-2 text-xs">
@@ -210,7 +210,7 @@ export default function HomeDetailPage({ params }: HomeDetailPageProps) {
                           <div className="flex items-center justify-between">
                             <div>
                               <Link href={`/activities/${activity.id}`}>
-                                <h3 className="text-xl font-semibold hover:underline">{activity.title}</h3>
+                                <h3 className="text-lg font-semibold hover:underline">{activity.title}</h3>
                               </Link>
                               <p className="text-xs text-muted-foreground">
                                 {activity.scheduledTime.toLocaleDateString('en-US', { 

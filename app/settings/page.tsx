@@ -8,8 +8,8 @@ export default function SettingsPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold mb-2">Settings</h1>
-          <p className="text-muted-foreground">Manage your app preferences and features</p>
+          <h1 className="text-lg font-bold mb-2">Settings</h1>
+          <p className="text-muted-foreground text-sm">Manage your app preferences and features</p>
         </div>
 
         {/* Plan My Day */}
