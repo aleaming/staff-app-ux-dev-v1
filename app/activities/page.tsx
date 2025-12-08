@@ -182,8 +182,10 @@ export default function ActivitiesPage() {
                               {home.location}
                             </Badge>
                           )}
-                          {home.market && (
-                            <span>• {home.market}</span>
+                          {home.market && home.market !== home.location && (
+                            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-normal">
+                              {home.market}
+                            </Badge>
                           )}
                         </div>
                       )}

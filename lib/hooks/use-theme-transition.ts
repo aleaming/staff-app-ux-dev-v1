@@ -121,8 +121,7 @@ export function useThemeTransition(
         }
       `
 
-      // Start the view transition
-      // @ts-expect-error - View Transitions API types not in all TypeScript versions
+      // Start the view transition (API support already checked via isSupported)
       document.startViewTransition(() => {
         callback()
       })

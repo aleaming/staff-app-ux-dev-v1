@@ -116,10 +116,14 @@ export default function CatalogContent() {
                             {(home.location || home.market) && (
                               <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1">
                                 {home.location && (
-                                  <span className="bg-muted px-1.5 py-0.5 rounded">{home.location}</span>
+                                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-normal">
+                                    {home.location}
+                                  </Badge>
                                 )}
                                 {home.market && home.market !== home.location && (
-                                  <span className="text-muted-foreground/70">• {home.market}</span>
+                                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-normal">
+                                    {home.market}
+                                  </Badge>
                                 )}
                               </div>
                             )}
