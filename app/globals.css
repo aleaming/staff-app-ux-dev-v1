@@ -175,51 +175,38 @@
 }
 
 @layer base {
-  /* Ensure html has background color to prevent white flash during theme transitions */
+  /* Background texture applied to html - works with View Transitions API */
   html {
     background-color: hsl(var(--background));
+    background-image: repeating-linear-gradient(
+      45deg,
+      hsl(var(--foreground) / 0.06) 0px,
+      hsl(var(--foreground) / 0.06) 1px,
+      transparent 1px,
+      transparent 50%
+    );
+    background-size: 4.8px 4.8px;
+    background-attachment: fixed;
+  }
+  
+  /* Slightly different texture opacity in dark mode */
+  html.dark {
+    background-image: repeating-linear-gradient(
+      45deg,
+      hsl(var(--foreground) / 0.04) 0px,
+      hsl(var(--foreground) / 0.04) 1px,
+      transparent 1px,
+      transparent 50%
+    );
   }
   
   * {
     @apply border-border;
   }
+  
   body {
     @apply text-foreground;
-    background-color: hsl(var(--background));
-    position: relative;
-  }
-  
-  /* Fixed texture overlay that works on all devices including iOS */
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: -1;
-    background-color: hsl(var(--background));
-    background-image: repeating-linear-gradient(
-      45deg,
-      hsl(var(--foreground) / 0.04) 0px,
-      hsl(var(--foreground) / 0.04) 1px,
-      transparent 0px,
-      transparent 50%
-    );
-    background-size: 4.8px 4.8px;
-  }
-  
-  /* Slightly different texture opacity in dark mode */
-  .dark body::before {
-    background-color: hsl(var(--background));
-    background-image: repeating-linear-gradient(
-      45deg,
-      hsl(var(--foreground) / 0.03) 0px,
-      hsl(var(--foreground) / 0.03) 1px,
-      transparent 0px,
-      transparent 50%
-    );
+    background-color: transparent; /* Let html's background show through */
   }
 }
 
