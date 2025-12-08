@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import Image from "next/image"
 import { usePathname } from "next/navigation"
+import { Logo } from "@/components/ui/logo"
 import { 
   Settings, 
   Key, 
@@ -83,13 +83,7 @@ export function TopNav({ onOpenSearch }: TopNavProps = { onOpenSearch: undefined
             </SheetHeader>
             <nav className="flex flex-col gap-4 mt-8">
               <Link href="/" className="mb-4">
-                <Image 
-                  src="/logo.svg" 
-                  alt="onefinestay" 
-                  width={101} 
-                  height={33}
-                  className="h-8 w-auto"
-                />
+                <Logo />
               </Link>
               <Link href="/manage" className="text-sm font-medium">
                 Manage
@@ -115,13 +109,7 @@ export function TopNav({ onOpenSearch }: TopNavProps = { onOpenSearch: undefined
 
         {/* Logo/Brand - Centered */}
         <Link href="/" className="absolute left-1/2 -translate-x-1/2">
-          <Image 
-            src="/logo.svg" 
-            alt="onefinestay" 
-            width={101} 
-            height={33}
-            className="h-8 w-auto"
-          />
+          <Logo />
         </Link>
 
         {/* Search Bar - Desktop Only (hidden on mobile, mobile search is in FixedSearchBar) */}

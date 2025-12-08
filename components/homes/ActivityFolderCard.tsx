@@ -5,11 +5,6 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { 
-  Package,
-  Handshake,
-  RefreshCw,
-  X as XIcon,
-  AlertCircle,
   Calendar,
   Clock,
   Image,
@@ -34,29 +29,29 @@ interface ActivityFolderCardProps {
   homeCode: string
 }
 
-const activityTypeConfig: Record<string, { label: string; icon: typeof Package; color: string }> = {
+// Activity colors matching CSS variables from globals.css
+const activityTypeConfig: Record<string, { label: string; color: string }> = {
   // Home preparation
-  "provisioning": { label: "Provisioning", icon: Package, color: "var(--activity-provisioning)" },
-  "deprovisioning": { label: "Deprovisioning", icon: XIcon, color: "var(--activity-deprovision)" },
-  "turn": { label: "Turn", icon: RefreshCw, color: "var(--activity-turn)" },
-  "maid-service": { label: "Maid Service", icon: RefreshCw, color: "var(--activity-maid)" },
-  "mini-maid": { label: "Mini-Maid", icon: RefreshCw, color: "var(--activity-mini-maid)" },
-  "touch-up": { label: "Touch-Up", icon: RefreshCw, color: "var(--activity-touch-up)" },
-  "quality-check": { label: "Quality Check", icon: AlertCircle, color: "var(--activity-quality-check)" },
+  "provisioning": { label: "Provisioning", color: "var(--activity-provisioning)" },
+  "deprovisioning": { label: "Deprovisioning", color: "var(--activity-deprovision)" },
+  "turn": { label: "Turn", color: "var(--activity-turn)" },
+  "maid-service": { label: "Maid Service", color: "var(--activity-maid)" },
+  "mini-maid": { label: "Mini-Maid", color: "var(--activity-mini-maid)" },
+  "touch-up": { label: "Touch-Up", color: "var(--activity-touch-up)" },
+  "quality-check": { label: "Quality Check", color: "var(--activity-quality-check)" },
   // Guest welcoming
-  "meet-greet": { label: "Meet & Greet", icon: Handshake, color: "var(--activity-greet)" },
-  "additional-greet": { label: "Additional Greet", icon: Handshake, color: "var(--activity-additional-greet)" },
-  "bag-drop": { label: "Bag Drop", icon: Package, color: "var(--activity-bag-drop)" },
-  "service-recovery": { label: "Service Recovery", icon: AlertCircle, color: "var(--activity-service-recovery)" },
-  "home-viewing": { label: "Home Viewing", icon: Handshake, color: "var(--activity-home-viewing)" },
+  "meet-greet": { label: "Meet & Greet", color: "var(--activity-greet)" },
+  "additional-greet": { label: "Additional Greet", color: "var(--activity-additional-greet)" },
+  "bag-drop": { label: "Bag Drop", color: "var(--activity-bag-drop)" },
+  "service-recovery": { label: "Service Recovery", color: "var(--activity-service-recovery)" },
+  "home-viewing": { label: "Home Viewing", color: "var(--activity-home-viewing)" },
   // Other
-  "adhoc": { label: "Ad-hoc", icon: AlertCircle, color: "var(--activity-adhoc)" },
+  "adhoc": { label: "Ad-hoc", color: "var(--activity-adhoc)" },
 }
 
 export function ActivityFolderCard({ activity, homeCode }: ActivityFolderCardProps) {
   const [galleryOpen, setGalleryOpen] = useState(false)
   const config = activityTypeConfig[activity.activityType]
-  const Icon = config.icon
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('en-US', {
@@ -76,55 +71,41 @@ export function ActivityFolderCard({ activity, homeCode }: ActivityFolderCardPro
   return (
     <>
       <Card 
-        className="hover:bg-muted/50 transition-colors cursor-pointer group"
+        className="hover:bg-muted/50 transition-colors cursor-pointer group overflow-hidden border-l-[6px]"
+        style={{ borderLeftColor: config.color }}
         onClick={() => setGalleryOpen(true)}
       >
-        <CardContent className="p-6">
-          <div className="flex items-start gap-4">
-            {/* Timeline indicator */}
-            <div className="flex flex-col items-center gap-2">
-              <div className="p-3 rounded-lg text-white" style={{ backgroundColor: config.color }}>
-                <Icon className="h-5 w-5" />
-              </div>
-              <div className="w-px h-full bg-border min-h-[40px]" />
-            </div>
-
-            {/* Content */}
+        <CardContent className="p-4">
+          <div className="flex items-start justify-between gap-4">
+            {/* Left: Title and Details */}
             <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between gap-4 mb-3">
-                <div>
-                  <h3 className="font-semibold text-lg">{config.label}</h3>
-                  <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="h-3 w-3" />
-                      {formatDate(activity.date)}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      {formatTime(activity.date)}
-                    </span>
-                  </div>
-                </div>
-                <Badge variant="outline" className="whitespace-nowrap">
-                  {activity.status}
-                </Badge>
+              <h3 className="font-bold text-lg">{config.label}</h3>
+              <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
+                <span className="flex items-center gap-1">
+                  <Calendar className="h-3 w-3" />
+                  {formatDate(activity.date)}
+                </span>
+                <span className="flex items-center gap-1">
+                  <Clock className="h-3 w-3" />
+                  {formatTime(activity.date)}
+                </span>
               </div>
 
-              {/* Photo count and preview info */}
-              <div className="flex items-center gap-2 mb-3">
-                <div className="flex items-center gap-1 text-sm">
-                  <Image className="h-4 w-4 text-muted-foreground" />
+              {/* Photo count and rooms */}
+              <div className="flex items-center gap-2 mt-2 text-sm">
+                <div className="flex items-center gap-1">
+                  <Image className="h-3.5 w-3.5 text-muted-foreground" />
                   <span className="font-medium">{activity.photoCount}</span>
                   <span className="text-muted-foreground">photos</span>
                 </div>
                 <span className="text-muted-foreground">•</span>
-                <span className="text-sm text-muted-foreground">
+                <span className="text-muted-foreground">
                   {activity.rooms.length} {activity.rooms.length === 1 ? 'room' : 'rooms'}
                 </span>
               </div>
 
               {/* Rooms */}
-              <div className="flex flex-wrap gap-2 mb-3">
+              <div className="flex flex-wrap gap-1.5 mt-2">
                 {activity.rooms.slice(0, 3).map((room) => (
                   <Badge key={room} variant="secondary" className="text-xs">
                     {room}
@@ -136,19 +117,24 @@ export function ActivityFolderCard({ activity, homeCode }: ActivityFolderCardPro
                   </Badge>
                 )}
               </div>
+            </div>
 
-              {/* View button */}
+            {/* Right: Status and View button */}
+            <div className="flex flex-col items-end gap-2 flex-shrink-0">
+              <Badge variant="outline" className="whitespace-nowrap">
+                {activity.status}
+              </Badge>
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="w-full sm:w-auto group-hover:bg-background"
+                className="group-hover:bg-background"
                 onClick={(e) => {
                   e.stopPropagation()
                   setGalleryOpen(true)
                 }}
               >
-                View Photos
-                <ChevronRight className="h-4 w-4 ml-2" />
+                View
+                <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
             </div>
           </div>

@@ -179,7 +179,28 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    /* Layered background: texture pattern on top of solid background color */
+    background-color: hsl(var(--background));
+    background-image: repeating-linear-gradient(
+      45deg,
+      hsl(var(--foreground) / 0.04) 0px,
+      hsl(var(--foreground) / 0.04) 1px,
+      transparent 0px,
+      transparent 50%
+    );
+    background-size: 4.8px 4.8px;
+  }
+  
+  /* Slightly different texture opacity in dark mode */
+  .dark body {
+    background-image: repeating-linear-gradient(
+      45deg,
+      hsl(var(--foreground) / 0.03) 0px,
+      hsl(var(--foreground) / 0.03) 1px,
+      transparent 0px,
+      transparent 50%
+    );
   }
 }
 
