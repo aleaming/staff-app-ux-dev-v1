@@ -16,10 +16,15 @@ import {
   AlertCircle,
   Clock,
   Pause,
-  Calendar
+  Calendar,
+  Bed,
+  Bath,
+  MapPin
 } from "lucide-react"
 import Link from "next/link"
 import { HomeInfoSheet } from "@/components/homes/HomeInfoSheet"
+import { BookingInfoSheet } from "@/components/bookings/BookingInfoSheet"
+import { MapSheet } from "@/components/map/MapSheet"
 
 const activityTypeConfig: Record<string, { label: string; icon: typeof Package; color: string }> = {
   // Home preparation
@@ -88,11 +93,35 @@ function ActivitiesSkeleton() {
 export default function ActivitiesPage() {
   const { activities, homes, bookings, isLoading } = useData()
   const [incompleteActivities, setIncompleteActivities] = useState<Activity[]>([])
+  const [mapSheetOpen, setMapSheetOpen] = useState(false)
+  const [selectedHome, setSelectedHome] = useState<{
+    code: string
+    name?: string
+    address: string
+    city?: string
+    coordinates?: { lat: number, lng: number }
+  } | null>(null)
 
   useEffect(() => {
     const incomplete = getIncompleteActivities()
     setIncompleteActivities(incomplete)
   }, [])
+
+  const handleShowMap = (e: React.MouseEvent, homeCode: string) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const home = homes.find(h => h.code === homeCode)
+    if (home) {
+      setSelectedHome({
+        code: home.code,
+        name: home.name,
+        address: home.address,
+        city: home.city,
+        coordinates: home.coordinates
+      })
+      setMapSheetOpen(true)
+    }
+  }
 
   if (isLoading) {
     return <ActivitiesSkeleton />
@@ -146,15 +175,51 @@ export default function ActivitiesPage() {
                           </button>
                         </HomeInfoSheet>
                       </div>
+                      {home && (home.location || home.market) && (
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2">
+                          {home.location && (
+                            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-normal">
+                              {home.location}
+                            </Badge>
+                          )}
+                          {home.market && (
+                            <span>• {home.market}</span>
+                          )}
+                        </div>
+                      )}
+                      {home && (home.bedrooms || home.bathrooms) && (
+                        <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2">
+                          {home.bedrooms && (
+                            <span className="flex items-center gap-1">
+                              <Bed className="h-3 w-3" />
+                              {home.bedrooms} {home.bedrooms === 1 ? 'bed' : 'beds'}
+                            </span>
+                          )}
+                          {home.bathrooms && (
+                            <span className="flex items-center gap-1">
+                              <Bath className="h-3 w-3" />
+                              {home.bathrooms} {home.bathrooms === 1 ? 'bath' : 'baths'}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                      {home && home.address && (
+                        <button
+                          onClick={(e) => handleShowMap(e, activity.homeCode)}
+                          className="flex items-start gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mb-2 text-left"
+                        >
+                          <MapPin className="h-3 w-3 flex-shrink-0 mt-0.5" />
+                          <span className="underline">{home.address}{home.city && `, ${home.city}`}</span>
+                        </button>
+                      )}
                       {activity.bookingId && booking && (
                         <div className="flex items-center gap-1 text-xs text-muted-foreground italic">
                           <Calendar className="h-3 w-3" />
-                          <Link
-                            href={`/bookings/${booking.id}`}
-                            className="underline hover:text-primary transition-colors"
-                          >
-                            {activity.bookingId}
-                          </Link>
+                          <BookingInfoSheet bookingId={booking.bookingId}>
+                            <button className="underline hover:text-primary transition-colors">
+                              {activity.bookingId}
+                            </button>
+                          </BookingInfoSheet>
                         </div>
                       )}
                     </div>
@@ -185,17 +250,7 @@ export default function ActivitiesPage() {
                     className="w-full h-10 rounded-lg font-medium text-base gap-2"
                   >
                     <Pause className="h-4 w-4" />
-                    {typeConfig.label}
-                  </Button>
-                </Link>
-              ) : activity.status === "to-start" ? (
-                <Link href={`/activities/${activity.id}`}>
-                  <Button
-                    size="lg"
-                    variant="secondary"
-                    className="w-full h-10 rounded-lg font-medium text-base"
-                  >
-                    {typeConfig.label}
+                    Resume Activity
                   </Button>
                 </Link>
               ) : (
@@ -205,7 +260,7 @@ export default function ActivitiesPage() {
                     variant="secondary"
                     className="w-full h-10 rounded-lg font-medium text-base"
                   >
-                    {typeConfig.label}
+                    Activity Details
                   </Button>
                 </Link>
               )}
@@ -264,6 +319,19 @@ export default function ActivitiesPage() {
           </div>
         </div>
       </div>
+
+      {/* Map Sheet */}
+      {selectedHome && (
+        <MapSheet
+          open={mapSheetOpen}
+          onOpenChange={setMapSheetOpen}
+          homeCode={selectedHome.code}
+          homeName={selectedHome.name}
+          address={selectedHome.address}
+          city={selectedHome.city}
+          coordinates={selectedHome.coordinates}
+        />
+      )}
     </div>
   )
 }

@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
-import { testHomes, testBookings, testActivities } from "@/lib/test-data"
+import { useData } from "@/lib/data/DataProvider"
 import {
   Search,
   X,
@@ -30,6 +30,7 @@ interface GlobalSearchSheetProps {
 
 export function GlobalSearchSheet({ open, onOpenChange }: GlobalSearchSheetProps) {
   const router = useRouter()
+  const { homes, bookings, activities } = useData()
   const [query, setQuery] = useState("")
   const [recentSearches, setRecentSearches] = useState<string[]>([])
   const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(null)
@@ -85,7 +86,7 @@ export function GlobalSearchSheet({ open, onOpenChange }: GlobalSearchSheetProps
 
     const lowerQuery = query.toLowerCase()
 
-    const homes = testHomes
+    const matchedHomes = homes
       .filter(home => 
         fuzzyMatch(home.code, lowerQuery) ||
         fuzzyMatch(home.name || "", lowerQuery) ||
@@ -94,7 +95,7 @@ export function GlobalSearchSheet({ open, onOpenChange }: GlobalSearchSheetProps
       )
       .slice(0, MAX_RESULTS_PER_CATEGORY)
 
-    const bookings = testBookings
+    const matchedBookings = bookings
       .filter(booking =>
         fuzzyMatch(booking.bookingId, lowerQuery) ||
         fuzzyMatch(booking.guestName, lowerQuery) ||
@@ -103,7 +104,7 @@ export function GlobalSearchSheet({ open, onOpenChange }: GlobalSearchSheetProps
       )
       .slice(0, MAX_RESULTS_PER_CATEGORY)
 
-    const activities = testActivities
+    const matchedActivities = activities
       .filter(activity =>
         fuzzyMatch(activity.title, lowerQuery) ||
         fuzzyMatch(activity.homeCode, lowerQuery) ||
@@ -113,8 +114,8 @@ export function GlobalSearchSheet({ open, onOpenChange }: GlobalSearchSheetProps
       )
       .slice(0, MAX_RESULTS_PER_CATEGORY)
 
-    return { homes, bookings, activities }
-  }, [query, fuzzyMatch])
+    return { homes: matchedHomes, bookings: matchedBookings, activities: matchedActivities }
+  }, [query, fuzzyMatch, homes, bookings, activities])
 
   // Save search to recent searches
   const saveRecentSearch = (searchQuery: string) => {

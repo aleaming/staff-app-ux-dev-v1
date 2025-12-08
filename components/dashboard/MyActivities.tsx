@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { testActivities, testHomes, testBookings } from "@/lib/test-data"
+import { testActivities, testHomes } from "@/lib/test-data"
+import type { Booking, Home } from "@/lib/test-data"
 import { getIncompleteActivities } from "@/lib/activity-utils"
 import {
   AlertCircle,
@@ -13,7 +14,9 @@ import {
   Pause,
   ChevronDown,
   MapPin,
-  Calendar
+  Calendar,
+  Bed,
+  Bath
 } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Card as SectionCard, CardContent as SectionCardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -23,6 +26,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { MapSheet } from "@/components/map/MapSheet"
 import { HomeInfoSheet } from "@/components/homes/HomeInfoSheet"
+import { BookingInfoSheet } from "@/components/bookings/BookingInfoSheet"
 
 // Activity types - aligned with lib/test-data.ts and lib/activity-templates.ts
 export type ActivityType = 
@@ -62,6 +66,8 @@ export interface Activity {
 
 interface MyActivitiesProps {
   activities?: Activity[]
+  bookings?: Booking[]
+  homes?: Home[]
   isLoading?: boolean
 }
 
@@ -111,7 +117,9 @@ const statusConfig = {
   "ignored": { label: "Ignored", variant: "outline" as const },
 }
 
-export function MyActivities({ activities = [], isLoading = false }: MyActivitiesProps) {
+export function MyActivities({ activities = [], bookings = [], homes = [], isLoading = false }: MyActivitiesProps) {
+  // Use passed homes or fall back to test data
+  const homesList = homes.length > 0 ? homes : testHomes
   const [incompleteActivities, setIncompleteActivities] = useState<Activity[]>([])
   const [completedIsOpen, setCompletedIsOpen] = useState(false)
   const [mapSheetOpen, setMapSheetOpen] = useState(false)
@@ -156,7 +164,7 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
   const handleShowMap = (e: React.MouseEvent, homeCode: string) => {
     e.preventDefault()
     e.stopPropagation()
-    const home = testHomes.find(h => h.code === homeCode)
+    const home = homesList.find(h => h.code === homeCode)
     if (home) {
       setSelectedHome({
         code: home.code,
@@ -202,19 +210,19 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
               })
               
               // Get home for linking
-              const home = testHomes.find(h => h.code === activity.homeCode)
+              const home = homesList.find(h => h.code === activity.homeCode)
 
               // Get booking internal ID for linking
-              const booking = activity.bookingId ? testBookings.find(b => b.bookingId === activity.bookingId) : null
+              const booking = activity.bookingId ? bookings.find(b => b.bookingId === activity.bookingId) : null
 
     return (
-      <div key={activity.id} className="pb-4 last:pb-0">
+      <div key={activity.id} className="pb-3 last:pb-0">
         <Card 
           className="hover:bg-white/80 dark:hover:bg-black/50 transition-colors overflow-hidden border-l-[6px]"
           style={{ borderLeftColor: typeConfig.color }}
         >
           <CardContent className="p-4 sm:p-5">
-            <div className="space-y-4">
+            <div className="space-y-3">
               {/* Top Section: Title and Right Side Info */}
               <div className="flex items-start justify-between gap-4">
                 {/* Left: Title and Details */}
@@ -237,24 +245,51 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
                           </button>
                         </HomeInfoSheet>
                       </div>
+                      {home && (home.location || home.market) && (
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2">
+                          {home.location && (
+                            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-normal">
+                              {home.location}
+                            </Badge>
+                          )}
+                          {home.market && (
+                            <span>• {home.market}</span>
+                          )}
+                        </div>
+                      )}
+                      {home && (home.bedrooms || home.bathrooms) && (
+                        <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2">
+                          {home.bedrooms && (
+                            <span className="flex items-center gap-1">
+                              <Bed className="h-3 w-3" />
+                              {home.bedrooms} {home.bedrooms === 1 ? 'bed' : 'beds'}
+                            </span>
+                          )}
+                          {home.bathrooms && (
+                            <span className="flex items-center gap-1">
+                              <Bath className="h-3 w-3" />
+                              {home.bathrooms} {home.bathrooms === 1 ? 'bath' : 'baths'}
+                            </span>
+                          )}
+                        </div>
+                      )}
                       {home && (
                         <button
                           onClick={(e) => handleShowMap(e, activity.homeCode)}
                           className="flex items-start gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mb-2 text-left"
                         >
-                          <MapPin className="h-5 w-5" />
+                          <MapPin className="h-3 w-3" />
                           <span className="underline">{home.address}, {home.city}</span>
                         </button>
                       )}
                       {activity.bookingId && booking && (
                         <div className="flex items-center gap-1 text-xs text-muted-foreground italic mb-3">
                           <Calendar className="h-3 w-3" />
-                          <Link
-                            href={`/bookings/${booking.id}`}
-                            className="underline hover:text-primary transition-colors"
-                          >
-                            {activity.bookingId}
-                          </Link>
+                          <BookingInfoSheet bookingId={booking.bookingId}>
+                            <button className="underline hover:text-primary transition-colors">
+                              {activity.bookingId}
+                            </button>
+                          </BookingInfoSheet>
                         </div>
                       )}
                     </div>
@@ -284,7 +319,7 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
                     variant="secondary"
                     className="w-full h-10 rounded-lg font-medium text-base"
                   >
-                    {typeConfig.label}
+                    Activity Details
                   </Button>
                 </Link>
               )}
@@ -296,7 +331,7 @@ export function MyActivities({ activities = [], isLoading = false }: MyActivitie
                     className="w-full h-10 rounded-lg font-medium text-base gap-2"
                   >
                     <Pause className="h-4 w-4" />
-                    {typeConfig.label}
+                    Resume Activity
                   </Button>
                 </Link>
               )}

@@ -89,7 +89,7 @@ export default function DashboardContent() {
         />
 
         {/* Main Dashboard Sections */}
-        <MyActivities activities={activities} />
+        <MyActivities activities={activities} bookings={bookings} homes={homes} />
         <BookingOverview bookings={bookings} />
         <NotificationsMessages notifications={testNotifications} />
         <RecentlyAccessed items={testRecentItems} />

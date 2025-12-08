@@ -190,6 +190,7 @@
       transparent 50%
     );
     background-size: 4.8px 4.8px;
+    background-attachment: fixed;
   }
   
   /* Slightly different texture opacity in dark mode */
