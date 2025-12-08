@@ -19,7 +19,7 @@ interface UseThemeTransitionReturn {
   /**
    * Reference to store the button element for position-aware animations
    */
-  triggerRef: React.RefObject<HTMLButtonElement | null>
+  triggerRef: React.RefObject<HTMLButtonElement>
   /**
    * Whether View Transitions API is supported in this browser
    */
@@ -66,8 +66,12 @@ export function useThemeTransition(
         Math.max(y, window.innerHeight - y)
       )
 
-      // Get the current background color to use for the transition backdrop
-      const isDark = document.documentElement.classList.contains("dark")
+      // Determine the TARGET theme (opposite of current since we're toggling)
+      // The backdrop needs the TARGET theme's color because the new state clips in on top
+      const isCurrentlyDark = document.documentElement.classList.contains("dark")
+      const targetThemeColor = isCurrentlyDark 
+        ? "hsl(48 50% 97%)"   // Going TO light
+        : "hsl(60 3% 15%)"    // Going TO dark
       
       // Inject the animation styles dynamically
       const styleId = "theme-transition-styles"
@@ -80,14 +84,14 @@ export function useThemeTransition(
       }
 
       // Simplified animation logic:
-      // - The ::view-transition pseudo-element gets a solid background to prevent white flash
+      // - The ::view-transition pseudo-element gets the TARGET theme's background
       // - Old state (current theme) stays fully visible as backdrop (z-index: 1)
       // - New state (target theme) clips in on top (z-index: 9999)
-      // - No conditional .dark rules that could cause race conditions
+      // - Backdrop matches target to prevent color flash at clip-path edges
       styleEl.textContent = `
-        /* Solid backdrop to prevent white flash during transition */
+        /* Solid backdrop using TARGET theme color to prevent flash */
         ::view-transition {
-          background-color: ${isDark ? "hsl(60 3% 15%)" : "hsl(48 50% 97%)"};
+          background-color: ${targetThemeColor};
         }
 
         ::view-transition-old(root),
