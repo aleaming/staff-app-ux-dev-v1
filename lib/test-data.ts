@@ -72,6 +72,8 @@ export interface Home {
   name?: string
   address: string
   city: string
+  location?: string // e.g., "St John's Wood", "Soho"
+  market?: string // e.g., "London"
   distance?: number // in km
   activeBookings: number
   pendingActivities: number

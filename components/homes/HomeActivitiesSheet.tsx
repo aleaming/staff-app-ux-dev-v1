@@ -1,12 +1,14 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { ActivityTypeSelector } from "@/components/activities/ActivityTypeSelector"
 import { ActivitySwitchDialog } from "@/components/activities/ActivitySwitchDialog"
 import { getActiveActivity, clearActiveActivity, type ActiveActivityInfo } from "@/lib/activity-utils"
+import { useData } from "@/lib/data/DataProvider"
+import { CLOSE_ALL_SHEETS_EVENT } from "@/lib/sheet-utils"
 import type { ActivityType } from "@/lib/activity-templates"
 import { Target } from "lucide-react"
 
@@ -26,10 +28,28 @@ export function HomeActivitiesSheet({
   buttonText = "Home Activities"
 }: HomeActivitiesSheetProps) {
   const router = useRouter()
+  const { bookings } = useData()
   const [sheetOpen, setSheetOpen] = useState(false)
   const [showSwitchDialog, setShowSwitchDialog] = useState(false)
   const [pendingActivityType, setPendingActivityType] = useState<ActivityType | null>(null)
   const [currentActivity, setCurrentActivity] = useState<ActiveActivityInfo | null>(null)
+
+  // Close sheet when navigation occurs
+  useEffect(() => {
+    const handleClose = () => setSheetOpen(false)
+    window.addEventListener(CLOSE_ALL_SHEETS_EVENT, handleClose)
+    return () => window.removeEventListener(CLOSE_ALL_SHEETS_EVENT, handleClose)
+  }, [])
+
+  // Find relevant booking for this home (current > upcoming)
+  const relevantBooking = bookings.find(b => b.homeCode === homeCode && b.status === "current")
+    || bookings.find(b => b.homeCode === homeCode && b.status === "upcoming")
+
+  // Build activity URL with optional booking
+  const getActivityUrl = (type: ActivityType) => {
+    const baseUrl = `/homes/${homeId}/activities/${type}/track`
+    return relevantBooking ? `${baseUrl}?bookingId=${relevantBooking.bookingId}` : baseUrl
+  }
 
   const handleSelectActivity = (type: ActivityType) => {
     if (!homeId) return
@@ -42,7 +62,7 @@ export function HomeActivitiesSheet({
       if (activeActivity.homeId === homeId && activeActivity.activityType === type) {
         // Same activity - just navigate to it
         setSheetOpen(false)
-        router.push(`/homes/${homeId}/activities/${type}/track`)
+        router.push(getActivityUrl(type))
         return
       }
       
@@ -53,7 +73,7 @@ export function HomeActivitiesSheet({
     } else {
       // No active activity - proceed directly
       setSheetOpen(false)
-      router.push(`/homes/${homeId}/activities/${type}/track`)
+      router.push(getActivityUrl(type))
     }
   }
 
@@ -66,7 +86,7 @@ export function HomeActivitiesSheet({
     setCurrentActivity(null)
     setPendingActivityType(null)
     setSheetOpen(false)
-    router.push(`/homes/${homeId}/activities/${pendingActivityType}/track`)
+    router.push(getActivityUrl(pendingActivityType))
   }
 
   const handleDiscardAndSwitch = () => {
@@ -78,7 +98,7 @@ export function HomeActivitiesSheet({
     setCurrentActivity(null)
     setPendingActivityType(null)
     setSheetOpen(false)
-    router.push(`/homes/${homeId}/activities/${pendingActivityType}/track`)
+    router.push(getActivityUrl(pendingActivityType))
   }
 
   const handleCancelSwitch = () => {

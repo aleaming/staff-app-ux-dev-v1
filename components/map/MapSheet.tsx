@@ -4,7 +4,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { MapPin, Navigation, ExternalLink, Copy, Check } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { CLOSE_ALL_SHEETS_EVENT } from "@/lib/sheet-utils"
 
 interface MapSheetProps {
   open: boolean
@@ -29,6 +30,13 @@ export function MapSheet({
   coordinates
 }: MapSheetProps) {
   const [copiedAddress, setCopiedAddress] = useState(false)
+
+  // Close sheet when navigation occurs
+  useEffect(() => {
+    const handleClose = () => onOpenChange(false)
+    window.addEventListener(CLOSE_ALL_SHEETS_EVENT, handleClose)
+    return () => window.removeEventListener(CLOSE_ALL_SHEETS_EVENT, handleClose)
+  }, [onOpenChange])
   
   // Use provided coordinates or fallback to London center
   const lat = coordinates?.lat ?? 51.5074

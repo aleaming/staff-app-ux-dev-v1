@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { useState, useEffect } from "react"
 import { useHapticFeedback } from "@/components/haptic/HapticProvider"
+import { closeAllSheets } from "@/lib/sheet-utils"
 import type { ActivityType } from "@/lib/activity-templates"
 
 const navItems = [
@@ -121,7 +122,7 @@ export function BottomNav() {
   const isCurrentActivityActive = pathname?.includes("/activities/") && pathname?.includes("/track")
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-[100] md:hidden">
+    <nav data-bottom-nav className="fixed bottom-0 left-0 right-0 z-[100] md:hidden pointer-events-auto">
       {/* Liquid Glass Container */}
       <div className="liquid-glass-nav rounded-t-[32px] border-t border-border/20 shadow-2xl pt-3 pb-5">
         <div className="grid grid-cols-4 h-16 px-2">
@@ -146,7 +147,10 @@ export function BottomNav() {
               <Link
                 key={item.href}
                 href={item.href}
-                onClick={() => trigger('light')}
+                onClick={() => {
+                  closeAllSheets()
+                  trigger('light')
+                }}
                 className={cn(
                   "flex flex-col items-center justify-center gap-1 relative",
                   "transition-all duration-200 rounded-xl",
@@ -181,7 +185,10 @@ export function BottomNav() {
           {/* Current Activity Button */}
           <Link
             href={currentActivityHref}
-            onClick={() => trigger('light')}
+            onClick={() => {
+              closeAllSheets()
+              trigger('light')
+            }}
             className={cn(
               "flex flex-col items-center justify-center gap-1 relative",
               "transition-all duration-200 rounded-xl",

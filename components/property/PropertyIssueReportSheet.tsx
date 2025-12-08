@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { toast } from "sonner"
+import { CLOSE_ALL_SHEETS_EVENT } from "@/lib/sheet-utils"
 import { CheckCircle2, Flag, Upload } from "lucide-react"
 import {
   Sheet,
@@ -77,6 +78,12 @@ export function PropertyIssueReportSheet({
       window.removeEventListener("offline", handleOffline)
     }
   }, [])
+
+  // Close sheet when navigation occurs
+  useEffect(() => {
+    window.addEventListener(CLOSE_ALL_SHEETS_EVENT, onClose)
+    return () => window.removeEventListener(CLOSE_ALL_SHEETS_EVENT, onClose)
+  }, [onClose])
 
   const issueTypeOptions: { value: PropertyIssueType; label: string }[] = [
     { value: "not-working", label: "Not Working" },

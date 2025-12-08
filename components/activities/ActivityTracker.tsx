@@ -19,6 +19,7 @@ import { PhaseSection } from "./PhaseSection"
 import { getActivityTemplate, type ActivityType, type TaskTemplate } from "@/lib/activity-templates"
 import type { PhotoAnnotation } from "./PhotoAnnotation"
 import { getActiveActivity, clearActiveActivity } from "@/lib/activity-utils"
+import { CLOSE_ALL_SHEETS_EVENT } from "@/lib/sheet-utils"
 import { ActivitySwitchDialog } from "./ActivitySwitchDialog"
 import { downloadActivityPDF, type ActivityPDFData } from "@/lib/pdf-generator"
 import { testHomes, testBookings } from "@/lib/test-data"
@@ -31,12 +32,13 @@ import {
   ArrowLeft,
   AlertCircle,
   Home,
-  Menu
+  Menu,
+  FileText
 } from "lucide-react"
 import Link from "next/link"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Breadcrumbs } from "@/components/navigation/Breadcrumbs"
+import { BookingInfoSheet } from "@/components/bookings/BookingInfoSheet"
 
 export interface Photo {
   id: string
@@ -151,6 +153,13 @@ export function ActivityTracker({
     new Date().getMonth() >= 4 && new Date().getMonth() <= 9 ? "summer" : "winter"
   )
   const [currentOccupancy, setCurrentOccupancy] = useState<"booking" | "empty" | "host">("booking")
+
+  // Close home sheet when navigation occurs (e.g., bottom nav click)
+  useEffect(() => {
+    const handleClose = () => setHomeSheetOpen(false)
+    window.addEventListener(CLOSE_ALL_SHEETS_EVENT, handleClose)
+    return () => window.removeEventListener(CLOSE_ALL_SHEETS_EVENT, handleClose)
+  }, [])
 
   // Set mounted state to prevent hydration issues
   useEffect(() => {
@@ -569,33 +578,24 @@ export function ActivityTracker({
   // Get booking data if bookingId is provided
   const booking = bookingId ? testBookings.find(b => b.bookingId === bookingId) : null
 
-  // Build breadcrumbs
-  const breadcrumbs = booking
-    ? [
-        { label: "Bookings", href: "/bookings" },
-        { label: bookingId || "Booking", href: `/bookings/${booking.id}` },
-        { label: homeCode, href: `/homes/${homeId}` },
-        { label: template.name }
-      ]
-    : [
-        { label: "Homes", href: "/homes" },
-        { label: homeCode, href: `/homes/${homeId}` },
-        { label: template.name }
-      ]
-
   return (
     <div className="space-y-4">
-      {/* Breadcrumbs */}
-      <Breadcrumbs items={breadcrumbs} />
-
       {/* Home Menubar - Sticky */}
       <Sheet open={homeSheetOpen} onOpenChange={setHomeSheetOpen}>
         <div className="sticky top-16 z-30 bg-background pb-2 -mx-4 px-4 sm:-mx-6 sm:px-6">
           <div className="flex items-center gap-2 border rounded-lg p-2 bg-muted/50 shadow-sm">
             
             <span className="text-sm font-medium flex-1">{homeCode} {homeName && `• ${homeName}`}</span>
+            {bookingId && (
+              <BookingInfoSheet bookingId={bookingId}>
+                <Button variant="outline" size="sm" className="gap-2 w-full">
+                  <FileText className="h-4 w-4" />
+                  View Booking
+                </Button>
+              </BookingInfoSheet>
+            )}
             <SheetTrigger asChild>
-              <Button variant="outline" size="sm" className="gap-2">
+              <Button variant="outline" size="sm" className="gap-2 w-full">
                 <Menu className="h-4 w-4" />
                 View Home Info
               </Button>

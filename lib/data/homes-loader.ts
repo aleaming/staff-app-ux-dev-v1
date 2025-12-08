@@ -70,6 +70,31 @@ function generateHomeId(homeCode: string, index: number): string {
 }
 
 /**
+ * Generate mock bedroom/bathroom counts based on home code
+ * Uses a deterministic hash to ensure consistent values
+ */
+function generateBedroomsBathrooms(homeCode: string): { bedrooms: number; bathrooms: number } {
+  // Simple hash function for deterministic random values
+  let hash = 0
+  for (let i = 0; i < homeCode.length; i++) {
+    const char = homeCode.charCodeAt(i)
+    hash = ((hash << 5) - hash) + char
+    hash = hash & hash // Convert to 32bit integer
+  }
+  
+  // Generate bedrooms: 1-5 based on hash
+  const bedrooms = (Math.abs(hash) % 5) + 1
+  
+  // Generate bathrooms: typically 1-3, often correlated with bedrooms
+  // Use a different portion of the hash
+  const bathroomsBase = (Math.abs(hash >> 4) % 3) + 1
+  // Ensure bathrooms don't exceed bedrooms + 1
+  const bathrooms = Math.min(bathroomsBase, bedrooms + 1)
+  
+  return { bedrooms, bathrooms }
+}
+
+/**
  * Convert CSV row to Home interface (sync version using cached coordinates)
  */
 function mapCSVRowToHome(row: HomesCSVRow, index: number): Home | null {
@@ -83,6 +108,9 @@ function mapCSVRowToHome(row: HomesCSVRow, index: number): Home | null {
   
   // Try to get coordinates synchronously from cache/pre-populated data
   const coordinates = geocodeLocationSync(location)
+  
+  // Generate bedroom/bathroom counts
+  const { bedrooms, bathrooms } = generateBedroomsBathrooms(homeCode)
 
   return {
     id: generateHomeId(homeCode, index),
@@ -90,13 +118,15 @@ function mapCSVRowToHome(row: HomesCSVRow, index: number): Home | null {
     name: row['Home Name']?.trim() || undefined,
     address: row['Business Address']?.trim() || '',
     city: extractCity(row['Business Address'] || ''),
+    location: row['Location']?.trim() || undefined,
+    market: row['Market']?.trim() || undefined,
     status: mapHomeStatus(row),
     activeBookings: 0, // Will be calculated from bookings data
     pendingActivities: 0, // Will be calculated from activities data
     coordinates: coordinates || undefined,
-    // Additional fields with defaults
-    bedrooms: undefined,
-    bathrooms: undefined,
+    // Generated bedroom/bathroom counts
+    bedrooms,
+    bathrooms,
     damages: [],
   }
 }
@@ -153,6 +183,9 @@ export async function loadHomesAsync(): Promise<Home[]> {
     
     // Get coordinates asynchronously (uses API if needed)
     const coordinates = await geocodeLocation(location)
+    
+    // Generate bedroom/bathroom counts
+    const { bedrooms, bathrooms } = generateBedroomsBathrooms(homeCode)
 
     const home: Home = {
       id: generateHomeId(homeCode, index),
@@ -160,12 +193,14 @@ export async function loadHomesAsync(): Promise<Home[]> {
       name: row['Home Name']?.trim() || undefined,
       address: row['Business Address']?.trim() || '',
       city: extractCity(row['Business Address'] || ''),
+      location: row['Location']?.trim() || undefined,
+      market: row['Market']?.trim() || undefined,
       status: mapHomeStatus(row),
       activeBookings: 0,
       pendingActivities: 0,
       coordinates,
-      bedrooms: undefined,
-      bathrooms: undefined,
+      bedrooms,
+      bathrooms,
       damages: [],
     }
 

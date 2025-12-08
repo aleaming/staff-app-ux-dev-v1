@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { HomeInfoSheet } from "@/components/homes/HomeInfoSheet"
-import { MapPin, Navigation, Home, Calendar, User } from "lucide-react"
+import { MapPin, Navigation, Home, Calendar, User, Bed, Bath } from "lucide-react"
 import { MapSheet } from "@/components/map/MapSheet"
 import { Skeleton } from "@/components/ui/skeleton"
 import Link from "next/link"
@@ -103,27 +103,53 @@ export default function CatalogContent() {
                 
                 return (
                   <Link key={home.id} href={`/homes/${home.id}`}>
-                    <Card className="hover:bg-white dark:hover:bg-neutral-900 hover:border-muted-foreground dark:border-primary/20 transition-colors">
+                    <Card className="hover:bg-white dark:hover:bg-neutral-900 hover:border-muted-foreground dark:border-primary/20 transition-colors overflow-hidden">
                       <CardContent className="p-3">
                         <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h3 className="text-base font-semibold mb-1">
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-base font-semibold mb-1 truncate">
                               <span className="text-primary">{home.code}</span>
                               {home.name && (
-                                <span className="text-xs text-muted-foreground ml-2">• {home.name}</span>
+                                <span className="text-base font-normal text-muted-foreground ml-2">{home.name}</span>
                               )}
                             </h3>
+                            {(home.location || home.market) && (
+                              <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1">
+                                {home.location && (
+                                  <span className="bg-muted px-1.5 py-0.5 rounded">{home.location}</span>
+                                )}
+                                {home.market && home.market !== home.location && (
+                                  <span className="text-muted-foreground/70">• {home.market}</span>
+                                )}
+                              </div>
+                            )}
                             <button
                               onClick={(e) => handleShowMap(e, home.code)}
-                              className="flex items-start gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mb-1 text-left"
+                              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mb-1 text-left w-full overflow-hidden"
                             >
-                              <MapPin className="h-3 w-3 mt-0.5 flex-shrink-0" />
-                              <span className="underline line-clamp-2">{home.address}, {home.city}</span>
+                              <MapPin className="h-3 w-3 flex-shrink-0" />
+                              <span className="underline truncate">{home.address}, {home.city}</span>
                             </button>
                             {home.distance !== undefined && (
                               <div className="flex items-center gap-1 text-xs text-muted-foreground">
                                 <Navigation className="h-3 w-3" />
                                 <span>{home.distance.toFixed(1)} km away</span>
+                              </div>
+                            )}
+                            {(home.bedrooms || home.bathrooms) && (
+                              <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
+                                {home.bedrooms && (
+                                  <div className="flex items-center gap-1">
+                                    <Bed className="h-3 w-3" />
+                                    <span>{home.bedrooms} bed{home.bedrooms !== 1 ? 's' : ''}</span>
+                                  </div>
+                                )}
+                                {home.bathrooms && (
+                                  <div className="flex items-center gap-1">
+                                    <Bath className="h-3 w-3" />
+                                    <span>{home.bathrooms} bath{home.bathrooms !== 1 ? 's' : ''}</span>
+                                  </div>
+                                )}
                               </div>
                             )}
                           </div>

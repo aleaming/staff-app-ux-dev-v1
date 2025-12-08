@@ -1,6 +1,8 @@
 "use client"
 
+import { useEffect } from "react"
 import { AlertTriangle, Flag } from "lucide-react"
+import { CLOSE_ALL_SHEETS_EVENT } from "@/lib/sheet-utils"
 import {
   Sheet,
   SheetContent,
@@ -30,6 +32,12 @@ export function ItemDetailsSheet({
   onClose,
   onReportIssue
 }: ItemDetailsSheetProps) {
+  // Close sheet when navigation occurs
+  useEffect(() => {
+    window.addEventListener(CLOSE_ALL_SHEETS_EVENT, onClose)
+    return () => window.removeEventListener(CLOSE_ALL_SHEETS_EVENT, onClose)
+  }, [onClose])
+
   const hasActiveIssue = issue && issue.status !== "resolved"
   
   // Convert item photos to PhotoGallery format

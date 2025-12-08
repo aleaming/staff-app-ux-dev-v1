@@ -9,7 +9,12 @@ import { cn } from "@/lib/utils"
 import { useHapticFeedback } from "@/components/haptic/HapticProvider"
 
 // Wrapper for Sheet root that adds haptic feedback
-const SheetRoot: React.FC<React.ComponentPropsWithoutRef<typeof SheetPrimitive.Root>> = ({ onOpenChange, ...props }) => {
+// Default modal to false to allow bottom nav interactions when sheet is open
+const SheetRoot: React.FC<React.ComponentPropsWithoutRef<typeof SheetPrimitive.Root>> = ({ 
+  onOpenChange, 
+  modal = false, // Non-modal by default to allow bottom nav clicks
+  ...props 
+}) => {
   const { trigger } = useHapticFeedback()
   
   const handleOpenChange = (open: boolean) => {
@@ -19,7 +24,7 @@ const SheetRoot: React.FC<React.ComponentPropsWithoutRef<typeof SheetPrimitive.R
     onOpenChange?.(open)
   }
   
-  return <SheetPrimitive.Root onOpenChange={handleOpenChange} {...props} />
+  return <SheetPrimitive.Root modal={modal} onOpenChange={handleOpenChange} {...props} />
 }
 
 const Sheet = SheetRoot

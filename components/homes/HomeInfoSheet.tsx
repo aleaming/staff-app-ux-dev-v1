@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { CLOSE_ALL_SHEETS_EVENT } from "@/lib/sheet-utils"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { HomeAccess } from "@/components/homes/HomeAccess"
 import { HomeEssentials } from "@/components/homes/HomeEssentials"
@@ -27,6 +28,13 @@ export function HomeInfoSheet({
   children
 }: HomeInfoSheetProps) {
   const [open, setOpen] = useState(false)
+
+  // Close sheet when navigation occurs
+  useEffect(() => {
+    const handleClose = () => setOpen(false)
+    window.addEventListener(CLOSE_ALL_SHEETS_EVENT, handleClose)
+    return () => window.removeEventListener(CLOSE_ALL_SHEETS_EVENT, handleClose)
+  }, [])
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
