@@ -175,12 +175,30 @@
 }
 
 @layer base {
+  /* Ensure html has background color to prevent white flash during theme transitions */
+  html {
+    background-color: hsl(var(--background));
+  }
+  
   * {
     @apply border-border;
   }
   body {
     @apply text-foreground;
-    /* Layered background: texture pattern on top of solid background color */
+    background-color: hsl(var(--background));
+    position: relative;
+  }
+  
+  /* Fixed texture overlay that works on all devices including iOS */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
     background-color: hsl(var(--background));
     background-image: repeating-linear-gradient(
       45deg,
@@ -190,11 +208,11 @@
       transparent 50%
     );
     background-size: 4.8px 4.8px;
-    background-attachment: fixed;
   }
   
   /* Slightly different texture opacity in dark mode */
-  .dark body {
+  .dark body::before {
+    background-color: hsl(var(--background));
     background-image: repeating-linear-gradient(
       45deg,
       hsl(var(--foreground) / 0.03) 0px,

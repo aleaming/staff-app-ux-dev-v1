@@ -4,15 +4,23 @@ import * as React from "react"
 import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { useThemeTransition } from "@/lib/hooks/use-theme-transition"
+import { cn } from "@/lib/utils"
 
-export function ThemeToggle() {
-  const { setTheme, theme } = useTheme()
+interface ThemeToggleProps {
+  /** Additional CSS classes */
+  className?: string
+  /** Show text label next to icon */
+  showLabel?: boolean
+}
+
+/**
+ * Animated theme toggle button with View Transitions API
+ * Creates a smooth expanding circle animation when switching themes
+ */
+export function ThemeToggle({ className, showLabel = false }: ThemeToggleProps) {
+  const { setTheme, resolvedTheme } = useTheme()
+  const { startTransition, triggerRef } = useThemeTransition({ duration: 300 })
   const [mounted, setMounted] = React.useState(false)
 
   // useEffect only runs on the client, so now we can safely show the UI
@@ -20,39 +28,69 @@ export function ThemeToggle() {
     setMounted(true)
   }, [])
 
+  const isDark = resolvedTheme === "dark"
+
+  const toggleTheme = React.useCallback(() => {
+    startTransition(() => {
+      setTheme(isDark ? "light" : "dark")
+    })
+  }, [isDark, setTheme, startTransition])
+
+  // Prevent hydration mismatch by showing placeholder until mounted
   if (!mounted) {
     return (
-      <Button variant="ghost" size="icon" className="h-9 w-9">
+      <Button 
+        variant="ghost" 
+        size={showLabel ? "sm" : "icon"} 
+        className={cn("h-9 w-9", className)}
+        disabled
+      >
         <Sun className="h-4 w-4" />
+        {showLabel && <span className="ml-2">Theme</span>}
         <span className="sr-only">Toggle theme</span>
       </Button>
     )
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-9 w-9 relative">
-          <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          <span className="sr-only">Toggle theme</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
-          <Sun className="mr-2 h-4 w-4" />
-          <span>Light</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
-          <Moon className="mr-2 h-4 w-4" />
-          <span>Dark</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
-          <span className="mr-2 h-4 w-4">💻</span>
-          <span>System</span>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Button
+      ref={triggerRef}
+      variant="ghost"
+      size={showLabel ? "sm" : "icon"}
+      onClick={toggleTheme}
+      className={cn(
+        "relative overflow-hidden",
+        showLabel ? "h-9 px-3" : "h-9 w-9",
+        className
+      )}
+      aria-label={`Switch to ${isDark ? "light" : "dark"} theme`}
+    >
+      {/* Sun icon - visible in light mode */}
+      <Sun
+        className={cn(
+          "h-4 w-4 transition-all duration-300",
+          isDark
+            ? "rotate-90 scale-0 opacity-0"
+            : "rotate-0 scale-100 opacity-100"
+        )}
+      />
+      {/* Moon icon - visible in dark mode */}
+      <Moon
+        className={cn(
+          "absolute h-4 w-4 transition-all duration-300",
+          isDark
+            ? "rotate-0 scale-100 opacity-100"
+            : "-rotate-90 scale-0 opacity-0"
+        )}
+      />
+      {showLabel && (
+        <span className="ml-2 text-sm">
+          {isDark ? "Dark" : "Light"}
+        </span>
+      )}
+      <span className="sr-only">
+        Switch to {isDark ? "light" : "dark"} theme
+      </span>
+    </Button>
   )
 }
-
