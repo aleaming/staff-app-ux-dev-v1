@@ -14,7 +14,6 @@ import {
   RefreshCw,
   X,
   AlertCircle,
-  Clock,
   Pause,
   Calendar,
   Bed,
@@ -157,95 +156,51 @@ export default function ActivitiesPage() {
       : startTimeString
 
     return (
-      <div key={activity.id} className="pb-4 last:pb-0">
+      <div key={activity.id} className="pb-3 last:pb-0">
         <Card 
-          className="hover:bg-white/80 dark:hover:bg-black/50 transition-colors overflow-hidden border-l-[6px]"
+          className="hover:bg-white/80 dark:hover:bg-black/50 transition-colors overflow-hidden border-l-[8px]"
           style={{ borderLeftColor: typeConfig.color }}
         >
           <CardContent className="p-4 sm:p-5">
-            <div className="space-y-4">
-              {/* Top Section: Title and Right Side Info */}
-              <div className="flex items-start justify-between gap-4 mb-3">
-                {/* Left: Title and Details */}
+            <div className="space-y-3">
+              {/* Row 1: Title, Home Info, Status Badge, and Time */}
+              <div className="flex items-start justify-between gap-2">
                 <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-0 flex-wrap">
                     <h3 className="font-bold text-base">
                       {typeConfig.label}
                     </h3>
-                    <div className="gap-1">
-                      <div className="text-xs text-muted-foreground mb-2">
-                        <HomeInfoSheet
-                          homeId={home?.id || activity.homeCode}
-                          homeCode={activity.homeCode}
-                          homeName={activity.homeName}
-                          location={home?.location}
-                          market={home?.market}
-                        >
-                          <button className="text-primary underline hover:text-primary/80 transition-colors text-left">
-                            {activity.homeCode}
-                            {activity.homeName && (
-                              <span> • {activity.homeName}</span>
-                            )}
-                          </button>
-                        </HomeInfoSheet>
-                      </div>
-                      {home && (home.location || home.market) && (
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2">
-                          {home.location && (
-                            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-normal">
-                              {home.location}
-                            </Badge>
-                          )}
-                          {home.market && home.market !== home.location && (
-                            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-normal">
-                              {home.market}
-                            </Badge>
-                          )}
-                        </div>
-                      )}
-                      {home && (home.bedrooms || home.bathrooms) && (
-                        <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2">
-                          {home.bedrooms && (
-                            <span className="flex items-center gap-1">
-                              <Bed className="h-3 w-3" />
-                              {home.bedrooms} {home.bedrooms === 1 ? 'bed' : 'beds'}
-                            </span>
-                          )}
-                          {home.bathrooms && (
-                            <span className="flex items-center gap-1">
-                              <Bath className="h-3 w-3" />
-                              {home.bathrooms} {home.bathrooms === 1 ? 'bath' : 'baths'}
-                            </span>
-                          )}
-                        </div>
-                      )}
-                      {home && home.address && (
-                        <button
-                          onClick={(e) => handleShowMap(e, activity.homeCode)}
-                          className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mb-2 text-left w-full min-w-0 overflow-hidden"
-                        >
-                          <MapPin className="h-3 w-3 flex-shrink-0" />
-                          <span className="underline truncate">{home.address}{home.city && `, ${home.city}`}</span>
-                        </button>
-                      )}
-                      {activity.bookingId && booking && (
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <Calendar className="h-3 w-3 flex-shrink-0" />
-                          <BookingInfoSheet bookingId={booking.bookingId}>
-                            <button className="underline hover:text-primary transition-colors">
-                              {activity.bookingId}
-                            </button>
-                          </BookingInfoSheet>
-                          <span>•</span>
-                          <span>
-                            {booking.checkIn.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - {booking.checkOut.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                          </span>
-                        </div>
-                      )}
-                    </div>
+                    <HomeInfoSheet
+                      homeId={home?.id || activity.homeCode}
+                      homeCode={activity.homeCode}
+                      homeName={activity.homeName}
+                      location={home?.location}
+                      market={home?.market}
+                    >
+                      <button className="text-xs text-primary underline hover:text-primary/80 transition-colors">
+                        {activity.homeCode}
+                        {activity.homeName && (
+                          <span> • {activity.homeName}</span>
+                        )}
+                      </button>
+                    </HomeInfoSheet>
+                    {home && (home.location || home.market) && (
+                      <>
+                        {home.location && (
+                          <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-normal mt-2">
+                            {home.location}
+                          </Badge>
+                        )}
+                        {home.market && home.market !== home.location && (
+                          <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-normal mt-2">
+                            {home.market}
+                          </Badge>
+                        )}
+                      </>
+                    )}
                   </div>
-
-                {/* Right: Status Badges, Time */}
-                <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+                </div>
+                <div className="flex flex-col items-end gap-1 flex-shrink-0">
                   <Badge
                     variant={statusInfo.variant}
                     className={`whitespace-nowrap ${activity.status === 'paused' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400 border-orange-200 dark:border-orange-800' : ''}`}
@@ -253,11 +208,51 @@ export default function ActivitiesPage() {
                     {activity.status === 'paused' && <Pause className="h-3 w-3 mr-1" />}
                     {statusInfo.label}
                   </Badge>
-
-                  <div className="text-xs text-muted-foreground pr-1">
-                    <span>{timeString}</span>
-                  </div>
+                  <span className="text-xs text-muted-foreground">{timeString}</span>
                 </div>
+              </div>
+
+              {/* Row 2: Additional details - bedrooms, address, booking info */}
+              <div className="space-y-2 pb-2">
+                {home && (home.bedrooms || home.bathrooms) && (
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                    {home.bedrooms && (
+                      <span className="flex items-center gap-1">
+                        <Bed className="h-3 w-3" />
+                        {home.bedrooms} {home.bedrooms === 1 ? 'bed' : 'beds'}
+                      </span>
+                    )}
+                    {home.bathrooms && (
+                      <span className="flex items-center gap-1">
+                        <Bath className="h-3 w-3" />
+                        {home.bathrooms} {home.bathrooms === 1 ? 'bath' : 'baths'}
+                      </span>
+                    )}
+                  </div>
+                )}
+                {home && home.address && (
+                  <button
+                    onClick={(e) => handleShowMap(e, activity.homeCode)}
+                    className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors text-left w-full min-w-0 overflow-hidden"
+                  >
+                    <MapPin className="h-3 w-3 flex-shrink-0" />
+                    <span className="underline truncate">{home.address}{home.city && `, ${home.city}`}</span>
+                  </button>
+                )}
+                {activity.bookingId && booking && (
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Calendar className="h-3 w-3 flex-shrink-0" />
+                    <BookingInfoSheet bookingId={booking.bookingId}>
+                      <button className="underline hover:text-primary transition-colors">
+                        {activity.bookingId}
+                      </button>
+                    </BookingInfoSheet>
+                    <span>•</span>
+                    <span>
+                      {booking.checkIn.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - {booking.checkOut.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    </span>
+                  </div>
+                )}
               </div>
 
               {/* Bottom: Activity Details or Resume Activity Button */}
