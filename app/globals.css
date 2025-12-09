@@ -175,8 +175,18 @@
 }
 
 @layer base {
-  /* Background texture applied to html - works with View Transitions API */
+  /* Base background color on html */
   html {
+    background-color: hsl(var(--background));
+  }
+  
+  /* Fixed texture overlay using pseudo-element - works on mobile AND with View Transitions */
+  html::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
     background-color: hsl(var(--background));
     background-image: repeating-linear-gradient(
       45deg,
@@ -186,11 +196,11 @@
       transparent 50%
     );
     background-size: 4.8px 4.8px;
-    background-attachment: fixed;
   }
   
   /* Slightly different texture opacity in dark mode */
-  html.dark {
+  html.dark::before {
+    background-color: hsl(var(--background));
     background-image: repeating-linear-gradient(
       45deg,
       hsl(var(--foreground) / 0.04) 0px,

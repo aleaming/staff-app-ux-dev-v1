@@ -74,13 +74,11 @@ export function TopNav({ onOpenSearch }: TopNavProps = { onOpenSearch: undefined
         <Sheet>
           <SheetTrigger asChild className="md:hidden">
             <Button variant="ghost" size="icon">
-              <Menu className="h-5 w-5" />
+              <Menu className="h-8 w-8" />
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-full max-w-[300px]">
-            <SheetHeader>
-              <SheetTitle>Menu</SheetTitle>
-            </SheetHeader>
+            
             <nav className="flex flex-col gap-4 mt-8">
               <Link href="/" className="mb-4">
                 <Logo />
@@ -120,7 +118,7 @@ export function TopNav({ onOpenSearch }: TopNavProps = { onOpenSearch: undefined
         {/* Action Items - Right Side */}
         <div className="flex items-center gap-2">
 
-          {/* Notifications */}
+          {/* Notifications 
           <Button variant="ghost" size="icon" asChild>
             <Link href="/notifications" className="relative">
               <Bell className="h-5 w-5" />
@@ -132,7 +130,7 @@ export function TopNav({ onOpenSearch }: TopNavProps = { onOpenSearch: undefined
               </Badge>
             </Link>
           </Button>
-
+*/}
           {/* Desktop Action Items */}
           <div className="hidden md:flex items-center gap-2">
             <Button variant="ghost" size="sm" asChild>

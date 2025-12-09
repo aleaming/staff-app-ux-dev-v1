@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { MapPin, Navigation, ExternalLink, Copy, Check } from "lucide-react"
 import { useState, useEffect } from "react"
 import { CLOSE_ALL_SHEETS_EVENT } from "@/lib/sheet-utils"
+import { GoogleMapView, HomeMarker } from "./GoogleMapView"
 
 interface MapSheetProps {
   open: boolean
@@ -42,19 +43,22 @@ export function MapSheet({
   const lat = coordinates?.lat ?? 51.5074
   const lng = coordinates?.lng ?? -0.1278
   
-  // Generate static map image URL using OpenStreetMap tiles
-  const zoom = 15
-  const width = 600
-  const height = 400
-  
-  // Using OpenStreetMap static image service
-  const mapImageUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${lng-0.01},${lat-0.01},${lng+0.01},${lat+0.01}&layer=mapnik&marker=${lat},${lng}`
-  
   // Generate Google Maps and Apple Maps links
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`
   const appleMapsUrl = `https://maps.apple.com/?q=${lat},${lng}`
   
   const fullAddress = `${address}, ${city}`
+
+  // Create marker for the home location
+  const marker: HomeMarker = {
+    id: `home-${homeCode}`,
+    type: "home",
+    lat,
+    lng,
+    code: homeCode,
+    name: homeName,
+    address: fullAddress,
+  }
   
   const handleCopyAddress = async () => {
     try {
@@ -101,15 +105,14 @@ export function MapSheet({
             </div>
           </SheetHeader>
 
-          {/* Map Container */}
+          {/* Google Map Container */}
           <div className="flex-1 overflow-hidden relative bg-muted">
-            <iframe
-              src={mapImageUrl}
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              loading="lazy"
-              title={`Map showing ${homeCode}`}
+            <GoogleMapView
+              markers={[marker]}
+              center={{ lat, lng }}
+              zoom={16}
+              singleMarkerMode
+              showInfoWindows={false}
               className="absolute inset-0"
             />
             
@@ -171,4 +174,3 @@ export function MapSheet({
     </Sheet>
   )
 }
-
