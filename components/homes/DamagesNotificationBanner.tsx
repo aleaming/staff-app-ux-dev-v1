@@ -9,13 +9,39 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { testHomes, type Damage } from "@/lib/test-data"
 import { DamagesSheet } from "./DamagesSheet"
 
-export function DamagesNotificationBanner() {
+interface DamagesNotificationBannerProps {
+  /** Optional home ID to use directly (bypasses URL extraction) */
+  homeId?: string
+  /** Optional damages array to use directly */
+  damages?: Damage[]
+}
+
+export function DamagesNotificationBanner({ homeId: propHomeId, damages: propDamages }: DamagesNotificationBannerProps) {
   const pathname = usePathname()
-  const [homeId, setHomeId] = useState<string | null>(null)
-  const [damages, setDamages] = useState<Damage[]>([])
+  const [homeId, setHomeId] = useState<string | null>(propHomeId || null)
+  const [damages, setDamages] = useState<Damage[]>(propDamages || [])
   const [sheetOpen, setSheetOpen] = useState(false)
 
   useEffect(() => {
+    // If homeId or damages are passed as props, use them directly
+    if (propHomeId) {
+      setHomeId(propHomeId)
+      
+      if (propDamages && propDamages.length > 0) {
+        setDamages(propDamages)
+      } else {
+        // Look up damages from the home data
+        const home = testHomes.find(h => h.id === propHomeId || h.code === propHomeId)
+        if (home && home.damages && home.damages.length > 0) {
+          setDamages(home.damages)
+          setHomeId(home.id)
+        } else {
+          setDamages([])
+        }
+      }
+      return
+    }
+
     // Extract home ID from pathname
     // Paths like /homes/home-1 or /homes/home-1/...
     if (pathname?.startsWith("/homes/")) {
@@ -39,7 +65,7 @@ export function DamagesNotificationBanner() {
       setHomeId(null)
       setDamages([])
     }
-  }, [pathname])
+  }, [pathname, propHomeId, propDamages])
 
   if (!homeId || damages.length === 0) {
     return null

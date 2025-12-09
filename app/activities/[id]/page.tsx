@@ -14,6 +14,7 @@ import { HomeInformationCard } from "./ActivityDetailClient"
 import { HomeInfoSheet } from "@/components/homes/HomeInfoSheet"
 import { PreActivityConfirmationModal } from "@/components/activities/PreActivityConfirmationModal"
 import { TaskPreviewSheet } from "@/components/activities/TaskPreviewSheet"
+import { DamagesNotificationBanner } from "@/components/homes/DamagesNotificationBanner"
 import type { ActivityType } from "@/lib/activity-templates"
 import {
   MapPin,
@@ -180,28 +181,33 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
   }
 
   // Build breadcrumbs based on whether activity has a booking
+  // Final breadcrumb (current page) is omitted since the page title already shows it
   const breadcrumbs = booking
     ? [
         { label: "Bookings", href: "/catalog?tab=bookings" },
-        { label: booking.bookingId, href: `/bookings/${booking.id}` },
-        { label: activity.title }
+        { label: booking.bookingId, href: `/bookings/${booking.id}` }
       ]
     : [
-        { label: "Activities", href: "/activities" },
-        { label: activity.title }
+        { label: "Activities", href: "/activities" }
       ]
 
   return (
-    <div className="container mx-auto px-4 py-6 md:py-8">
-      <div className="space-y-6">
-        {/* Breadcrumbs */}
-        <Breadcrumbs items={breadcrumbs} />
+    <div>
+      {/* Damages Banner - shows if home has damages */}
+      {home && home.damages && home.damages.length > 0 && (
+        <DamagesNotificationBanner homeId={home.id} damages={home.damages} />
+      )}
 
-        {/* Header */}
+      <div className="container mx-auto px-4 py-6 md:py-8">
+        <div className="space-y-4">
+          {/* Breadcrumbs */}
+          <Breadcrumbs items={breadcrumbs} />
+
+          {/* Header */}
         <div className="flex items-start gap-4">
           
           <div className="flex-1">
-            <h1 className="text-xl md:text-2xl font-bold">{activity.title}</h1>
+            <h1 className="text-xl md:text-2xl font-bold">{typeConfig.label}</h1>
             {home ? (
               <HomeInfoSheet
                 homeId={home.id}
@@ -361,19 +367,20 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
         </div>
       </div>
 
-      {/* Pre-Activity Confirmation Modal */}
-      {home && (
-        <PreActivityConfirmationModal
-          open={showConfirmation}
-          onClose={() => setShowConfirmation(false)}
-          onConfirm={() => {
-            setShowConfirmation(false)
-            router.push(`/homes/${home.id}/activities/${activityTypeToTemplateType[activity.type]}/track${activity.bookingId ? `?bookingId=${activity.bookingId}` : ''}`)
-          }}
-          homeCode={home.code}
-          homeName={home.name}
-        />
-      )}
+        {/* Pre-Activity Confirmation Modal */}
+        {home && (
+          <PreActivityConfirmationModal
+            open={showConfirmation}
+            onClose={() => setShowConfirmation(false)}
+            onConfirm={() => {
+              setShowConfirmation(false)
+              router.push(`/homes/${home.id}/activities/${activityTypeToTemplateType[activity.type]}/track${activity.bookingId ? `?bookingId=${activity.bookingId}` : ''}`)
+            }}
+            homeCode={home.code}
+            homeName={home.name}
+          />
+        )}
+      </div>
     </div>
   )
 }

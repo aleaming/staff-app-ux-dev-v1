@@ -6,7 +6,34 @@
 
 import { parseCSV, type HomesCSVRow } from '../csv-loader'
 import { geocodeLocationSync, geocodeLocation } from '../geocoding'
-import type { Home, HomeStatus } from '../test-data'
+import type { Home, HomeStatus, Damage } from '../test-data'
+
+/**
+ * Get sample damages for specific homes (for demo/testing purposes)
+ */
+function getSampleDamagesForHome(homeCode: string): Damage[] {
+  if (homeCode === 'KEY100') {
+    return [
+      {
+        id: 'dmg-key100-1',
+        description: 'Scratch on hardwood floor near entrance',
+        location: 'Entrance Hall',
+        severity: 'minor',
+        reportedDate: new Date('2025-11-15'),
+        status: 'open'
+      },
+      {
+        id: 'dmg-key100-2',
+        description: 'Stain on living room sofa cushion',
+        location: 'Living Room',
+        severity: 'moderate',
+        reportedDate: new Date('2025-11-20'),
+        status: 'in-progress'
+      }
+    ]
+  }
+  return []
+}
 
 // CSV data as inline string (loaded at build time from public folder)
 // This will be populated by the initialization function
@@ -127,7 +154,7 @@ function mapCSVRowToHome(row: HomesCSVRow, index: number): Home | null {
     // Generated bedroom/bathroom counts
     bedrooms,
     bathrooms,
-    damages: [],
+    damages: getSampleDamagesForHome(homeCode),
   }
 }
 
@@ -201,7 +228,7 @@ export async function loadHomesAsync(): Promise<Home[]> {
       coordinates,
       bedrooms,
       bathrooms,
-      damages: [],
+      damages: getSampleDamagesForHome(homeCode),
     }
 
     homes.push(home)

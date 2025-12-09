@@ -114,9 +114,9 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
 
        
 
-        <div className="space-y-6">
+        <div className="space-y-3">
           {/* Main Content */}
-          <div className="space-y-6 w-full">
+          <div className="space-y-3 w-full">
             <Tabs defaultValue="details" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full">
               <TabsList>
                 <TabsTrigger value="details">Details</TabsTrigger>
@@ -126,7 +126,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                 <TabsTrigger value="home">Home</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="details" className="space-y-6">
+              <TabsContent value="details" className="space-y-3">
                 {/* Guest Information */}
                 <Card>
                   <CardHeader>
@@ -135,11 +135,11 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                       Guest Information
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-2">
-                    <div className="flex items-center gap-1">
-                      <p className="text-xs text-muted-foreground">Guest Name:</p>
-                      <p className="font-semibold text-xs">{booking.guestName}</p>
-                    </div>
+                  <CardContent className="space-y-1">
+
+                      <p className="text-xs text-muted-foreground">Guest Name</p>
+                      <p className="font-semibold text-sm">{booking.guestName}</p>
+                 
                     
                     {booking.guestEmail && (
                       <div className="flex items-center gap-1">
@@ -238,12 +238,12 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                     <div className="grid gap-2 md:grid-cols-2">
                       <div>
                         <p className="text-xs text-muted-foreground">Check-in</p>
-                        <p className="font-semibold text-xs">{formatDate(booking.checkIn)}</p>
+                        <p className="font-semibold text-sm">{formatDate(booking.checkIn)}</p>
                         <p className="text-xs text-muted-foreground mt-1 text-red-500">{getDaysUntil(booking.checkIn)}</p>
                       </div>
                       <div>
                         <p className="text-xs text-muted-foreground">Check-out</p>
-                        <p className="font-semibold text-xs">{formatDate(booking.checkOut)}</p>
+                        <p className="font-semibold text-sm">{formatDate(booking.checkOut)}</p>
                         <p className="text-xs text-muted-foreground mt-1 text-red-500">{getDaysUntil(booking.checkOut)}</p>
                       </div>
                     </div>
