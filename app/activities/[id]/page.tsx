@@ -13,6 +13,8 @@ import { ReportIssueButton } from "@/components/property/ReportIssueButton"
 import { HomeInformationCard } from "./ActivityDetailClient"
 import { HomeInfoSheet } from "@/components/homes/HomeInfoSheet"
 import { PreActivityConfirmationModal } from "@/components/activities/PreActivityConfirmationModal"
+import { TaskPreviewSheet } from "@/components/activities/TaskPreviewSheet"
+import type { ActivityType } from "@/lib/activity-templates"
 import {
   MapPin,
   Clock,
@@ -24,7 +26,8 @@ import {
   X,
   AlertCircle,
   CheckCircle2,
-  AlertTriangle
+  AlertTriangle,
+  List
 } from "lucide-react"
 import Link from "next/link"
 
@@ -273,6 +276,17 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
                     Start Activity
                   </Button>
                 )}
+
+                {/* Task Preview Button */}
+                <TaskPreviewSheet 
+                  activityType={activity.type as ActivityType}
+                  activityName={typeConfig.label}
+                >
+                  <Button variant="outline" className="w-full gap-2">
+                    <List className="h-4 w-4" />
+                    Preview all {typeConfig.label} tasks
+                  </Button>
+                </TaskPreviewSheet>
               </CardContent>
             </Card>
 
