@@ -15,6 +15,8 @@ interface MapSheetProps {
   homeName?: string
   address: string
   city?: string
+  location?: string
+  market?: string
   coordinates?: {
     lat: number
     lng: number
@@ -28,6 +30,8 @@ export function MapSheet({
   homeName,
   address,
   city = "London",
+  location,
+  market,
   coordinates
 }: MapSheetProps) {
   const [copiedAddress, setCopiedAddress] = useState(false)
@@ -98,6 +102,20 @@ export function MapSheet({
                 <SheetTitle className="text-lg sm:text-xl mb-1">
                   {homeCode} {homeName && `• ${homeName}`}
                 </SheetTitle>
+                {(location || market) && (
+                  <div className="flex items-center gap-1 flex-wrap mb-1">
+                    {location && (
+                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-normal">
+                        {location}
+                      </Badge>
+                    )}
+                    {market && market !== location && (
+                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-normal">
+                        {market}
+                      </Badge>
+                    )}
+                  </div>
+                )}
                 <p className="text-sm text-muted-foreground break-words">
                   {fullAddress}
                 </p>

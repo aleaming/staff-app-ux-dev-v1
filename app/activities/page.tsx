@@ -99,6 +99,8 @@ export default function ActivitiesPage() {
     name?: string
     address: string
     city?: string
+    location?: string
+    market?: string
     coordinates?: { lat: number, lng: number }
   } | null>(null)
 
@@ -117,6 +119,8 @@ export default function ActivitiesPage() {
         name: home.name,
         address: home.address,
         city: home.city,
+        location: home.location,
+        market: home.market,
         coordinates: home.coordinates
       })
       setMapSheetOpen(true)
@@ -140,10 +144,17 @@ export default function ActivitiesPage() {
 
     const home = homes.find(h => h.code === activity.homeCode)
     const booking = activity.bookingId ? bookings.find(b => b.bookingId === activity.bookingId) : null
-    const timeString = activity.scheduledTime.toLocaleTimeString('en-US', {
+    const startTimeString = activity.scheduledTime.toLocaleTimeString('en-US', {
       hour: 'numeric',
       minute: '2-digit'
     })
+    const endTimeString = activity.endTime?.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit'
+    })
+    const timeString = endTimeString 
+      ? `${startTimeString} – ${endTimeString}`
+      : startTimeString
 
     return (
       <div key={activity.id} className="pb-4 last:pb-0">
@@ -166,6 +177,8 @@ export default function ActivitiesPage() {
                           homeId={home?.id || activity.homeCode}
                           homeCode={activity.homeCode}
                           homeName={activity.homeName}
+                          location={home?.location}
+                          market={home?.market}
                         >
                           <button className="text-primary underline hover:text-primary/80 transition-colors text-left">
                             {activity.homeCode}
@@ -335,6 +348,8 @@ export default function ActivitiesPage() {
           homeName={selectedHome.name}
           address={selectedHome.address}
           city={selectedHome.city}
+          location={selectedHome.location}
+          market={selectedHome.market}
           coordinates={selectedHome.coordinates}
         />
       )}

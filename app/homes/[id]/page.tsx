@@ -204,7 +204,18 @@ export default function HomeDetailPage({ params }: HomeDetailPageProps) {
                       </CardContent>
                     </Card>
                   ) : (
-                    homeActivities.map((activity) => (
+                    homeActivities.map((activity) => {
+                      const startStr = activity.scheduledTime.toLocaleString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric',
+                        hour: 'numeric',
+                        minute: '2-digit'
+                      })
+                      const endStr = activity.endTime?.toLocaleTimeString('en-US', {
+                        hour: 'numeric',
+                        minute: '2-digit'
+                      })
+                      return (
                       <Card key={activity.id}>
                         <CardContent className="p-4">
                           <div className="flex items-center justify-between">
@@ -213,12 +224,7 @@ export default function HomeDetailPage({ params }: HomeDetailPageProps) {
                                 <h3 className="text-xl font-semibold hover:underline">{activity.title}</h3>
                               </Link>
                               <p className="text-xs text-muted-foreground">
-                                {activity.scheduledTime.toLocaleDateString('en-US', { 
-                                  month: 'short', 
-                                  day: 'numeric',
-                                  hour: 'numeric',
-                                  minute: '2-digit'
-                                })}
+                                {endStr ? `${startStr} – ${endStr}` : startStr}
                               </p>
                             </div>
                             <Badge variant={
@@ -239,7 +245,8 @@ export default function HomeDetailPage({ params }: HomeDetailPageProps) {
                           </div>
                         </CardContent>
                       </Card>
-                    ))
+                      )
+                    })
                   )}
                 </TabsContent>
               </Tabs>

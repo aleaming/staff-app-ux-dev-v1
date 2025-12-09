@@ -154,6 +154,28 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
     })
   }
 
+  const formatTimeRange = (startDate: Date, endDate?: Date) => {
+    const dateStr = startDate.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+    const startTimeStr = startDate.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit'
+    })
+    const endTimeStr = endDate?.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit'
+    })
+    
+    if (endTimeStr) {
+      return `${dateStr}, ${startTimeStr} – ${endTimeStr}`
+    }
+    return `${dateStr}, ${startTimeStr}`
+  }
+
   // Build breadcrumbs based on whether activity has a booking
   const breadcrumbs = booking
     ? [
@@ -182,6 +204,8 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
                 homeId={home.id}
                 homeCode={home.code}
                 homeName={home.name}
+                location={home.location}
+                market={home.market}
               >
                 <button className="text-xs text-primary underline hover:text-primary/80 transition-colors text-left mt-1">
                   {activity.homeCode}
@@ -224,7 +248,7 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
                     <Clock className="h-5 w-5 text-muted-foreground" />
                     <div>
                       <p className="text-xs text-muted-foreground">Scheduled Time</p>
-                      <p className="font-medium text-xs">{formatDateTime(activity.scheduledTime)}</p>
+                      <p className="font-medium text-xs">{formatTimeRange(activity.scheduledTime, activity.endTime)}</p>
                     </div>
                   </div>
                   

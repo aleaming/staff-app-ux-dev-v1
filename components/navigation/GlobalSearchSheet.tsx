@@ -314,7 +314,8 @@ export function GlobalSearchSheet({ open, onOpenChange }: GlobalSearchSheetProps
                                   <p className="text-sm text-muted-foreground">{activity.homeCode}</p>
                                   <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
                                     <Clock className="h-3 w-3" />
-                                    {activity.scheduledTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}
+                                    {activity.scheduledTime.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}
+                                    {activity.endTime && ` – ${activity.endTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`}
                                   </p>
                                 </div>
                                 <Badge

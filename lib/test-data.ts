@@ -45,6 +45,7 @@ export interface Activity {
   homeName?: string
   bookingId?: string
   scheduledTime: Date
+  endTime?: Date
   status: ActivityStatus
   priority?: "high" | "normal"
   description?: string

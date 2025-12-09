@@ -55,6 +55,8 @@ export default function CatalogContent() {
     name?: string
     address: string
     city?: string
+    location?: string
+    market?: string
     coordinates?: { lat: number, lng: number }
   } | null>(null)
 
@@ -68,6 +70,8 @@ export default function CatalogContent() {
         name: home.name,
         address: home.address,
         city: home.city,
+        location: home.location,
+        market: home.market,
         coordinates: home.coordinates
       })
       setMapSheetOpen(true)
@@ -198,6 +202,8 @@ export default function CatalogContent() {
                                     homeId={home.id}
                                     homeCode={home.code}
                                     homeName={home.name}
+                                    location={home.location}
+                                    market={home.market}
                                   >
                                     <button
                                       type="button"
@@ -260,6 +266,8 @@ export default function CatalogContent() {
           homeName={selectedHome.name}
           address={selectedHome.address}
           city={selectedHome.city}
+          location={selectedHome.location}
+          market={selectedHome.market}
           coordinates={selectedHome.coordinates}
         />
       )}

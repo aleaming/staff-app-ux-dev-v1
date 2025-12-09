@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useCallback, useRef, useEffect } from "react"
-import { GoogleMap, Marker, InfoWindow } from "@react-google-maps/api"
+import { GoogleMap, Marker, InfoWindow, Polyline } from "@react-google-maps/api"
 import { useGoogleMaps } from "./GoogleMapsProvider"
 import { Home as HomeIcon, Target, MapPin } from "lucide-react"
 import Link from "next/link"
@@ -51,6 +51,7 @@ export interface ActivityMarker {
   homeName?: string
   status?: "pending" | "in-progress" | "completed" | "cancelled"
   activityType?: string
+  label?: string // For numbered markers
 }
 
 export type MapMarker = HomeMarker | ActivityMarker
@@ -64,6 +65,7 @@ interface GoogleMapViewProps {
   showInfoWindows?: boolean
   fitBoundsToMarkers?: boolean
   singleMarkerMode?: boolean // For MapSheet - just show a pin
+  routeWaypoints?: { lat: number; lng: number }[] // For drawing route polyline
 }
 
 // Get marker color based on type and status
@@ -95,12 +97,30 @@ function getMarkerColor(marker: MapMarker): string {
   }
 }
 
-// Create SVG marker icon
+// Create SVG marker icon with optional number label
 function createMarkerIcon(marker: MapMarker): google.maps.Icon {
   const color = getMarkerColor(marker)
   const isHome = marker.type === "home"
+  const label = marker.type === "activity" ? (marker as ActivityMarker).label : undefined
   
-  // SVG path for marker pin
+  // If we have a label, create a numbered marker
+  if (label) {
+    const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="40" viewBox="0 0 32 40">
+        <path fill="${color}" stroke="#ffffff" stroke-width="2" d="M16 0C7.163 0 0 7.163 0 16c0 8.837 16 24 16 24s16-15.163 16-24C32 7.163 24.837 0 16 0z"/>
+        <circle fill="#ffffff" cx="16" cy="14" r="10"/>
+        <text x="16" y="18" text-anchor="middle" fill="${color}" font-family="Arial, sans-serif" font-size="12" font-weight="bold">${label}</text>
+      </svg>
+    `
+    
+    return {
+      url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`,
+      scaledSize: new google.maps.Size(32, 40),
+      anchor: new google.maps.Point(16, 40),
+    }
+  }
+  
+  // SVG path for marker pin (default)
   const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="40" viewBox="0 0 32 40">
       <path fill="${color}" stroke="#ffffff" stroke-width="2" d="M16 0C7.163 0 0 7.163 0 16c0 8.837 16 24 16 24s16-15.163 16-24C32 7.163 24.837 0 16 0z"/>
@@ -119,6 +139,14 @@ function createMarkerIcon(marker: MapMarker): google.maps.Icon {
   }
 }
 
+// Polyline options for route display
+const polylineOptions: google.maps.PolylineOptions = {
+  strokeColor: "#9a7c5c", // Primary brand color
+  strokeOpacity: 0.8,
+  strokeWeight: 3,
+  geodesic: true,
+}
+
 export function GoogleMapView({
   markers = [],
   center = { lat: 51.5074, lng: -0.1278 }, // London default
@@ -128,6 +156,7 @@ export function GoogleMapView({
   showInfoWindows = true,
   fitBoundsToMarkers = false,
   singleMarkerMode = false,
+  routeWaypoints = [],
 }: GoogleMapViewProps) {
   const { isLoaded, loadError } = useGoogleMaps()
   const [selectedMarker, setSelectedMarker] = useState<MapMarker | null>(null)
@@ -213,6 +242,15 @@ export function GoogleMapView({
         onUnmount={onUnmount}
         onClick={() => setSelectedMarker(null)}
       >
+        {/* Route Polyline */}
+        {routeWaypoints.length > 1 && (
+          <Polyline
+            path={routeWaypoints}
+            options={polylineOptions}
+          />
+        )}
+
+        {/* Markers */}
         {markers.map((marker) => (
           <Marker
             key={marker.id}
@@ -275,4 +313,3 @@ export function GoogleMapView({
     </div>
   )
 }
-

@@ -37,6 +37,8 @@ export function BookingOverview({
     name?: string
     address: string
     city?: string
+    location?: string
+    market?: string
     coordinates?: { lat: number, lng: number }
   } | null>(null)
   
@@ -77,6 +79,8 @@ export function BookingOverview({
         name: home.name,
         address: home.address,
         city: home.city,
+        location: home.location,
+        market: home.market,
         coordinates: home.coordinates
       })
       setMapSheetOpen(true)
@@ -303,6 +307,8 @@ export function BookingOverview({
           homeName={selectedHome.name}
           address={selectedHome.address}
           city={selectedHome.city}
+          location={selectedHome.location}
+          market={selectedHome.market}
           coordinates={selectedHome.coordinates}
         />
       )}

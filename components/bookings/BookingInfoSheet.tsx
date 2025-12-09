@@ -174,6 +174,8 @@ export function BookingInfoSheet({
                     homeId={home.id}
                     homeCode={home.code}
                     homeName={home.name}
+                    location={home.location}
+                    market={home.market}
                   >
                     <Button variant="outline" size="sm">
                       View Home
@@ -203,17 +205,23 @@ export function BookingInfoSheet({
                   <span className="font-medium text-sm">Activities ({bookingActivities.length})</span>
                 </div>
                 <div className="space-y-2">
-                  {bookingActivities.slice(0, 3).map((activity) => (
+                  {bookingActivities.slice(0, 3).map((activity) => {
+                    const startStr = activity.scheduledTime.toLocaleString('en-US', { 
+                      month: 'short', 
+                      day: 'numeric',
+                      hour: 'numeric',
+                      minute: '2-digit'
+                    })
+                    const endStr = activity.endTime?.toLocaleTimeString('en-US', {
+                      hour: 'numeric',
+                      minute: '2-digit'
+                    })
+                    return (
                     <div key={activity.id} className="flex items-center justify-between text-sm">
                       <div>
                         <p className="font-medium">{activity.title}</p>
                         <p className="text-xs text-muted-foreground">
-                          {activity.scheduledTime.toLocaleDateString('en-US', { 
-                            month: 'short', 
-                            day: 'numeric',
-                            hour: 'numeric',
-                            minute: '2-digit'
-                          })}
+                          {endStr ? `${startStr} – ${endStr}` : startStr}
                         </p>
                       </div>
                       <Badge variant="outline" className="text-xs">
@@ -222,7 +230,8 @@ export function BookingInfoSheet({
                          activity.status === "completed" ? "Completed" : activity.status}
                       </Badge>
                     </div>
-                  ))}
+                    )
+                  })}
                   {bookingActivities.length > 3 && (
                     <p className="text-xs text-muted-foreground">
                       +{bookingActivities.length - 3} more activities

@@ -78,8 +78,10 @@ export function TopNav({ onOpenSearch }: TopNavProps = { onOpenSearch: undefined
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-full max-w-[300px]">
-            
-            <nav className="flex flex-col gap-4 mt-8">
+            <SheetHeader>
+              <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+            </SheetHeader>
+            <nav className="flex flex-col gap-4 mt-4">
               <Link href="/" className="mb-4">
                 <Logo />
               </Link>

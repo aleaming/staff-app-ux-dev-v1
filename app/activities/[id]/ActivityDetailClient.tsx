@@ -32,6 +32,8 @@ export function HomeInformationCard({ home }: HomeInformationCardProps) {
                 homeId={home.id}
                 homeCode={home.code}
                 homeName={home.name}
+                location={home.location}
+                market={home.market}
               >
                 <button className="text-sm font-semibold text-primary underline hover:text-primary/80 transition-colors text-left">
                   {home.code}
@@ -44,6 +46,8 @@ export function HomeInformationCard({ home }: HomeInformationCardProps) {
                     homeId={home.id}
                     homeCode={home.code}
                     homeName={home.name}
+                    location={home.location}
+                    market={home.market}
                   >
                     <button className="text-sm text-muted-foreground underline hover:text-primary/80 transition-colors text-left">
                       {home.name}
@@ -82,6 +86,8 @@ export function HomeInformationCard({ home }: HomeInformationCardProps) {
         homeName={home.name}
         address={home.address}
         city={home.city}
+        location={home.location}
+        market={home.market}
         coordinates={home.coordinates}
       />
     </>

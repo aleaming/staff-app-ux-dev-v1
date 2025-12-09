@@ -79,15 +79,16 @@ function mapActivityStatus(scheduleState: string): ActivityStatus {
 
 /**
  * Parse date string from CSV format (e.g., "Thu 4 Dec") to Date
+ * Returns both start and end times if available
  */
-function parseActivityDate(dateStr: string, timeStr: string): Date {
+function parseActivityDates(dateStr: string, timeStr: string): { startTime: Date; endTime?: Date } {
   // Current year - activities are typically scheduled for current/near future
   const currentYear = new Date().getFullYear()
   
   // Parse date like "Thu 4 Dec"
   const dateMatch = dateStr?.match(/\w+\s+(\d+)\s+(\w+)/)
   if (!dateMatch) {
-    return new Date()
+    return { startTime: new Date() }
   }
 
   const day = parseInt(dateMatch[1], 10)
@@ -100,14 +101,31 @@ function parseActivityDate(dateStr: string, timeStr: string): Date {
   
   const month = monthMap[monthStr] ?? 0
 
-  // Parse time like "09:00–12:00" - use start time
-  let hours = 9
-  let minutes = 0
+  // Parse time range like "09:00–12:00" or "09:00-12:00"
+  // Handle various separators: –, -, —
+  let startHours = 9
+  let startMinutes = 0
+  let endHours: number | undefined
+  let endMinutes: number | undefined
   
-  const timeMatch = timeStr?.match(/(\d{1,2}):(\d{2})/)
-  if (timeMatch) {
-    hours = parseInt(timeMatch[1], 10)
-    minutes = parseInt(timeMatch[2], 10)
+  // Match time range with various separators (–, -, —) and handle xx:xx format
+  const timeRangeMatch = timeStr?.match(/(\d{1,2}):(\d{2})\s*[–\-—]\s*(\d{1,2}|xx):(\d{2}|xx)/)
+  if (timeRangeMatch) {
+    startHours = parseInt(timeRangeMatch[1], 10)
+    startMinutes = parseInt(timeRangeMatch[2], 10)
+    
+    // Only parse end time if it's not 'xx' (placeholder)
+    if (timeRangeMatch[3] !== 'xx' && timeRangeMatch[4] !== 'xx') {
+      endHours = parseInt(timeRangeMatch[3], 10)
+      endMinutes = parseInt(timeRangeMatch[4], 10)
+    }
+  } else {
+    // Try to parse just start time
+    const timeMatch = timeStr?.match(/(\d{1,2}):(\d{2})/)
+    if (timeMatch) {
+      startHours = parseInt(timeMatch[1], 10)
+      startMinutes = parseInt(timeMatch[2], 10)
+    }
   }
 
   // Determine year - if month is in the past, use next year
@@ -119,7 +137,12 @@ function parseActivityDate(dateStr: string, timeStr: string): Date {
     year = currentYear + 1
   }
 
-  return new Date(year, month, day, hours, minutes)
+  const startTime = new Date(year, month, day, startHours, startMinutes)
+  const endTime = (endHours !== undefined && endMinutes !== undefined) 
+    ? new Date(year, month, day, endHours, endMinutes)
+    : undefined
+
+  return { startTime, endTime }
 }
 
 /**
@@ -175,7 +198,7 @@ function mapCSVRowToActivity(row: ActivitiesCSVRow, index: number): Activity | n
 
   const homeCode = row['Home ID'].trim()
   const activityType = mapActivityType(row['Activity Type'] || 'adhoc')
-  const scheduledTime = parseActivityDate(row['Date'], row['Time'] || '09:00')
+  const { startTime, endTime } = parseActivityDates(row['Date'], row['Time'] || '09:00')
 
   return {
     id: generateActivityId(homeCode, row['Activity Type'], index),
@@ -184,7 +207,8 @@ function mapCSVRowToActivity(row: ActivitiesCSVRow, index: number): Activity | n
     homeCode: homeCode,
     homeName: row['Home Name']?.trim() || undefined,
     bookingId: row['Booking Ref']?.trim() || undefined,
-    scheduledTime: scheduledTime,
+    scheduledTime: startTime,
+    endTime: endTime,
     status: mapActivityStatus(row['Schedule State'] || '[Blank]'),
     // Default values for optional fields
     priority: index % 5 === 0 ? 'high' : 'normal', // Every 5th activity is high priority

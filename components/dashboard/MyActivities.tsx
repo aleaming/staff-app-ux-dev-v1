@@ -53,6 +53,7 @@ export interface Activity {
   homeName?: string
   bookingId?: string
   scheduledTime: Date
+  endTime?: Date
   status: ActivityStatus
   priority?: "high" | "normal"
   description?: string
@@ -128,6 +129,8 @@ export function MyActivities({ activities = [], bookings = [], homes = [], isLoa
     name?: string
     address: string
     city?: string
+    location?: string
+    market?: string
     coordinates?: { lat: number, lng: number }
   } | null>(null)
 
@@ -171,6 +174,8 @@ export function MyActivities({ activities = [], bookings = [], homes = [], isLoa
         name: home.name,
         address: home.address,
         city: home.city,
+        location: home.location,
+        market: home.market,
         coordinates: home.coordinates
       })
       setMapSheetOpen(true)
@@ -204,10 +209,17 @@ export function MyActivities({ activities = [], bookings = [], homes = [], isLoa
                 return null
               }
 
-              const timeString = activity.scheduledTime.toLocaleTimeString('en-US', { 
+              const startTimeString = activity.scheduledTime.toLocaleTimeString('en-US', { 
                 hour: 'numeric', 
                 minute: '2-digit' 
               })
+              const endTimeString = activity.endTime?.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit' 
+              })
+              const timeString = endTimeString 
+                ? `${startTimeString} – ${endTimeString}`
+                : startTimeString
               
               // Get home for linking
               const home = homesList.find(h => h.code === activity.homeCode)
@@ -227,7 +239,7 @@ export function MyActivities({ activities = [], bookings = [], homes = [], isLoa
               <div className="flex items-start justify-between gap-4">
                 {/* Left: Title and Details */}
                 <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-lg">
+                    <h3 className="font-bold text-base">
                       {typeConfig.label}
                     </h3>
                     <div className="gap-1">
@@ -236,6 +248,8 @@ export function MyActivities({ activities = [], bookings = [], homes = [], isLoa
                           homeId={home?.id || activity.homeCode}
                           homeCode={activity.homeCode}
                           homeName={activity.homeName}
+                          location={home?.location}
+                          market={home?.market}
                         >
                           <button className="text-primary underline hover:text-primary/80 transition-colors text-left">
                             {activity.homeCode}
@@ -425,6 +439,8 @@ export function MyActivities({ activities = [], bookings = [], homes = [], isLoa
           homeName={selectedHome.name}
           address={selectedHome.address}
           city={selectedHome.city}
+          location={selectedHome.location}
+          market={selectedHome.market}
           coordinates={selectedHome.coordinates}
         />
       )}

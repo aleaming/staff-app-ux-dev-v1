@@ -46,38 +46,11 @@ export default function DashboardContent() {
     return <DashboardSkeleton />
   }
 
-  // Calculate stats from loaded data
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  
-  const activitiesToday = activities.filter(a => {
-    const activityDate = new Date(a.scheduledTime)
-    activityDate.setHours(0, 0, 0, 0)
-    return activityDate.getTime() === today.getTime()
-  }).length
-
-  const pendingMessages = testNotifications.filter(n => !n.read).length
-  
-  const futureDate = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000)
-  const upcomingBookings = bookings.filter(b => {
-    const checkIn = new Date(b.checkIn)
-    return checkIn >= today && checkIn <= futureDate && b.status === "upcoming"
-  }).length
-
-  const stats = {
-    activitiesToday,
-    pendingMessages,
-    upcomingBookings
-  }
-
   return (
     <div className="container mx-auto px-4 sm:px-3 md:px-4 py-3 sm:py-4 md:py-6 lg:py-8 w-full max-w-full">
       <div className="space-y-4 sm:space-y-6 md:space-y-8">
         {/* Header Section */}
-        <DashboardHeader 
-          userName="Alex" 
-          stats={stats}
-        />
+        <DashboardHeader userName="Alex" />
 
         {/* Weather & Map Section */}
         <DashboardMap 

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { CLOSE_ALL_SHEETS_EVENT } from "@/lib/sheet-utils"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Badge } from "@/components/ui/badge"
 import { HomeAccess } from "@/components/homes/HomeAccess"
 import { HomeEssentials } from "@/components/homes/HomeEssentials"
 import { HomeRules } from "@/components/homes/HomeRules"
@@ -16,6 +17,8 @@ interface HomeInfoSheetProps {
   homeId: string
   homeCode: string
   homeName?: string
+  location?: string
+  market?: string
   defaultTab?: "browse" | "access" | "essentials" | "rules" | "media"
   children: React.ReactNode
 }
@@ -24,6 +27,8 @@ export function HomeInfoSheet({
   homeId, 
   homeCode, 
   homeName,
+  location,
+  market,
   defaultTab = "essentials",
   children
 }: HomeInfoSheetProps) {
@@ -48,6 +53,20 @@ export function HomeInfoSheet({
             <Home className="h-5 w-5" />
             {homeCode} {homeName && `• ${homeName}`}
           </SheetTitle>
+          {(location || market) && (
+            <div className="flex items-center gap-1 flex-wrap mt-1">
+              {location && (
+                <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-normal">
+                  {location}
+                </Badge>
+              )}
+              {market && market !== location && (
+                <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-normal">
+                  {market}
+                </Badge>
+              )}
+            </div>
+          )}
         </SheetHeader>
 
         {/* Home Activities Button */}
