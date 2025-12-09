@@ -162,11 +162,11 @@ export default function ActivitiesPage() {
           style={{ borderLeftColor: typeConfig.color }}
         >
           <CardContent className="p-4 sm:p-5">
-            <div className="space-y-3">
+            <div className="space-y-2">
               {/* Row 1: Title, Home Info, Status Badge, and Time */}
               <div className="flex items-start justify-between gap-2">
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-0 flex-wrap">
+                  <div className="flex items-center gap-1.5 flex-wrap">
                     <h3 className="font-bold text-base">
                       {typeConfig.label}
                     </h3>
@@ -184,20 +184,6 @@ export default function ActivitiesPage() {
                         )}
                       </button>
                     </HomeInfoSheet>
-                    {home && (home.location || home.market) && (
-                      <>
-                        {home.location && (
-                          <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-normal mt-2">
-                            {home.location}
-                          </Badge>
-                        )}
-                        {home.market && home.market !== home.location && (
-                          <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-normal mt-2">
-                            {home.market}
-                          </Badge>
-                        )}
-                      </>
-                    )}
                   </div>
                 </div>
                 <div className="flex flex-col items-end gap-1 flex-shrink-0">
@@ -212,7 +198,23 @@ export default function ActivitiesPage() {
                 </div>
               </div>
 
-              {/* Row 2: Additional details - bedrooms, address, booking info */}
+              {/* Row 2: Location and Market badges */}
+              {home && (home.location || home.market) && (
+                <div className="flex items-center gap-1.5">
+                  {home.location && (
+                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-normal">
+                      {home.location}
+                    </Badge>
+                  )}
+                  {home.market && home.market !== home.location && (
+                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-normal">
+                      {home.market}
+                    </Badge>
+                  )}
+                </div>
+              )}
+
+              {/* Row 3: Additional details - bedrooms, address, booking info */}
               <div className="space-y-2 pb-2">
                 {home && (home.bedrooms || home.bathrooms) && (
                   <div className="flex items-center gap-3 text-xs text-muted-foreground">
