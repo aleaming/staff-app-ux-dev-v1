@@ -74,7 +74,7 @@ export function PreActivityConfirmationModal({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-[calc(100%-2rem)] sm:max-w-lg max-h-[85vh] overflow-y-auto mx-auto my-4 rounded-xl">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">Before You Start</DialogTitle>
           <p className="text-sm text-muted-foreground mt-1">
@@ -82,7 +82,7 @@ export function PreActivityConfirmationModal({
           </p>
         </DialogHeader>
 
-        <div className="space-y-6 py-4">
+        <div className="space-y-2 py-4">
           {/* Access Information Section */}
           <div
             className={`p-4 rounded-lg border-2 transition-colors cursor-pointer ${
