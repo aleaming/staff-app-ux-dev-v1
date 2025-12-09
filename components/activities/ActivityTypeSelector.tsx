@@ -61,7 +61,7 @@ export function ActivityTypeSelector({
 
   return (
     <div className="space-y-4">
-      <div>
+      <div className="text-left">
         <h2 className="text-2xl font-bold">Start Activity</h2>
         <p className="text-muted-foreground">
           {homeCode} {homeName && `• ${homeName}`}
