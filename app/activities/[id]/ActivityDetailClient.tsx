@@ -35,13 +35,13 @@ export function HomeInformationCard({ home }: HomeInformationCardProps) {
                 location={home.location}
                 market={home.market}
               >
-                <button className="text-sm font-semibold text-primary underline hover:text-primary/80 transition-colors text-left">
+                <button className="text-xs font-normal text-primary underline hover:text-primary/80 transition-colors text-left">
                   {home.code}
                 </button>
               </HomeInfoSheet>
               {home.name && (
                 <>
-                  <span className="text-sm text-muted-foreground">•</span>
+                  <span className="text-xs font-normal text-muted-foreground">•</span>
                   <HomeInfoSheet
                     homeId={home.id}
                     homeCode={home.code}
@@ -49,7 +49,7 @@ export function HomeInformationCard({ home }: HomeInformationCardProps) {
                     location={home.location}
                     market={home.market}
                   >
-                    <button className="text-sm text-muted-foreground underline hover:text-primary/80 transition-colors text-left">
+                    <button className="text-xs font-normal text-muted-foreground underline hover:text-primary/80 transition-colors text-left">
                       {home.name}
                     </button>
                   </HomeInfoSheet>
@@ -62,8 +62,8 @@ export function HomeInformationCard({ home }: HomeInformationCardProps) {
                 onClick={() => setMapSheetOpen(true)}
                 className="flex items-start gap-1 text-sm font-medium hover:text-primary transition-colors text-left"
               >
-                <MapPin className="h-5 w-5" />
-                <span className="underline">{home.address}, {home.city}</span>
+                <MapPin className="h-3 w-3 mt-0.5" />
+                <span className="underline font-normal text-xs">{home.address}, {home.city}</span>
               </button>
             </div>
             {home.distance !== undefined && (

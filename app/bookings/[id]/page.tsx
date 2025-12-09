@@ -131,19 +131,19 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <User className="h-5 w-5" />
+                     
                       Guest Information
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div>
-                      <p className="text-xs text-muted-foreground">Guest Name</p>
-                      <p className="font-semibold text-xl">{booking.guestName}</p>
+                  <CardContent className="space-y-2">
+                    <div className="flex items-center gap-1">
+                      <p className="text-xs text-muted-foreground">Guest Name:</p>
+                      <p className="font-semibold text-xs">{booking.guestName}</p>
                     </div>
                     
                     {booking.guestEmail && (
-                      <div className="flex items-center gap-2">
-                        <Mail className="h-4 w-4 text-muted-foreground" />
+                      <div className="flex items-center gap-1">
+                        <Mail className="h-3 w-3 text-muted-foreground" />
                         <div>
                           <p className="text-xs text-muted-foreground">Email</p>
                           <p className="font-medium text-xs">{booking.guestEmail}</p>
@@ -152,8 +152,8 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                     )}
 
                     {booking.guestPhone && (
-                      <div className="flex items-center gap-2">
-                        <Phone className="h-4 w-4 text-muted-foreground" />
+                      <div className="flex items-center gap-1">
+                        <Phone className="h-3 w-3 text-muted-foreground" />
                         <div>
                           <p className="text-xs text-muted-foreground">Phone</p>
                           <p className="font-medium text-xs">{booking.guestPhone}</p>
@@ -162,8 +162,8 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                     )}
 
                     {booking.numberOfGuests && (
-                      <div className="flex items-center gap-2">
-                        <Users className="h-4 w-4 text-muted-foreground" />
+                      <div className="flex items-center gap-1">
+                        <Users className="h-3 w-3 text-muted-foreground" />
                         <div>
                           <p className="text-xs text-muted-foreground">Number of Guests</p>
                           <p className="font-medium text-xs">{booking.numberOfGuests}</p>
@@ -172,10 +172,10 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                     )}
 
                     {home && (
-                      <div className="flex items-center gap-2">
-                        <Home className="h-4 w-4 text-muted-foreground" />
-                        <div>
-                          <p className="text-xs text-muted-foreground">Home</p>
+                      <div className="flex items-center gap-1">
+                        <Home className="h-3 w-3 text-foreground" />
+                        <div className="flex items-center gap-1">
+                          
                           <HomeInfoSheet
                             homeId={home.id}
                             homeCode={home.code}
@@ -230,21 +230,21 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Calendar className="h-5 w-5" />
+                      
                       Booking Dates
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="grid gap-4 md:grid-cols-2">
+                    <div className="grid gap-2 md:grid-cols-2">
                       <div>
                         <p className="text-xs text-muted-foreground">Check-in</p>
-                        <p className="font-semibold text-xl">{formatDate(booking.checkIn)}</p>
-                        <p className="text-xs text-muted-foreground mt-1">{getDaysUntil(booking.checkIn)}</p>
+                        <p className="font-semibold text-xs">{formatDate(booking.checkIn)}</p>
+                        <p className="text-xs text-muted-foreground mt-1 text-red-500">{getDaysUntil(booking.checkIn)}</p>
                       </div>
                       <div>
                         <p className="text-xs text-muted-foreground">Check-out</p>
-                        <p className="font-semibold text-xl">{formatDate(booking.checkOut)}</p>
-                        <p className="text-xs text-muted-foreground mt-1">{getDaysUntil(booking.checkOut)}</p>
+                        <p className="font-semibold text-xs">{formatDate(booking.checkOut)}</p>
+                        <p className="text-xs text-muted-foreground mt-1 text-red-500">{getDaysUntil(booking.checkOut)}</p>
                       </div>
                     </div>
                   </CardContent>

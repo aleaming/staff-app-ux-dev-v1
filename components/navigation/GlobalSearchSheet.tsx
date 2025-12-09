@@ -239,18 +239,13 @@ export function GlobalSearchSheet({ open, onOpenChange }: GlobalSearchSheetProps
                             onClick={() => handleResultClick(`/homes/${home.id}`)}
                           >
                             <CardContent className="p-3">
-                              <div className="flex items-center justify-between">
-                                <div className="flex-1 min-w-0">
-                                  <p className="font-semibold">{home.code}</p>
-                                  {home.name && <p className="text-sm text-muted-foreground">{home.name}</p>}
-                                  <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-                                    <MapPin className="h-3 w-3" />
-                                    {home.address}, {home.city}
-                                  </p>
-                                </div>
-                                <Badge variant={home.status === "occupied" ? "default" : "secondary"} className="ml-2">
-                                  {home.status}
-                                </Badge>
+                              <div className="flex-1 min-w-0">
+                                <p className="font-semibold">{home.code}</p>
+                                {home.name && <p className="text-sm text-muted-foreground">{home.name}</p>}
+                                <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+                                  <MapPin className="h-3 w-3" />
+                                  {home.address}, {home.city}
+                                </p>
                               </div>
                             </CardContent>
                           </Card>

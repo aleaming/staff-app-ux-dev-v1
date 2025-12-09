@@ -230,7 +230,7 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
 
         <div className="grid gap-6 lg:grid-cols-3">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-3">
             {/* Activity Info */}
             <Card>
               <CardHeader>
@@ -246,9 +246,9 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
                   </div>
                 )}
                 
-                <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-2 md:grid-cols-2">
                   <div className="flex items-start gap-2">
-                    <Clock className="h-5 w-5 text-muted-foreground" />
+                    <Clock className="h-3 w-3 text-muted-foreground mt-0.5" />
                     <div>
                       <p className="text-xs text-muted-foreground">Scheduled Time</p>
                       <p className="font-medium text-xs">{formatTimeRange(activity.scheduledTime, activity.endTime)}</p>
@@ -257,7 +257,7 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
                   
                   {activity.assignedTo && (
                     <div className="flex items-start gap-2">
-                      <User className="h-5 w-5 text-muted-foreground" />
+                      <User className="h-3 w-3 text-muted-foreground mt-0.5" />
                       <div>
                         <p className="text-xs text-muted-foreground">Assigned To</p>
                         <p className="text-xs font-medium">{activity.assignedTo}</p>
@@ -305,13 +305,13 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    <div>
-                      <p className="text-xs text-muted-foreground">Booking ID</p>
-                      <p className="text-xl font-semibold">{booking.bookingId}</p>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-1">
+                      <p className="text-xs text-muted-foreground">Booking ID:</p>
+                      <p className="text-xs font-semibold">{booking.bookingId}</p>
                     </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground">Guest</p>
+                    <div className="flex items-center gap-1">
+                      <p className="text-xs text-muted-foreground">Guest:</p>
                       <p className="text-xs font-medium">{booking.guestName}</p>
                     </div>
                     <div className="grid gap-1 grid-cols-2">

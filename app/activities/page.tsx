@@ -163,28 +163,26 @@ export default function ActivitiesPage() {
         >
           <CardContent className="p-4 sm:p-5">
             <div className="space-y-2">
-              {/* Row 1: Title, Home Info, Status Badge, and Time */}
+              {/* Row 1: Title/Home Info on left, Status Badge/Time on right */}
               <div className="flex items-start justify-between gap-2">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <h3 className="font-bold text-base">
-                      {typeConfig.label}
-                    </h3>
-                    <HomeInfoSheet
-                      homeId={home?.id || activity.homeCode}
-                      homeCode={activity.homeCode}
-                      homeName={activity.homeName}
-                      location={home?.location}
-                      market={home?.market}
-                    >
-                      <button className="text-xs text-primary underline hover:text-primary/80 transition-colors">
-                        {activity.homeCode}
-                        {activity.homeName && (
-                          <span> • {activity.homeName}</span>
-                        )}
-                      </button>
-                    </HomeInfoSheet>
-                  </div>
+                <div className="flex-1 min-w-0 space-y-1">
+                  <h3 className="font-bold text-base">
+                    {typeConfig.label}
+                  </h3>
+                  <HomeInfoSheet
+                    homeId={home?.id || activity.homeCode}
+                    homeCode={activity.homeCode}
+                    homeName={activity.homeName}
+                    location={home?.location}
+                    market={home?.market}
+                  >
+                    <button className="text-xs text-primary underline hover:text-primary/80 transition-colors text-left">
+                      {activity.homeCode}
+                      {activity.homeName && (
+                        <span> • {activity.homeName}</span>
+                      )}
+                    </button>
+                  </HomeInfoSheet>
                 </div>
                 <div className="flex flex-col items-end gap-1 flex-shrink-0">
                   <Badge
