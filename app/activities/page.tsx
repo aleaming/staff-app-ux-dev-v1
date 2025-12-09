@@ -168,7 +168,7 @@ export default function ActivitiesPage() {
               <div className="flex items-start justify-between gap-4 mb-3">
                 {/* Left: Title and Details */}
                 <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-xl">
+                    <h3 className="font-bold text-base">
                       {typeConfig.label}
                     </h3>
                     <div className="gap-1">
