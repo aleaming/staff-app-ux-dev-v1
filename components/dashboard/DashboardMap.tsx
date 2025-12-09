@@ -29,7 +29,7 @@ interface DashboardMapProps {
 }
 
 export function DashboardMap({ homes, activities, latitude = 51.5074, longitude = -0.1278, city = "London" }: DashboardMapProps) {
-  const [showHomes, setShowHomes] = useState(true)
+  const [showHomes, setShowHomes] = useState(false)
   const [showActivities, setShowActivities] = useState(true)
   const [isOpen, setIsOpen] = useState(false)
   const [weather, setWeather] = useState<WeatherData | null>(null)
