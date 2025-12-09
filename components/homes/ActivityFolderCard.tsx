@@ -80,15 +80,15 @@ export function ActivityFolderCard({ activity, homeCode }: ActivityFolderCardPro
             {/* Left: Title and Details */}
             <div className="flex-1 min-w-0">
               <h3 className="font-bold text-lg">{config.label}</h3>
-              <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
-                <span className="flex items-center gap-1">
-                  <Calendar className="h-3 w-3" />
-                  {formatDate(activity.date)}
-                </span>
-                <span className="flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
-                  {formatTime(activity.date)}
-                </span>
+                  <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
+                    <span className="flex items-center gap-1">
+                      <Calendar className="h-3 w-3" />
+                      {formatDate(activity.date)}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      {formatTime(activity.date)}
+                    </span>
               </div>
 
               {/* Photo count and rooms */}
@@ -117,7 +117,7 @@ export function ActivityFolderCard({ activity, homeCode }: ActivityFolderCardPro
                   </Badge>
                 )}
               </div>
-            </div>
+              </div>
 
             {/* Right: Status and View button */}
             <div className="flex flex-col items-end gap-2 flex-shrink-0">

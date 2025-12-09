@@ -43,9 +43,9 @@ export default function RootLayout({
         >
           <HapticProvider>
             <GoogleMapsProvider>
-              <DataProvider>
-                <LayoutClient>{children}</LayoutClient>
-              </DataProvider>
+            <DataProvider>
+              <LayoutClient>{children}</LayoutClient>
+            </DataProvider>
             </GoogleMapsProvider>
           </HapticProvider>
         </ThemeProvider>

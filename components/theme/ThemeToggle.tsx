@@ -91,6 +91,6 @@ export function ThemeToggle({ className, showLabel = false }: ThemeToggleProps) 
       <span className="sr-only">
         Switch to {isDark ? "light" : "dark"} theme
       </span>
-    </Button>
+        </Button>
   )
 }
