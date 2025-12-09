@@ -208,10 +208,10 @@ export default function ActivitiesPage() {
                       {home && home.address && (
                         <button
                           onClick={(e) => handleShowMap(e, activity.homeCode)}
-                          className="flex items-start gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mb-2 text-left"
+                          className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mb-2 text-left w-full min-w-0 overflow-hidden"
                         >
-                          <MapPin className="h-3 w-3 flex-shrink-0 mt-0.5" />
-                          <span className="underline">{home.address}{home.city && `, ${home.city}`}</span>
+                          <MapPin className="h-3 w-3 flex-shrink-0" />
+                          <span className="underline truncate">{home.address}{home.city && `, ${home.city}`}</span>
                         </button>
                       )}
                       {activity.bookingId && booking && (

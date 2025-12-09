@@ -203,8 +203,8 @@
     background-color: hsl(var(--background));
     background-image: repeating-linear-gradient(
       45deg,
-      hsl(var(--foreground) / 0.04) 0px,
-      hsl(var(--foreground) / 0.04) 1px,
+      hsl(var(--foreground) / 0.03) 0px,
+      hsl(var(--foreground) / 0.03) 1px,
       transparent 1px,
       transparent 50%
     );
