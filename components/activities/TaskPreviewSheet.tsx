@@ -98,7 +98,7 @@ export function TaskPreviewSheet({
           </div>
         </SheetHeader>
         
-        <div className="overflow-y-auto h-[calc(70vh-120px)] mt-4 pr-2">
+        <div className="overflow-y-auto h-[calc(70vh-120px)] mt-4 pr-2 pb-48 md:pb-0">
           {tasks.length > 0 ? (
             <ol className="space-y-3">
               {tasks.map((task, index) => (

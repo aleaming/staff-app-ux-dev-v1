@@ -87,7 +87,7 @@ export function HomeInfoSheet({
             <TabsTrigger value="media">Media</TabsTrigger>
           </TabsList>
 
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto pb-48 md:pb-0">
             <TabsContent value="browse" className="mt-0">
               <PropertyBrowser homeId={homeId} homeCode={homeCode} homeName={homeName} />
             </TabsContent>

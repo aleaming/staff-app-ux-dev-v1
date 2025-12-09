@@ -27,7 +27,7 @@ const navItems = [
     label: "Activities",
     href: "/activities",
     icon: Target,
-    badge: 3, // TODO: Get from actual data
+    badge: null,
   },
 ]
 

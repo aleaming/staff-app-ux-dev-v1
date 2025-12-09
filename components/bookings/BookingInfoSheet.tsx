@@ -91,7 +91,7 @@ export function BookingInfoSheet({
           </SheetTitle>
         </SheetHeader>
 
-        <div className="flex-1 overflow-y-auto space-y-4 pb-6">
+        <div className="flex-1 overflow-y-auto space-y-4 pb-48 md:pb-6">
           {/* Guest Information */}
           <Card>
             <CardContent className="p-4 space-y-3">

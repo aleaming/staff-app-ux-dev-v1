@@ -2,14 +2,20 @@
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Clock, CheckCircle2 } from "lucide-react"
 import { ActivityType, getActivityTemplate } from "@/lib/activity-templates"
+import { Play, Eye } from "lucide-react"
+
+interface AssignedActivity {
+  id: string
+  type: ActivityType
+}
 
 interface ActivityTypeSelectorProps {
   homeCode: string
   homeName?: string
+  assignedActivities?: AssignedActivity[]
   onSelect: (type: ActivityType) => void
+  onView?: (type: ActivityType, activityId: string) => void
   onCancel?: () => void
 }
 
@@ -33,18 +39,25 @@ const activityColors: Record<ActivityType, string> = {
 export function ActivityTypeSelector({ 
   homeCode, 
   homeName, 
-  onSelect, 
+  assignedActivities = [],
+  onSelect,
+  onView,
   onCancel 
 }: ActivityTypeSelectorProps) {
   // Show only the main activity types that have templates
   const activityTypes: ActivityType[] = [
+    "adhoc",
     "provisioning",
     "deprovisioning",
     "turn",
     "maid-service",
-    "meet-greet",
-    "adhoc"
+    "meet-greet"
   ]
+
+  // Check if an activity type is assigned to this home
+  const getAssignedActivity = (type: ActivityType) => {
+    return assignedActivities.find(a => a.type === type)
+  }
 
   return (
     <div className="space-y-4">
@@ -58,41 +71,64 @@ export function ActivityTypeSelector({
       <div className="grid gap-3">
         {activityTypes.map((type) => {
           const template = getActivityTemplate(type)
-          const taskCount = template.tasks.length
-          const requiredTasks = template.tasks.filter(t => t.required).length
+          const isAdhoc = type === "adhoc"
+          const assignedActivity = getAssignedActivity(type)
+          const hasAssignedActivity = !!assignedActivity
+
+          // For non-adhoc activities without assignments, show disabled state
+          const isClickable = isAdhoc || hasAssignedActivity
 
           return (
             <Card 
               key={type}
-              className="hover:bg-muted/50 transition-colors cursor-pointer overflow-hidden border-l-[6px]"
+              className={`overflow-hidden border-l-[6px] transition-colors ${
+                isClickable 
+                  ? "hover:bg-muted/50 cursor-pointer" 
+                  : "opacity-50 cursor-not-allowed"
+              }`}
               style={{ borderLeftColor: activityColors[type] }}
-              onClick={() => onSelect(type)}
             >
               <CardContent className="p-4">
-                <div className="flex items-start justify-between gap-4">
-                  {/* Left: Title and Description */}
+                <div className="flex items-center justify-between gap-4">
                   <div className="flex-1 min-w-0">
                     <h3 className="font-bold text-lg">{template.name}</h3>
                     <p className="text-sm text-muted-foreground mt-0.5">
                       {template.description}
                     </p>
                   </div>
-
-                  {/* Right: Task count and time */}
-                  <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <CheckCircle2 className="h-3.5 w-3.5" />
-                      <span>{taskCount} tasks</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <Clock className="h-3.5 w-3.5" />
-                      <span>~{template.estimatedTotalTime} min</span>
-                    </div>
-                    {requiredTasks < taskCount && (
-                      <Badge variant="secondary" className="text-xs mt-1">
-                        {requiredTasks} required
-                      </Badge>
-                    )}
+                  
+                  {/* Action button */}
+                  <div className="flex-shrink-0">
+                    {isAdhoc ? (
+                      <Button 
+                        size="sm" 
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onSelect(type)
+                        }}
+                        className="gap-1.5"
+                      >
+                        <Play className="h-3.5 w-3.5" />
+                        Start
+                      </Button>
+                    ) : hasAssignedActivity ? (
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          if (onView && assignedActivity) {
+                            onView(type, assignedActivity.id)
+                          } else {
+                            onSelect(type)
+                          }
+                        }}
+                        className="gap-1.5"
+                      >
+                        <Eye className="h-3.5 w-3.5" />
+                        View
+                      </Button>
+                    ) : null}
                   </div>
                 </div>
               </CardContent>

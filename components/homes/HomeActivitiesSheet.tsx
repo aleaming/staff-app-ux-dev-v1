@@ -28,7 +28,7 @@ export function HomeActivitiesSheet({
   buttonText = "Home Activities"
 }: HomeActivitiesSheetProps) {
   const router = useRouter()
-  const { bookings } = useData()
+  const { bookings, activities } = useData()
   const [sheetOpen, setSheetOpen] = useState(false)
   const [showSwitchDialog, setShowSwitchDialog] = useState(false)
   const [pendingActivityType, setPendingActivityType] = useState<ActivityType | null>(null)
@@ -44,6 +44,11 @@ export function HomeActivitiesSheet({
   // Find relevant booking for this home (current > upcoming)
   const relevantBooking = bookings.find(b => b.homeCode === homeCode && b.status === "current")
     || bookings.find(b => b.homeCode === homeCode && b.status === "upcoming")
+
+  // Get activities assigned to this home (excluding completed)
+  const assignedActivities = activities
+    .filter(a => a.homeCode === homeCode && a.status !== "completed")
+    .map(a => ({ id: a.id, type: a.type }))
 
   // Build activity URL with optional booking
   const getActivityUrl = (type: ActivityType) => {
@@ -111,6 +116,11 @@ export function HomeActivitiesSheet({
     setSheetOpen(false)
   }
 
+  const handleViewActivity = (type: ActivityType, activityId: string) => {
+    setSheetOpen(false)
+    router.push(`/activities/${activityId}`)
+  }
+
   return (
     <>
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
@@ -127,14 +137,16 @@ export function HomeActivitiesSheet({
             </Button>
           )}
         </SheetTrigger>
-        <SheetContent side="bottom" className="h-[calc(92vh-8rem)] max-h-[calc(92vh-4rem)] overflow-y-auto">
+        <SheetContent side="bottom" className="h-[calc(92vh-8rem)] max-h-[calc(92vh-4rem)] overflow-y-auto pb-48 md:pb-6">
           <SheetHeader className="mb-4">
             <SheetTitle className="sr-only">{buttonText}</SheetTitle>
           </SheetHeader>
           <ActivityTypeSelector
             homeCode={homeCode}
             homeName={homeName}
+            assignedActivities={assignedActivities}
             onSelect={handleSelectActivity}
+            onView={handleViewActivity}
             onCancel={handleCancel}
           />
         </SheetContent>
