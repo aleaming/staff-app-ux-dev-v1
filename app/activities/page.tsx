@@ -215,13 +215,17 @@ export default function ActivitiesPage() {
                         </button>
                       )}
                       {activity.bookingId && booking && (
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground italic">
-                          <Calendar className="h-3 w-3" />
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <Calendar className="h-3 w-3 flex-shrink-0" />
                           <BookingInfoSheet bookingId={booking.bookingId}>
                             <button className="underline hover:text-primary transition-colors">
                               {activity.bookingId}
                             </button>
                           </BookingInfoSheet>
+                          <span>•</span>
+                          <span>
+                            {booking.checkIn.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - {booking.checkOut.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                          </span>
                         </div>
                       )}
                     </div>

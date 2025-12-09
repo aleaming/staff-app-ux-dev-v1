@@ -51,7 +51,7 @@ export function ItemDetailsSheet({
 
   return (
     <Sheet open={true} onOpenChange={onClose}>
-      <SheetContent side="bottom" className="max-h-[100vh] overflow-y-auto pb-24">
+      <SheetContent side="bottom" className="max-h-[92vh] overflow-y-auto pb-24">
         <SheetHeader>
           <SheetTitle className="text-left">{item.label}</SheetTitle>
           <div className="mt-2">

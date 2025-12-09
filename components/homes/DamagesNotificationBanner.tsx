@@ -83,7 +83,7 @@ export function DamagesNotificationBanner() {
         </SheetTrigger>
       </div>
 
-      <SheetContent side="bottom" className="h-screen max-h-[calc(100vh-8rem)] flex flex-col bg-secondary dark:bg-secondary-foreground">
+      <SheetContent side="bottom" className="h-screen max-h-[calc(92vh-8rem)] flex flex-col bg-secondary dark:bg-secondary-foreground">
         <SheetHeader className="mb-1">
           <SheetTitle className="text-2xl text-left">Known Damages</SheetTitle>
         </SheetHeader>

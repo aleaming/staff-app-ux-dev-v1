@@ -240,7 +240,7 @@ export function PropertyIssueReportSheet({
 
   return (
     <Sheet open={true} onOpenChange={onClose}>
-      <SheetContent side="bottom" className="max-h-[90vh] overflow-y-auto pb-48">
+      <SheetContent side="bottom" className="max-h-[82vh] overflow-y-auto pb-48">
         <SheetHeader>
           <SheetTitle className="text-left">Report Issue</SheetTitle>
           <div className="mt-2 space-y-1">

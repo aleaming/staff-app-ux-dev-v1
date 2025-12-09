@@ -35,13 +35,17 @@ const SheetClose = SheetPrimitive.Close
 
 const SheetPortal = SheetPrimitive.Portal
 
+// Custom overlay that works with non-modal sheets
+// Uses a regular div instead of Radix Overlay since non-modal dialogs don't render overlays
 const SheetOverlay = React.forwardRef<
-  React.ElementRef<typeof SheetPrimitive.Overlay>,
-  React.ComponentPropsWithoutRef<typeof SheetPrimitive.Overlay>
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <SheetPrimitive.Overlay
+  <div
     className={cn(
-      "fixed inset-0 z-[70] bg-black/80 dark:bg-black/90 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+      "fixed inset-0 z-[69] bg-black/80 dark:bg-black/90 animate-in fade-in-0",
+      // pointer-events-none allows clicks to pass through to bottom nav
+      "pointer-events-none",
       // On mobile, leave space for bottom nav (4rem = 64px)
       "bottom-16 md:bottom-0",
       className
@@ -50,7 +54,7 @@ const SheetOverlay = React.forwardRef<
     ref={ref}
   />
 ))
-SheetOverlay.displayName = SheetPrimitive.Overlay.displayName
+SheetOverlay.displayName = "SheetOverlay"
 
 const sheetVariants = cva(
   "fixed z-[70] gap-4 bg-background p-4 sm:p-6 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out overflow-visible",

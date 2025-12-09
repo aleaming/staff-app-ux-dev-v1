@@ -80,7 +80,7 @@ export function BookingInfoSheet({
         {children}
       </SheetTrigger>
 
-      <SheetContent side="bottom" className="h-[calc(100vh-8rem)] max-h-[calc(100vh-4rem)]">
+      <SheetContent side="bottom" className="h-[calc(92vh-8rem)] max-h-[calc(92vh-4rem)]">
         <SheetHeader className="mb-4">
           <SheetTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5" />

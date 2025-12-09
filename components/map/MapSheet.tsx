@@ -84,7 +84,7 @@ export function MapSheet({
   
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="h-[85vh] max-h-[85vh] p-0">
+      <SheetContent side="bottom" className="h-[77vh] max-h-[77vh] p-0">
         <div className="flex flex-col h-full">
           {/* Header */}
           <SheetHeader className="p-4 sm:p-6 pb-4 border-b">

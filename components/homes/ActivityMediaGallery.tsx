@@ -144,7 +144,7 @@ export function ActivityMediaGallery({
   return (
     <>
       <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent side="bottom" className="h-[calc(100vh-4rem)] overflow-hidden flex flex-col">
+        <SheetContent side="bottom" className="h-[calc(92vh-4rem)] overflow-hidden flex flex-col">
           <SheetHeader className="mb-4">
             <SheetTitle className="flex items-center justify-between">
               <div>
