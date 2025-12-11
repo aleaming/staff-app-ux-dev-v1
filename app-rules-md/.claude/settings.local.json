@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-expo-app@latest:*)",
+      "Bash(node --version:*)",
+      "Bash(npm:*)",
+      "Bash(yarn --version)",
+      "Bash(pnpm --version:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
