@@ -280,12 +280,12 @@ export function DashboardMap({ homes, activities, latitude = 51.5074, longitude 
                       <div key={activity.id} className="relative">
                         {/* Timeline connector */}
                         {!isLast && (
-                          <div className="absolute left-[18px] top-[44px] bottom-0 w-0.5 bg-border" />
+                          <div className="absolute left-[30px] -translate-x-1/2 top-[44px] bottom-0 w-0.5 bg-border z-0" />
                         )}
 
                         <div className="flex gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors">
                           {/* Step number */}
-                          <div className="flex-shrink-0">
+                          <div className="flex-shrink-0 relative z-10">
                             <div className={`w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm ${getStatusColor(activity.status)}`}>
                               {index + 1}
                             </div>
