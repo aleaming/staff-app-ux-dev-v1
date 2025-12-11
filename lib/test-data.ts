@@ -100,6 +100,28 @@ export interface Booking {
   specialRequests?: string
 }
 
+export interface BookingNotes {
+  bookingRef: string
+  advisorInitials?: string
+  repeatGuest?: boolean
+  contextOfStay?: string
+  groupMakeup?: string
+  concerns?: string
+  checkInOutNotes?: string
+  flexRate?: string
+  discountNote?: string
+  adminFeeNote?: string
+  homeownerNotes?: string
+  jiraLink?: string
+  welcomeMessage?: string
+  entryCodes?: {
+    streetLevel?: string
+    apartment?: string
+  }
+  actionRequired?: string // For urgent notices like "Pre-Auth NOT Captured"
+  rawNotes?: string // Full unparsed notes
+}
+
 export interface Notification {
   id: string
   type: NotificationType

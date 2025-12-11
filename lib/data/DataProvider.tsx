@@ -11,12 +11,14 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { refreshHomes } from './homes-loader'
 import { refreshBookings } from './bookings-loader'
 import { refreshActivities } from './activities-loader'
-import type { Home, Booking, Activity } from '../test-data'
+import { refreshBookingNotes } from './booking-notes-loader'
+import type { Home, Booking, Activity, BookingNotes } from '../test-data'
 
 interface DataContextType {
   homes: Home[]
   bookings: Booking[]
   activities: Activity[]
+  bookingNotes: BookingNotes[]
   isLoading: boolean
   error: string | null
   refresh: () => Promise<void>
@@ -32,6 +34,7 @@ export function DataProvider({ children }: DataProviderProps) {
   const [homes, setHomes] = useState<Home[]>([])
   const [bookings, setBookings] = useState<Booking[]>([])
   const [activities, setActivities] = useState<Activity[]>([])
+  const [bookingNotes, setBookingNotes] = useState<BookingNotes[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -41,21 +44,24 @@ export function DataProvider({ children }: DataProviderProps) {
     
     try {
       console.log('[DataProvider] Starting data load...')
-      const [loadedHomes, loadedBookings, loadedActivities] = await Promise.all([
+      const [loadedHomes, loadedBookings, loadedActivities, loadedBookingNotes] = await Promise.all([
         refreshHomes(),
         refreshBookings(),
         refreshActivities(),
+        refreshBookingNotes(),
       ])
       
       console.log('[DataProvider] Loaded:', {
         homes: loadedHomes.length,
         bookings: loadedBookings.length,
-        activities: loadedActivities.length
+        activities: loadedActivities.length,
+        bookingNotes: loadedBookingNotes.length
       })
       
       setHomes(loadedHomes)
       setBookings(loadedBookings)
       setActivities(loadedActivities)
+      setBookingNotes(loadedBookingNotes)
     } catch (err) {
       console.error('[DataProvider] Failed to load data:', err)
       setError(err instanceof Error ? err.message : 'Failed to load data')
@@ -72,6 +78,7 @@ export function DataProvider({ children }: DataProviderProps) {
     homes,
     bookings,
     activities,
+    bookingNotes,
     isLoading,
     error,
     refresh: loadData,
@@ -118,5 +125,13 @@ export function useBookings() {
 export function useActivities() {
   const { activities, isLoading, error } = useData()
   return { activities, isLoading, error }
+}
+
+/**
+ * Hook to access booking notes data
+ */
+export function useBookingNotes() {
+  const { bookingNotes, isLoading, error } = useData()
+  return { bookingNotes, isLoading, error }
 }
 

@@ -90,3 +90,10 @@ export interface ActivitiesCSVRow {
   'Business Address': string
 }
 
+export interface BookingNotesCSVRow {
+  'booking_ref': string
+  'notes1': string
+  'notes2': string
+  'notes3': string
+}
+

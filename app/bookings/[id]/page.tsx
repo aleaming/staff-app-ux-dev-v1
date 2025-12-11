@@ -11,6 +11,7 @@ import { Breadcrumbs } from "@/components/navigation/Breadcrumbs"
 import { BackButton } from "@/components/navigation/BackButton"
 import { HomeActivitiesSheet } from "@/components/homes/HomeActivitiesSheet"
 import { HomeInfoSheet } from "@/components/homes/HomeInfoSheet"
+import { BookingNotesCard } from "@/components/bookings/BookingNotesCard"
 import { 
   Calendar, 
   User, 
@@ -66,7 +67,7 @@ function BookingNotFound() {
 
 export default function BookingDetailPage({ params }: BookingDetailPageProps) {
   const { id } = use(params)
-  const { homes, bookings, activities, isLoading } = useData()
+  const { homes, bookings, activities, bookingNotes, isLoading } = useData()
 
   if (isLoading) {
     return <BookingDetailSkeleton />
@@ -80,6 +81,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
 
   const home = homes.find(h => h.code === booking.homeCode)
   const bookingActivities = activities.filter(a => a.bookingId === booking.bookingId)
+  const notes = bookingNotes.find(n => n.bookingRef === booking.bookingId)
   const statusInfo = statusConfig[booking.status]
 
   const formatDate = (date: Date) => {
@@ -127,6 +129,9 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
               </TabsList>
 
               <TabsContent value="details" className="space-y-3">
+                {/* Field Staff Notes */}
+                {notes && <BookingNotesCard notes={notes} />}
+
                 {/* Guest Information */}
                 <Card>
                   <CardHeader>
