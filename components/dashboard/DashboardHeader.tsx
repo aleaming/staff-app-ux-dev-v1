@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Calendar, Cloud, Sun, CloudRain, CloudSnow } from "lucide-react"
+import { WeatherDetailsSheet } from "./WeatherDetailsSheet"
 
 interface WeatherData {
   temperature: number
@@ -134,6 +135,12 @@ export function DashboardHeader({
               <WeatherIcon icon={weather.icon} />
               <span className="font-medium">{weather.temperature}°C</span>
               <span className="hidden sm:inline text-muted-foreground/80">{weather.condition}</span>
+              <span className="text-muted-foreground/50">•</span>
+              <WeatherDetailsSheet latitude={latitude} longitude={longitude} city="London">
+                <button className="text-primary hover:underline text-sm font-medium">
+                  Hourly Forecast
+                </button>
+              </WeatherDetailsSheet>
             </div>
           </>
         )}
