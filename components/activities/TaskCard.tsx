@@ -330,8 +330,8 @@ export function TaskCard({
 
   return (
     <Card className={`transition-colors ${completed ? "bg-white dark:bg-neutral-950/30 border-green-200 dark:border-green-800" : ""}`}>
-      <CardContent className="px-3 pt-3 pb-3">
-        <div className="space-y-4">
+      <CardContent className="px-3 pt-2 pb-2">
+        <div className="space-y-3">
           {/* Task Header - Always visible */}
           <div className="flex items-start gap-2">
             <Checkbox
@@ -348,13 +348,22 @@ export function TaskCard({
               >
                 {task.name}
               </label>
-              {/* Photo indicator in collapsed state */}
-              {photoCount > 0 && (
-                <div className="flex items-center gap-1 text-muted-foreground mt-1">
-                  <Camera className="h-4 w-4" />
-                  <span className="text-xs">{photoCount}</span>
-                </div>
-              )}
+              {/* Status indicators in collapsed state */}
+              <div className="flex items-center gap-2 mt-1">
+                {/* Issue reported indicator */}
+                {reportIssue && (
+                  <div className="flex items-center gap-1 text-orange-500" title="Issue reported">
+                    <AlertTriangle className="h-4 w-4" />
+                  </div>
+                )}
+                {/* Photo indicator */}
+                {photoCount > 0 && (
+                  <div className="flex items-center gap-1 text-muted-foreground">
+                    <Camera className="h-4 w-4" />
+                    <span className="text-xs">{photoCount}</span>
+                  </div>
+                )}
+              </div>
             </div>
             {/* Expand/Collapse toggle */}
             <Button

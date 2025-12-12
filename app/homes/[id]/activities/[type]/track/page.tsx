@@ -60,7 +60,7 @@ export default function TrackActivityPage({ params }: TrackActivityPageProps) {
 
   if (!homeId || !activityType) {
     return (
-      <div className="container mx-auto px-4 py-6 md:py-8">
+      <div className="container mx-auto px-4 py-4 md:py-8">
         <div className="text-center">
           <p>Loading activity tracker...</p>
         </div>
@@ -69,7 +69,7 @@ export default function TrackActivityPage({ params }: TrackActivityPageProps) {
   }
 
   return (
-    <div className="container mx-auto px-4 py-6 md:py-8">
+    <div className="container mx-auto px-4 py-4 md:py-8">
       <ActivityTracker
         activityType={activityType}
         homeId={homeId}

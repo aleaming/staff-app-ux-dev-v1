@@ -790,7 +790,7 @@ export function ActivityTracker({
       {/* Tasks List - Phase-based or Regular */}
       {template.phases ? (
         // Phase-based rendering (Provisioning with phases)
-        <div className="space-y-6 md:space-y-4">
+        <div className="space-y-4 md:space-y-4">
           {template.phases
             .sort((a, b) => a.order - b.order)
             .map((phase, index) => {
@@ -836,7 +836,7 @@ export function ActivityTracker({
         </div>
       ) : (
         // Regular task-based rendering (all other activity types)
-        <div className="space-y-6 md:space-y-4">
+        <div className="space-y-4 md:space-y-4">
           {template.tasks
             .sort((a, b) => a.order - b.order)
             .map((task) => {
