@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -26,6 +27,11 @@ import { testHomes, testBookings } from "@/lib/test-data"
 import { getUserEmail } from "@/lib/auth"
 import { toast } from "sonner"
 import {
+  loadMGReport,
+  clearMGReport,
+  type MeetGreetReportData,
+} from "@/lib/meet-greet-report-types"
+import {
   CheckCircle2,
   Clock,
   Save,
@@ -39,6 +45,14 @@ import Link from "next/link"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BookingInfoSheet } from "@/components/bookings/BookingInfoSheet"
+
+// Guest welcoming activity types that require the M&G report
+const GUEST_WELCOMING_ACTIVITIES: ActivityType[] = [
+  "meet-greet",
+  "additional-greet",
+  "bag-drop",
+  "home-viewing",
+]
 
 export interface Photo {
   id: string
@@ -86,6 +100,9 @@ export function ActivityTracker({
   bookingId,
   activityId
 }: ActivityTrackerProps) {
+  const searchParams = useSearchParams()
+  const reportComplete = searchParams.get("reportComplete") === "true"
+  
   // Get template, optionally loading property-specific data for provisioning
   const template = getActivityTemplate(activityType, homeCode)
   if (!template) {
@@ -96,6 +113,9 @@ export function ActivityTracker({
   const storageKey = activityId 
     ? `activity-${activityId}` 
     : `activity-tracker-draft-${homeId}-${activityType}`
+  
+  // Check if this is a guest welcoming activity that requires M&G report
+  const requiresMGReport = GUEST_WELCOMING_ACTIVITIES.includes(activityType)
 
   // Get all tasks from template (including phase tasks)
   const getAllTasks = (): TaskTemplate[] => {
@@ -414,7 +434,24 @@ export function ActivityTracker({
       return
     }
 
+    // For guest welcoming activities, redirect to M&G report form first
+    if (requiresMGReport && !reportComplete) {
+      // Save current state before redirecting
+      saveToLocalStorage()
+      
+      // Build the report URL
+      const reportUrl = `/homes/${homeId}/activities/meet-greet/report?activityId=${activityId || ''}&bookingId=${bookingId || ''}`
+      window.location.href = reportUrl
+      return
+    }
+
     setIsGeneratingPDF(true)
+
+    // Load M&G report data if this is a guest welcoming activity
+    let mgReportData: MeetGreetReportData | null = null
+    if (requiresMGReport) {
+      mgReportData = loadMGReport(homeId, activityId)
+    }
 
     try {
       // Get home data
@@ -540,7 +577,9 @@ export function ActivityTracker({
         completedAt: new Date(),
         completedTasks,
         totalTasks,
-        totalPhotos: Object.values(taskStates).reduce((sum, task) => sum + (task.photos?.length || 0), 0)
+        totalPhotos: Object.values(taskStates).reduce((sum, task) => sum + (task.photos?.length || 0), 0),
+        // Include M&G report data if available
+        meetGreetReport: mgReportData || undefined,
       }
 
       // Generate and download PDF
@@ -554,9 +593,13 @@ export function ActivityTracker({
         activityNotes
       })
 
-      // Clear draft
+      // Clear draft and M&G report
       if (typeof window !== "undefined") {
         localStorage.removeItem(storageKey)
+        // Clear M&G report if this was a guest welcoming activity
+        if (requiresMGReport) {
+          clearMGReport(homeId, activityId)
+        }
       }
 
       // Redirect to activity detail or home page
@@ -568,6 +611,9 @@ export function ActivityTracker({
       // Still clear and redirect even if PDF fails
       if (typeof window !== "undefined") {
         localStorage.removeItem(storageKey)
+        if (requiresMGReport) {
+          clearMGReport(homeId, activityId)
+        }
       }
       window.location.href = `/homes/${homeId}`
     } finally {
