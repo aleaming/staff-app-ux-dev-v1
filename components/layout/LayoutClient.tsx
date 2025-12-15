@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { TopNav } from "@/components/navigation/TopNav"
-import { FixedSearchBar } from "@/components/navigation/FixedSearchBar"
 import { GlobalSearchSheet } from "@/components/navigation/GlobalSearchSheet"
 import { BottomNav } from "@/components/navigation/BottomNav"
 import { DamagesNotificationBanner } from "@/components/homes/DamagesNotificationBanner"
@@ -18,7 +17,6 @@ export function LayoutClient({ children }: LayoutClientProps) {
   return (
     <>
       <TopNav onOpenSearch={() => setSearchSheetOpen(true)} />
-      <FixedSearchBar onOpenSearch={() => setSearchSheetOpen(true)} />
       <DamagesNotificationBanner />
       <main className="flex-1 pb-48 md:pb-48">
         {children}
@@ -29,5 +27,3 @@ export function LayoutClient({ children }: LayoutClientProps) {
     </>
   )
 }
-
-

@@ -15,6 +15,7 @@ import { HomeInfoSheet } from "@/components/homes/HomeInfoSheet"
 import { PreActivityConfirmationModal } from "@/components/activities/PreActivityConfirmationModal"
 import { TaskPreviewSheet } from "@/components/activities/TaskPreviewSheet"
 import { DamagesNotificationBanner } from "@/components/homes/DamagesNotificationBanner"
+import { BookingNotesCard } from "@/components/bookings/BookingNotesCard"
 import type { ActivityType } from "@/lib/activity-templates"
 import {
   MapPin,
@@ -126,7 +127,7 @@ interface ActivityDetailPageProps {
 export default function ActivityDetailPage({ params }: ActivityDetailPageProps) {
   const { id } = use(params)
   const router = useRouter()
-  const { activities, homes, bookings, isLoading } = useData()
+  const { activities, homes, bookings, bookingNotes: allBookingNotes, isLoading } = useData()
   const [showConfirmation, setShowConfirmation] = useState(false)
 
   if (isLoading) {
@@ -142,6 +143,9 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
   const home = homes.find(h => h.code === activity.homeCode)
   const booking = activity.bookingId 
     ? bookings.find(b => b.bookingId === activity.bookingId) 
+    : null
+  const bookingNotes = booking 
+    ? allBookingNotes.find(bn => bn.bookingRef === booking.bookingId)
     : null
   const typeConfig = activityTypeConfig[activity.type] || activityTypeConfig["adhoc"]
   const statusInfo = statusConfig[activity.status]
@@ -340,6 +344,11 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
                   </div>
                 </CardContent>
               </Card>
+            )}
+
+            {/* Field Staff Notes - shown if booking has notes */}
+            {bookingNotes && (
+              <BookingNotesCard notes={bookingNotes} />
             )}
           </div>
 
