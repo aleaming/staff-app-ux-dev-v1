@@ -330,8 +330,8 @@ export function TaskCard({
 
   return (
     <Card className={`transition-colors ${completed ? "bg-white dark:bg-neutral-950/30 border-green-200 dark:border-green-800" : ""}`}>
-      <CardContent className="px-3 pt-2 pb-2">
-        <div className="space-y-3">
+      <CardContent className="px-2 pt-2 pb-2">
+        <div className="space-y-2">
           {/* Task Header - Always visible */}
           <div className="flex items-start gap-2">
             <Checkbox
@@ -344,7 +344,7 @@ export function TaskCard({
             <div className="flex-1 min-w-0 flex items-start gap-2">
               <label 
                 htmlFor={`task-${task.id}`}
-                className={`font-medium text-base cursor-pointer flex-1 ${completed ? "text-muted-foreground" : ""}`}
+                className={`font-normal text-base cursor-pointer flex-1 ${completed ? "text-muted-foreground" : ""}`}
               >
                 {task.name}
               </label>

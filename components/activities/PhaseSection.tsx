@@ -170,7 +170,7 @@ export function PhaseSection({
             </div>
           </AccordionTrigger>
 
-          <AccordionContent className="px-4 py-4">
+          <AccordionContent className="px-2 py-2">
             {locked ? (
               <div className="text-center py-8 text-muted-foreground">
                 <Lock className="h-8 w-8 mx-auto mb-2 opacity-50" />
@@ -179,10 +179,10 @@ export function PhaseSection({
                 </p>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {/* Render rooms if present (DURING phase) */}
                 {phase.rooms && phase.rooms.length > 0 && (
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {phase.rooms.map(room => {
                       // Filter room tasks based on conditionals
                       const filteredRoomTasks = room.tasks.filter(task => {

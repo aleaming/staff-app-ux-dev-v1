@@ -301,11 +301,6 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
               </CardContent>
             </Card>
 
-            {/* Home Information */}
-            {home && (
-              <HomeInformationCard home={home} />
-            )}
-
             {/* Booking Information */}
             {booking && (
               <Card>
@@ -345,6 +340,11 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
                   </div>
                 </CardContent>
               </Card>
+            )}
+
+            {/* Home Information */}
+            {home && (
+              <HomeInformationCard home={home} />
             )}
 
             {/* Entry Codes - shown if booking has entry codes */}

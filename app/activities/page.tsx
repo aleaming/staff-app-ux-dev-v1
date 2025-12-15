@@ -273,7 +273,7 @@ export default function ActivitiesPage() {
                   <Button
                     size="lg"
                     variant="secondary"
-                    className="w-full h-10 rounded-lg font-medium text-base text-neutral-900 border-transparent"
+                    className="w-full h-10 rounded-lg font-medium text-base text-neutral-900 dark:text-neutral-900 border-transparent"
                     style={{ backgroundColor: typeConfig.color }}
                   >
                     Activity Details

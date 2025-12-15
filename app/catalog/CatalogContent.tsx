@@ -107,7 +107,7 @@ export default function CatalogContent() {
                 
                 return (
                   <Link key={home.id} href={`/homes/${home.id}`}>
-                    <Card className="hover:bg-white dark:hover:bg-neutral-900 hover:border-muted-foreground dark:border-primary/20 transition-colors overflow-hidden">
+                    <Card className="hover:bg-white dark:hover:bg-neutral-900 transition-colors overflow-hidden">
                       <CardContent className="p-3">
                         <div className="flex items-start justify-between">
                           <div className="flex-1 min-w-0">
