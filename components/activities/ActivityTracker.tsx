@@ -701,32 +701,34 @@ export function ActivityTracker({
       </Sheet>
 
       {/* Header */}
-      <div className="bg-background border-b pb-4 mb-6">
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div>
-              <h1 className="text-xl font-bold">{template.name}</h1>
-              <p className="text-sm text-muted-foreground">
-                {homeCode} {homeName && `• ${homeName}`}
-              </p>
+      <Card>
+        <CardContent className="pt-4 pb-4">
+          <div className="flex items-start justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <div>
+                <h1 className="text-lg font-bold">{template.name}</h1>
+                <p className="text-sm text-muted-foreground">
+                  {homeCode} {homeName && `• ${homeName}`}
+                </p>
+              </div>
             </div>
+            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+              In Progress
+            </Badge>
           </div>
-          <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-            In Progress
-          </Badge>
-        </div>
 
-        <ProgressIndicator
-          completedTasks={completedTasks}
-          totalTasks={totalTasks}
-        />
+          <ProgressIndicator
+            completedTasks={completedTasks}
+            totalTasks={totalTasks}
+          />
 
-        {lastSaved && (
-          <p className="text-xs text-muted-foreground mt-2">
-            Last saved: {lastSaved.toLocaleTimeString()}
-          </p>
-        )}
-      </div>
+          {lastSaved && (
+            <p className="text-xs text-muted-foreground mt-2">
+              Last saved: {lastSaved.toLocaleTimeString()}
+            </p>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Upload Queue */}
       {(() => {

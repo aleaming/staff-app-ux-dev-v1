@@ -131,19 +131,15 @@ export function PhaseSection({
   return (
     <div className={cn("relative", className)}>
       <Accordion type="single" collapsible defaultValue={locked ? undefined : phase.id}>
-        <AccordionItem value={phase.id} className={cn(
-          "border rounded-lg overflow-hidden",
-          locked && "opacity-60"
-        )}>
+        <AccordionItem value={phase.id} className="border rounded-lg overflow-hidden">
           <AccordionTrigger 
             className={cn(
               "px-4 py-3 hover:no-underline",
               config.bgColor
             )}
-            disabled={locked}
           >
             <div className="flex items-center gap-3 flex-1 text-left">
-              <div className={cn("flex items-center justify-center", locked && "opacity-50")}>
+              <div className="flex items-center justify-center">
                 {locked ? (
                   <Lock className="h-5 w-5 text-muted-foreground" />
                 ) : (
@@ -171,112 +167,111 @@ export function PhaseSection({
           </AccordionTrigger>
 
           <AccordionContent className="px-2 py-2">
-            {locked ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <Lock className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                <p className="text-sm">
-                  Complete the previous phase to unlock this section
+            {locked && (
+              <div className="flex items-center gap-2 px-3 py-2 mb-3 bg-muted/50 rounded-md text-muted-foreground">
+                <Lock className="h-4 w-4" />
+                <p className="text-xs">
+                  Complete the previous phase to unlock these tasks
                 </p>
               </div>
-            ) : (
-              <div className="space-y-3">
-                {/* Render rooms if present (DURING phase) */}
-                {phase.rooms && phase.rooms.length > 0 && (
-                  <div className="space-y-3">
-                    {phase.rooms.map(room => {
-                      // Filter room tasks based on conditionals
-                      const filteredRoomTasks = room.tasks.filter(task => {
-                        if (!task.conditional) return true
-                        
-                        if (task.conditional.season && currentSeason) {
-                          if (task.conditional.season !== currentSeason) return false
-                        }
-                        
-                        if (task.conditional.occupancy && currentOccupancy) {
-                          if (task.conditional.occupancy !== currentOccupancy) return false
-                        }
-                        
-                        return true
-                      })
+            )}
+            <div className={cn("space-y-3", locked && "pointer-events-none")}>
+              {/* Render rooms if present (DURING phase) */}
+              {phase.rooms && phase.rooms.length > 0 && (
+                <div className="space-y-3">
+                  {phase.rooms.map(room => {
+                    // Filter room tasks based on conditionals
+                    const filteredRoomTasks = room.tasks.filter(task => {
+                      if (!task.conditional) return true
+                      
+                      if (task.conditional.season && currentSeason) {
+                        if (task.conditional.season !== currentSeason) return false
+                      }
+                      
+                      if (task.conditional.occupancy && currentOccupancy) {
+                        if (task.conditional.occupancy !== currentOccupancy) return false
+                      }
+                      
+                      return true
+                    })
+
+                    return (
+                      <RoomChecklist
+                        key={room.id}
+                        room={{ ...room, tasks: filteredRoomTasks }}
+                        taskStates={taskStates}
+                        expandedTaskId={expandedTaskId}
+                        homeId={homeId}
+                        homeCode={homeCode}
+                        homeName={homeName}
+                        onTaskToggle={onTaskToggle}
+                        onTaskPhotoAdd={onTaskPhotoAdd}
+                        onTaskNotesChange={onTaskNotesChange}
+                        onTaskReportIssueToggle={onTaskReportIssueToggle}
+                        onTaskIssueReportChange={onTaskIssueReportChange}
+                        onTaskAnnotatePhoto={onTaskAnnotatePhoto}
+                        onTaskRetryUpload={onTaskRetryUpload}
+                        onExpandedChange={onExpandedChange}
+                      />
+                    )
+                  })}
+                </div>
+              )}
+
+              {/* Render direct tasks if present (ARRIVE/DEPART phases) */}
+              {phase.tasks && phase.tasks.length > 0 && (
+                <div className="space-y-3">
+                  {phase.tasks
+                    .filter(task => {
+                      if (!task.conditional) return true
+                      
+                      if (task.conditional.season && currentSeason) {
+                        if (task.conditional.season !== currentSeason) return false
+                      }
+                      
+                      if (task.conditional.occupancy && currentOccupancy) {
+                        if (task.conditional.occupancy !== currentOccupancy) return false
+                      }
+                      
+                      return true
+                    })
+                    .map(task => {
+                      const state = taskStates[task.id] || {
+                        id: task.id,
+                        completed: false,
+                        photos: [],
+                        notes: "",
+                        reportIssue: false
+                      }
 
                       return (
-                        <RoomChecklist
-                          key={room.id}
-                          room={{ ...room, tasks: filteredRoomTasks }}
-                          taskStates={taskStates}
-                          expandedTaskId={expandedTaskId}
+                        <TaskCard
+                          key={task.id}
+                          task={task}
+                          completed={state.completed}
+                          photos={state.photos || []}
+                          notes={state.notes || ""}
+                          canComplete={!locked && (!task.dependencies || task.dependencies.every(depId => taskStates[depId]?.completed))}
+                          reportIssue={state.reportIssue}
+                          issueReport={state.issueReport}
+                          isExpanded={expandedTaskId === task.id}
                           homeId={homeId}
                           homeCode={homeCode}
                           homeName={homeName}
-                          onTaskToggle={onTaskToggle}
-                          onTaskPhotoAdd={onTaskPhotoAdd}
-                          onTaskNotesChange={onTaskNotesChange}
-                          onTaskReportIssueToggle={onTaskReportIssueToggle}
-                          onTaskIssueReportChange={onTaskIssueReportChange}
-                          onTaskAnnotatePhoto={onTaskAnnotatePhoto}
-                          onTaskRetryUpload={onTaskRetryUpload}
-                          onExpandedChange={onExpandedChange}
+                          onToggleComplete={() => onTaskToggle(task.id)}
+                          onAddPhoto={(file, thumbnail) => onTaskPhotoAdd(task.id, file, thumbnail)}
+                          onNotesChange={(notes) => onTaskNotesChange(task.id, notes)}
+                          onToggleReportIssue={() => onTaskReportIssueToggle(task.id)}
+                          onIssueReportChange={(report) => onTaskIssueReportChange(task.id, report)}
+                          onAnnotatePhoto={(photoId) => onTaskAnnotatePhoto(task.id, photoId)}
+                          onRetryUpload={(photoId) => onTaskRetryUpload(task.id, photoId)}
+                          onExpandedChange={(expanded) => onExpandedChange?.(expanded ? task.id : null)}
                         />
                       )
                     })}
-                  </div>
-                )}
-
-                {/* Render direct tasks if present (ARRIVE/DEPART phases) */}
-                {phase.tasks && phase.tasks.length > 0 && (
-                  <div className="space-y-3">
-                    {phase.tasks
-                      .filter(task => {
-                        if (!task.conditional) return true
-                        
-                        if (task.conditional.season && currentSeason) {
-                          if (task.conditional.season !== currentSeason) return false
-                        }
-                        
-                        if (task.conditional.occupancy && currentOccupancy) {
-                          if (task.conditional.occupancy !== currentOccupancy) return false
-                        }
-                        
-                        return true
-                      })
-                      .map(task => {
-                        const state = taskStates[task.id] || {
-                          id: task.id,
-                          completed: false,
-                          photos: [],
-                          notes: "",
-                          reportIssue: false
-                        }
-
-                        return (
-                          <TaskCard
-                            key={task.id}
-                            task={task}
-                            completed={state.completed}
-                            photos={state.photos || []}
-                            notes={state.notes || ""}
-                            canComplete={!task.dependencies || task.dependencies.every(depId => taskStates[depId]?.completed)}
-                            reportIssue={state.reportIssue}
-                            issueReport={state.issueReport}
-                            isExpanded={expandedTaskId === task.id}
-                            homeId={homeId}
-                            homeCode={homeCode}
-                            homeName={homeName}
-                            onToggleComplete={() => onTaskToggle(task.id)}
-                            onAddPhoto={(file, thumbnail) => onTaskPhotoAdd(task.id, file, thumbnail)}
-                            onNotesChange={(notes) => onTaskNotesChange(task.id, notes)}
-                            onToggleReportIssue={() => onTaskReportIssueToggle(task.id)}
-                            onIssueReportChange={(report) => onTaskIssueReportChange(task.id, report)}
-                            onAnnotatePhoto={(photoId) => onTaskAnnotatePhoto(task.id, photoId)}
-                            onRetryUpload={(photoId) => onTaskRetryUpload(task.id, photoId)}
-                            onExpandedChange={(expanded) => onExpandedChange?.(expanded ? task.id : null)}
-                          />
-                        )
-                      })}
-                  </div>
-                )}
-              </div>
-            )}
+                </div>
+              )}
+            </div>
           </AccordionContent>
         </AccordionItem>
       </Accordion>

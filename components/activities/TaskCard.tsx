@@ -344,7 +344,7 @@ export function TaskCard({
             <div className="flex-1 min-w-0 flex items-start gap-2">
               <label 
                 htmlFor={`task-${task.id}`}
-                className={`font-normal text-base cursor-pointer flex-1 ${completed ? "text-muted-foreground" : ""}`}
+                className={`font-medium text-base cursor-pointer flex-1 ${completed ? "text-muted-foreground" : ""}`}
               >
                 {task.name}
               </label>
