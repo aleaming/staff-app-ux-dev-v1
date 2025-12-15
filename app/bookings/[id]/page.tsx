@@ -12,6 +12,7 @@ import { BackButton } from "@/components/navigation/BackButton"
 import { HomeActivitiesSheet } from "@/components/homes/HomeActivitiesSheet"
 import { HomeInfoSheet } from "@/components/homes/HomeInfoSheet"
 import { BookingNotesCard } from "@/components/bookings/BookingNotesCard"
+import { EntryCodesCard } from "@/components/bookings/EntryCodesCard"
 import { 
   Calendar, 
   User, 
@@ -197,6 +198,9 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                     )}
                   </CardContent>
                 </Card>
+
+                {/* Entry Codes */}
+                {notes?.entryCodes && <EntryCodesCard entryCodes={notes.entryCodes} />}
 
                 {/* Field Staff Notes */}
                 {notes && <BookingNotesCard notes={notes} />}

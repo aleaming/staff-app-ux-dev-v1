@@ -16,6 +16,7 @@ import { PreActivityConfirmationModal } from "@/components/activities/PreActivit
 import { TaskPreviewSheet } from "@/components/activities/TaskPreviewSheet"
 import { DamagesNotificationBanner } from "@/components/homes/DamagesNotificationBanner"
 import { BookingNotesCard } from "@/components/bookings/BookingNotesCard"
+import { EntryCodesCard } from "@/components/bookings/EntryCodesCard"
 import type { ActivityType } from "@/lib/activity-templates"
 import {
   MapPin,
@@ -346,6 +347,11 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
               </Card>
             )}
 
+            {/* Entry Codes - shown if booking has entry codes */}
+            {bookingNotes?.entryCodes && (
+              <EntryCodesCard entryCodes={bookingNotes.entryCodes} />
+            )}
+
             {/* Field Staff Notes - shown if booking has notes */}
             {bookingNotes && (
               <BookingNotesCard notes={bookingNotes} />
@@ -387,6 +393,7 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
             }}
             homeCode={home.code}
             homeName={home.name}
+            entryCodes={bookingNotes?.entryCodes}
           />
         )}
       </div>

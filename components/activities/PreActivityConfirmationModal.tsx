@@ -24,12 +24,18 @@ import {
 } from "lucide-react"
 import { getHomeAccessInfo, type HomeAccessInfo } from "@/lib/home-access-data"
 
+interface EntryCodes {
+  streetLevel?: string
+  apartment?: string
+}
+
 interface PreActivityConfirmationModalProps {
   open: boolean
   onClose: () => void
   onConfirm: () => void
   homeCode: string
   homeName?: string
+  entryCodes?: EntryCodes
 }
 
 export function PreActivityConfirmationModal({
@@ -37,7 +43,8 @@ export function PreActivityConfirmationModal({
   onClose,
   onConfirm,
   homeCode,
-  homeName
+  homeName,
+  entryCodes
 }: PreActivityConfirmationModalProps) {
   const [accessChecked, setAccessChecked] = useState(false)
   const [alarmChecked, setAlarmChecked] = useState(false)
@@ -83,6 +90,36 @@ export function PreActivityConfirmationModal({
         </DialogHeader>
 
         <div className="space-y-2 py-4">
+          {/* Guest Entry Codes Section - Only shown if entry codes exist */}
+          {entryCodes && (entryCodes.streetLevel || entryCodes.apartment) && (
+            <div className="p-4 rounded-lg border-2 border-primary/30 bg-primary/5" role="region" aria-label="Guest Entry Codes">
+              <div className="flex items-center gap-2 mb-3">
+                <Key className="h-5 w-5 text-primary" />
+                <span className="font-semibold text-base">Guest Entry Codes</span>
+                <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-950 dark:text-orange-400 dark:border-orange-800">
+                  FOR GUEST
+                </Badge>
+              </div>
+              <p className="text-xs text-muted-foreground mb-3">
+                Test these codes before the guest arrives and send via TextMagic.
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                {entryCodes.streetLevel && (
+                  <div className="px-3 py-2 bg-background rounded border">
+                    <span className="text-xs text-muted-foreground">Street Level</span>
+                    <p className="font-mono font-bold text-lg">{entryCodes.streetLevel}</p>
+                  </div>
+                )}
+                {entryCodes.apartment && (
+                  <div className="px-3 py-2 bg-background rounded border">
+                    <span className="text-xs text-muted-foreground">Apartment</span>
+                    <p className="font-mono font-bold text-lg">{entryCodes.apartment}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Access Information Section */}
           <div
             className={`p-4 rounded-lg border-2 transition-colors cursor-pointer ${

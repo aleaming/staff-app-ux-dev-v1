@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { HomeInfoSheet } from "@/components/homes/HomeInfoSheet"
 import { BookingNotesCard } from "@/components/bookings/BookingNotesCard"
+import { EntryCodesCard } from "@/components/bookings/EntryCodesCard"
 import { useData } from "@/lib/data/DataProvider"
 import { 
   Calendar, 
@@ -141,6 +142,9 @@ export function BookingInfoSheet({
               )}
             </CardContent>
           </Card>
+
+          {/* Entry Codes */}
+          {notes?.entryCodes && <EntryCodesCard entryCodes={notes.entryCodes} />}
 
           {/* Field Staff Notes */}
           {notes && <BookingNotesCard notes={notes} />}
