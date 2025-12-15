@@ -2,15 +2,15 @@
 
 import { useMemo } from "react"
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { List, Clock, CheckCircle2 } from "lucide-react"
+import { List, CheckCircle2 } from "lucide-react"
 import { getActivityTemplate, type ActivityType, type TaskTemplate } from "@/lib/activity-templates"
 
 interface TaskPreviewSheetProps {
@@ -25,7 +25,7 @@ export function TaskPreviewSheet({
   children 
 }: TaskPreviewSheetProps) {
   // Get the activity template and extract all tasks
-  const { tasks, totalTime, taskCount } = useMemo(() => {
+  const { tasks, taskCount } = useMemo(() => {
     const template = getActivityTemplate(activityType)
     const allTasks: TaskTemplate[] = []
     
@@ -53,52 +53,37 @@ export function TaskPreviewSheet({
     // Sort by order if available
     allTasks.sort((a, b) => (a.order || 0) - (b.order || 0))
     
-    // Calculate total estimated time
-    const totalMinutes = allTasks.reduce((sum, task) => sum + (task.estimatedTime || 0), 0)
-    
     return {
       tasks: allTasks,
-      totalTime: totalMinutes,
       taskCount: allTasks.length
     }
   }, [activityType])
 
-  const formatTime = (minutes: number) => {
-    if (minutes < 60) return `${minutes} min`
-    const hours = Math.floor(minutes / 60)
-    const mins = minutes % 60
-    return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`
-  }
-
   return (
-    <Sheet>
-      <SheetTrigger asChild>
+    <Dialog>
+      <DialogTrigger asChild>
         {children || (
           <Button variant="outline" size="sm" className="gap-2">
             <List className="h-4 w-4" />
             Preview all {activityName} tasks
           </Button>
         )}
-      </SheetTrigger>
-      <SheetContent side="bottom" className="h-[70vh] max-h-[70vh]">
-        <SheetHeader className="pb-4 border-b">
-          <SheetTitle className="flex items-center gap-2 text-lg">
+      </DialogTrigger>
+      <DialogContent className="w-[calc(100%-2rem)] sm:max-w-lg max-h-[85vh] overflow-y-auto mx-auto my-4 rounded-xl">
+        <DialogHeader>
+          <DialogTitle className="text-xl font-bold flex items-center gap-2">
             <List className="h-5 w-5" />
             {activityName} Tasks
-          </SheetTitle>
-          <div className="flex items-center gap-3 text-sm text-muted-foreground">
+          </DialogTitle>
+          <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
             <Badge variant="secondary" className="gap-1">
               <CheckCircle2 className="h-3 w-3" />
               {taskCount} tasks
             </Badge>
-            <Badge variant="secondary" className="gap-1">
-              <Clock className="h-3 w-3" />
-              ~{formatTime(totalTime)}
-            </Badge>
           </div>
-        </SheetHeader>
+        </DialogHeader>
         
-        <div className="overflow-y-auto h-[calc(70vh-120px)] mt-4 pr-2 pb-48 md:pb-0">
+        <div className="py-4">
           {tasks.length > 0 ? (
             <ol className="space-y-3">
               {tasks.map((task, index) => (
@@ -127,8 +112,7 @@ export function TaskPreviewSheet({
             </div>
           )}
         </div>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   )
 }
-

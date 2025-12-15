@@ -1,9 +1,7 @@
 "use client"
 
 import { useMemo } from "react"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
 import { MapPin } from "lucide-react"
 import type { RoomTemplate, TaskTemplate } from "@/lib/activity-templates"
 import { TaskCard } from "./TaskCard"
@@ -27,6 +25,7 @@ interface TaskState {
 
 interface RoomChecklistProps {
   room: RoomTemplate
+  phaseName?: string
   taskStates: Record<string, TaskState>
   expandedTaskId?: string | null
   homeId?: string
@@ -45,6 +44,7 @@ interface RoomChecklistProps {
 
 export function RoomChecklist({
   room,
+  phaseName,
   taskStates,
   expandedTaskId,
   homeId,
@@ -74,33 +74,34 @@ export function RoomChecklist({
   }, [room.tasks, taskStates])
 
   return (
-    <Card className={cn("border-l-4 border-l-blue-300", className)}>
-      <CardHeader className="pb-3">
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Badge variant="outline" className="font-mono text-xs">
-                {room.code}
-              </Badge>
-              <h4 className="font-semibold text-base">{room.name}</h4>
-            </div>
-            <Badge variant={progressPercent === 100 ? "default" : "secondary"}>
-              {completedCount}/{totalCount}
-            </Badge>
+    <div 
+      className={cn("space-y-3", className)}
+      data-room-id={room.id}
+      data-room-code={room.code}
+      data-room-name={room.name}
+      data-room-location={room.location}
+      data-room-phase-name={phaseName}
+    >
+      {/* Room Divider Header */}
+      <div className="flex items-center gap-3 py-2 border-b">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <h4 className="font-semibold text-sm">{room.name}</h4>
+            {room.location && (
+              <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                <MapPin className="h-3 w-3" />
+                {room.location}
+              </span>
+            )}
           </div>
-          
-          {room.location && (
-            <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-              <MapPin className="h-3.5 w-3.5" />
-              <span>{room.location}</span>
-            </div>
-          )}
-          
-          <Progress value={progressPercent} className="h-2" />
         </div>
-      </CardHeader>
+        <Badge variant={progressPercent === 100 ? "default" : "secondary"} className="text-xs">
+          {completedCount}/{totalCount}
+        </Badge>
+      </div>
       
-      <CardContent className="space-y-3 pt-0">
+      {/* Tasks */}
+      <div className="space-y-3">
         {room.tasks.map(task => {
           const state = taskStates[task.id] || {
             id: task.id,
@@ -135,8 +136,7 @@ export function RoomChecklist({
             />
           )
         })}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }
-

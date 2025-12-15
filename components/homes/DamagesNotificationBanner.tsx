@@ -2,10 +2,16 @@
 
 import { useState, useEffect } from "react"
 import { usePathname } from "next/navigation"
-import { AlertTriangle, ChevronUp } from "lucide-react"
+import { AlertTriangle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { testHomes, type Damage } from "@/lib/test-data"
 import { DamagesSheet } from "./DamagesSheet"
 
@@ -20,7 +26,7 @@ export function DamagesNotificationBanner({ homeId: propHomeId, damages: propDam
   const pathname = usePathname()
   const [homeId, setHomeId] = useState<string | null>(propHomeId || null)
   const [damages, setDamages] = useState<Damage[]>(propDamages || [])
-  const [sheetOpen, setSheetOpen] = useState(false)
+  const [dialogOpen, setDialogOpen] = useState(false)
 
   useEffect(() => {
     // If homeId or damages are passed as props, use them directly
@@ -79,45 +85,48 @@ export function DamagesNotificationBanner({ homeId: propHomeId, damages: propDam
   }
 
   return (
-    <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-      <div className="w-full bg-orange-50 dark:bg-orange-950 border-b border-orange-200 dark:border-orange-800">
-        <SheetTrigger asChild>
-          <Button
-            variant="ghost"
-            className="w-full justify-between h-auto py-3 px-4 hover:bg-orange-100 dark:hover:bg-orange-900 rounded-none"
-          >
-            <div className="flex items-center gap-3 flex-1">
-              <div className="p-1.5 rounded-lg bg-orange-100 dark:bg-orange-900">
-                <AlertTriangle className="h-4 w-4 text-orange-600 dark:text-orange-400" />
-              </div>
-              <div className="flex-1 text-left">
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold text-sm text-orange-900 dark:text-orange-300">
-                    Known Damages
-                  </span>
-                  <Badge variant="destructive" className="text-xs">
-                    {openCount}
-                  </Badge>
-                </div>
-                <p className="text-xs text-orange-700 dark:text-orange-300 mt-0.5">
-                  {openCount} {openCount === 1 ? "damage" : "damages"} reported for this property
-                </p>
-              </div>
-              <ChevronUp className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <div className="w-full bg-orange-50 dark:bg-orange-950 border-b border-orange-200 dark:border-orange-800 py-3 px-4">
+        <div className="flex items-center gap-3">
+          <div className="p-1.5 rounded-lg bg-orange-100 dark:bg-orange-900">
+            <AlertTriangle className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+          </div>
+          <div className="flex-1">
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-sm text-orange-900 dark:text-orange-300">
+                Known Damages
+              </span>
+              <Badge variant="destructive" className="text-xs">
+                {openCount}
+              </Badge>
             </div>
-          </Button>
-        </SheetTrigger>
+            <p className="text-xs text-orange-700 dark:text-orange-300 mt-0.5">
+              {openCount} {openCount === 1 ? "damage" : "damages"} reported for this property
+            </p>
+          </div>
+          <DialogTrigger asChild>
+            <Button
+              size="sm"
+              variant="outline"
+              className="bg-white dark:bg-orange-900 border-orange-300 dark:border-orange-700 text-orange-700 dark:text-orange-300 hover:bg-orange-100 dark:hover:bg-orange-800"
+            >
+              View
+            </Button>
+          </DialogTrigger>
+        </div>
       </div>
 
-      <SheetContent side="bottom" className="max-h-[82vh] overflow-y-auto pb-48 bg-secondary dark:bg-secondary-foreground">
-        <SheetHeader>
-          <SheetTitle className="text-2xl text-left">Known Damages</SheetTitle>
-        </SheetHeader>
-        <div className="mt-4">
+      <DialogContent className="w-[calc(100%-2rem)] sm:max-w-lg max-h-[85vh] overflow-y-auto mx-auto my-4 rounded-xl">
+        <DialogHeader>
+          <DialogTitle className="text-xl font-bold flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5 text-orange-500" />
+            Known Damages
+          </DialogTitle>
+        </DialogHeader>
+        <div className="py-4">
           <DamagesSheet homeId={homeId} damages={damages} />
         </div>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   )
 }
-

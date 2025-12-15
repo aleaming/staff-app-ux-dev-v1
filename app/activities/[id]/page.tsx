@@ -287,17 +287,6 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
                     Start Activity
                   </Button>
                 )}
-
-                {/* Task Preview Button */}
-                <TaskPreviewSheet 
-                  activityType={activity.type as ActivityType}
-                  activityName={typeConfig.label}
-                >
-                  <Button variant="outline" className="w-full gap-2">
-                    <List className="h-4 w-4" />
-                    Preview all {typeConfig.label} tasks
-                  </Button>
-                </TaskPreviewSheet>
               </CardContent>
             </Card>
 
@@ -365,6 +354,16 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
                 <CardTitle className="px-1">Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
+                {/* Task Preview Button */}
+                <TaskPreviewSheet 
+                  activityType={activity.type as ActivityType}
+                  activityName={typeConfig.label}
+                >
+                  <Button variant="outline" className="w-full gap-2">
+                    <List className="h-4 w-4" />
+                    Preview all tasks
+                  </Button>
+                </TaskPreviewSheet>
                
                 {home && (
                   <ReportIssueButton

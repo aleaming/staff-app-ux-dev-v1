@@ -17,6 +17,7 @@ import { HomeActivitiesSheet } from "@/components/homes/HomeActivitiesSheet"
 import { PropertyBrowser } from "@/components/property/PropertyBrowser"
 import { PropertyInfoCard } from "./PropertyInfoCard"
 import { PhaseSection } from "./PhaseSection"
+import { ScrollContextIndicator } from "./ScrollContextIndicator"
 import { getActivityTemplate, type ActivityType, type TaskTemplate } from "@/lib/activity-templates"
 import type { PhotoAnnotation } from "./PhotoAnnotation"
 import { getActiveActivity, clearActiveActivity } from "@/lib/activity-utils"
@@ -250,10 +251,20 @@ export function ActivityTracker({
 
   const handleSaveProgress = () => {
     saveToLocalStorage()
-    toast.success("Progress saved successfully!", {
-      description: "Your activity progress has been saved.",
+    
+    // Mark activity as closed so it shows in incomplete activities
+    if (typeof window !== "undefined") {
+      const closedKey = `activity-closed-${homeId}-${activityType}`
+      localStorage.setItem(closedKey, "true")
+    }
+    
+    toast.success("Progress saved!", {
+      description: "Your activity has been saved. You can resume it later.",
       duration: 3000,
     })
+    
+    // Redirect to dashboard
+    window.location.href = "/"
   }
 
   const toggleTaskComplete = (taskId: string, completed: boolean) => {
@@ -701,7 +712,7 @@ export function ActivityTracker({
       </Sheet>
 
       {/* Header */}
-      <Card>
+      <Card data-activity-header>
         <CardContent className="pt-4 pb-4">
           <div className="flex items-start justify-between mb-2">
             <div className="flex items-center gap-2">
@@ -729,6 +740,9 @@ export function ActivityTracker({
           )}
         </CardContent>
       </Card>
+
+      {/* Scroll Context Indicator - shows current phase/room while scrolling */}
+      {template.phases && <ScrollContextIndicator />}
 
       {/* Upload Queue */}
       {(() => {

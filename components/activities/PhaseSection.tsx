@@ -129,7 +129,11 @@ export function PhaseSection({
   }, [filteredTasks, taskStates])
 
   return (
-    <div className={cn("relative", className)}>
+    <div 
+      className={cn("relative", className)}
+      data-phase-id={phase.id}
+      data-phase-name={phase.name}
+    >
       <Accordion type="single" collapsible defaultValue={locked ? undefined : phase.id}>
         <AccordionItem value={phase.id} className="border rounded-lg overflow-hidden">
           <AccordionTrigger 
@@ -199,6 +203,7 @@ export function PhaseSection({
                       <RoomChecklist
                         key={room.id}
                         room={{ ...room, tasks: filteredRoomTasks }}
+                        phaseName={phase.name}
                         taskStates={taskStates}
                         expandedTaskId={expandedTaskId}
                         homeId={homeId}

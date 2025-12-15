@@ -31,10 +31,10 @@ export function ReportIssueButton({
     <>
       <Button
         variant={variant}
-        className={className || "w-full justify-start"}
+        className={className || "w-full gap-2"}
         onClick={() => setSheetOpen(true)}
       >
-        <AlertTriangle className="h-4 w-4 mr-2" />
+        <AlertTriangle className="h-4 w-4" />
         Report Issue
       </Button>
 
