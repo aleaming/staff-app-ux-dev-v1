@@ -14,6 +14,16 @@ interface ScrollContext {
   roomLocation: string | null
 }
 
+interface TopmostSection {
+  type: 'phase' | 'room'
+  phaseName?: string
+  phaseId?: string
+  roomCode?: string
+  roomName?: string
+  roomLocation?: string
+  roomId?: string
+}
+
 const phaseIcons: Record<string, typeof LogIn> = {
   arrive: LogIn,
   during: Home,
@@ -80,10 +90,10 @@ export function ScrollContextIndicator() {
       })
 
       // Find the topmost visible section
-      let topmostSection: { type: 'phase' | 'room'; phaseName?: string; roomCode?: string; roomName?: string; roomLocation?: string; phaseId?: string; roomId?: string } | null = null
+      let topmostSection: TopmostSection | null = null
       let topmostTop = Infinity
 
-      visibleSections.forEach((section, key) => {
+      visibleSections.forEach((section) => {
         // Get current position (may have changed since intersection)
         const rect = section.element.getBoundingClientRect()
         // Consider sections that are at or above the sticky header position
@@ -111,14 +121,16 @@ export function ScrollContextIndicator() {
         }
       })
 
-      if (topmostSection) {
+      // Type assertion needed because TypeScript can't track type through forEach closure
+      const result = topmostSection as TopmostSection | null
+      if (result) {
         updateContext({
-          phaseName: topmostSection.phaseName || null,
-          phaseId: topmostSection.phaseId || null,
-          roomCode: topmostSection.roomCode || null,
-          roomName: topmostSection.roomName || null,
-          roomId: topmostSection.roomId || null,
-          roomLocation: topmostSection.roomLocation || null,
+          phaseName: result.phaseName || null,
+          phaseId: result.phaseId || null,
+          roomCode: result.roomCode || null,
+          roomName: result.roomName || null,
+          roomId: result.roomId || null,
+          roomLocation: result.roomLocation || null,
         })
       }
     }
