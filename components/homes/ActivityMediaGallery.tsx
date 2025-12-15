@@ -213,7 +213,7 @@ export function ActivityMediaGallery({
                       {room}
                       <Badge variant="secondary">{photos.length} photos</Badge>
                     </h3>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 md:gap-4">
                       {photos.map((photo) => (
                         <div
                           key={photo.id}
@@ -238,7 +238,7 @@ export function ActivityMediaGallery({
               </div>
             ) : (
               // Show filtered photos
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 md:gap-4">
                 {filteredPhotos.map((photo) => (
                   <div
                     key={photo.id}

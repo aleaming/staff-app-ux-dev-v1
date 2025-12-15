@@ -76,6 +76,16 @@ export interface ActivityPDFData {
   // Meet & Greet Report
   meetGreetReport?: MeetGreetReportData
   
+  // Reported Issues
+  reportedIssues?: Array<{
+    ticketNumber?: string
+    type: string
+    description: string
+    priority: string
+    photoCount: number
+    reportedAt?: Date
+  }>
+  
   // Completion Info
   completedAt: Date
   completedTasks: number
@@ -244,6 +254,59 @@ export async function generateActivityPDF(data: ActivityPDFData): Promise<Blob> 
         doc.text(`Photos Added: ${update.photosAdded}`, margin + 8, yPosition)
         yPosition += 5
       }
+    })
+    yPosition += 4
+  }
+
+  // ===== REPORTED ISSUES =====
+  if (data.reportedIssues && data.reportedIssues.length > 0) {
+    addSectionHeader("Reported Issues")
+    data.reportedIssues.forEach((issue, index) => {
+      checkNewPage(30)
+      doc.setFontSize(10)
+      doc.setFont("helvetica", "bold")
+      const ticketLabel = issue.ticketNumber ? `#${issue.ticketNumber}` : `Issue ${index + 1}`
+      doc.text(`${ticketLabel}: ${issue.type}`, margin, yPosition)
+      yPosition += 5
+      
+      // Priority badge
+      doc.setFont("helvetica", "normal")
+      doc.setFontSize(9)
+      doc.setTextColor(80, 80, 80)
+      const priorityColors: Record<string, [number, number, number]> = {
+        urgent: [220, 38, 38],
+        high: [234, 88, 12],
+        medium: [202, 138, 4],
+        low: [22, 163, 74],
+      }
+      const priorityColor = priorityColors[issue.priority] || [100, 100, 100]
+      doc.setTextColor(priorityColor[0], priorityColor[1], priorityColor[2])
+      doc.text(`Priority: ${issue.priority.charAt(0).toUpperCase() + issue.priority.slice(1)}`, margin + 8, yPosition)
+      doc.setTextColor(80, 80, 80)
+      yPosition += 5
+      
+      // Description
+      const descLines = doc.splitTextToSize(`Description: ${issue.description}`, maxWidth - 12)
+      descLines.forEach((line: string) => {
+        checkNewPage(5)
+        doc.text(line, margin + 8, yPosition)
+        yPosition += 4
+      })
+      
+      // Photo count
+      if (issue.photoCount > 0) {
+        doc.text(`Photos: ${issue.photoCount} attached`, margin + 8, yPosition)
+        yPosition += 4
+      }
+      
+      // Reported timestamp
+      if (issue.reportedAt) {
+        doc.text(`Reported: ${new Date(issue.reportedAt).toLocaleString()}`, margin + 8, yPosition)
+        yPosition += 4
+      }
+      
+      doc.setTextColor(0, 0, 0)
+      yPosition += 4
     })
     yPosition += 4
   }

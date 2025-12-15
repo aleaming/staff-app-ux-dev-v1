@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
@@ -31,6 +32,7 @@ import {
 import { ActivityFolderCard } from "./ActivityFolderCard"
 
 interface HomeMediaProps {
+  homeId: string
   homeCode: string
 }
 
@@ -83,7 +85,7 @@ const mockActivityFolders = [
   }
 ]
 
-export function HomeMedia({ homeCode }: HomeMediaProps) {
+export function HomeMedia({ homeId, homeCode }: HomeMediaProps) {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedFilters, setSelectedFilters] = useState<string[]>([])
   
@@ -239,9 +241,12 @@ export function HomeMedia({ homeCode }: HomeMediaProps) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+            <div className="grid gap-2 md:gap-4 grid-cols-3 md:grid-cols-4">
               {media.photos.map((photo) => (
-                <div key={photo.id} className="relative aspect-video bg-muted rounded-lg overflow-hidden group">
+                <div 
+                  key={photo.id} 
+                  className="relative aspect-video bg-muted rounded-lg overflow-hidden group"
+                >
                   <div className="absolute inset-0 flex items-center justify-center">
                     <Image className="h-12 w-12 text-muted-foreground" />
                   </div>
@@ -251,9 +256,15 @@ export function HomeMedia({ homeCode }: HomeMediaProps) {
                 </div>
               ))}
             </div>
-            <Button variant="outline" className="w-full mt-4">
-              <Camera className="h-4 w-4 mr-2" />
-              View All Photos
+            <Button 
+              variant="outline" 
+              className="w-full mt-4"
+              asChild
+            >
+              <Link href={`/homes/${homeId}/media`}>
+                <Camera className="h-4 w-4 mr-2" />
+                View All Photos
+              </Link>
             </Button>
           </CardContent>
         </Card>

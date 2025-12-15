@@ -111,7 +111,7 @@ export function HomeInfoSheet({
             </TabsContent>
 
             <TabsContent value="media" className="mt-0">
-              <HomeMedia homeCode={homeCode} />
+              <HomeMedia homeId={homeId} homeCode={homeCode} />
             </TabsContent>
           </div>
         </Tabs>

@@ -568,6 +568,49 @@ export function ActivityTracker({
         }
       }
 
+      // Check for reported issues in localStorage
+      const homeIssuesKey = `home-issues-${homeId}`
+      const propertyIssuesKey = `property-issues-${homeId}`
+      let reportedIssues: Array<{
+        ticketNumber?: string
+        type: string
+        description: string
+        priority: string
+        photoCount: number
+        reportedAt?: Date
+      }> | undefined = undefined
+      if (typeof window !== "undefined") {
+        const homeIssues = localStorage.getItem(homeIssuesKey)
+        const propertyIssues = localStorage.getItem(propertyIssuesKey)
+        const allIssues: any[] = []
+        
+        if (homeIssues) {
+          try {
+            allIssues.push(...JSON.parse(homeIssues))
+          } catch (error) {
+            console.error("Error parsing home issues:", error)
+          }
+        }
+        if (propertyIssues) {
+          try {
+            allIssues.push(...JSON.parse(propertyIssues))
+          } catch (error) {
+            console.error("Error parsing property issues:", error)
+          }
+        }
+        
+        if (allIssues.length > 0) {
+          reportedIssues = allIssues.map(issue => ({
+            ticketNumber: issue.ticketNumber,
+            type: issue.type,
+            description: issue.description,
+            priority: issue.priority,
+            photoCount: issue.photos?.length || 0,
+            reportedAt: issue.reportedDate ? new Date(issue.reportedDate) : undefined,
+          }))
+        }
+      }
+
       // Prepare PDF data
       const pdfData: ActivityPDFData = {
         activityType,
@@ -585,6 +628,7 @@ export function ActivityTracker({
         weather: weatherData,
         bookingNotes,
         activityAdjustments,
+        reportedIssues,
         completedAt: new Date(),
         completedTasks,
         totalTasks,
@@ -704,7 +748,7 @@ export function ActivityTracker({
               </TabsContent>
 
               <TabsContent value="media" className="mt-0">
-                <HomeMedia homeCode={homeCode} />
+                <HomeMedia homeId={homeId} homeCode={homeCode} />
               </TabsContent>
             </div>
           </Tabs>
