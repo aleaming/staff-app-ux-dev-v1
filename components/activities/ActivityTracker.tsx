@@ -9,22 +9,17 @@ import { Textarea } from "@/components/ui/textarea"
 import { TaskCard } from "./TaskCard"
 import { ProgressIndicator } from "./ProgressIndicator"
 import { UploadQueue } from "./UploadQueue"
-import { HomeAccess } from "@/components/homes/HomeAccess"
-import { HomeEssentials } from "@/components/homes/HomeEssentials"
-import { HomeRules } from "@/components/homes/HomeRules"
-import { HomeMedia } from "@/components/homes/HomeMedia"
-import { HomeActivitiesSheet } from "@/components/homes/HomeActivitiesSheet"
-import { PropertyBrowser } from "@/components/property/PropertyBrowser"
+import { HomeInfoSheet } from "@/components/homes/HomeInfoSheet"
 import { PropertyInfoCard } from "./PropertyInfoCard"
 import { PhaseSection } from "./PhaseSection"
 import { ScrollContextIndicator } from "./ScrollContextIndicator"
 import { getActivityTemplate, type ActivityType, type TaskTemplate } from "@/lib/activity-templates"
 import type { PhotoAnnotation } from "./PhotoAnnotation"
 import { getActiveActivity, clearActiveActivity } from "@/lib/activity-utils"
-import { CLOSE_ALL_SHEETS_EVENT } from "@/lib/sheet-utils"
 import { ActivitySwitchDialog } from "./ActivitySwitchDialog"
 import { downloadActivityPDF, type ActivityPDFData } from "@/lib/pdf-generator"
-import { testHomes, testBookings } from "@/lib/test-data"
+import { testBookings } from "@/lib/test-data"
+import { useData } from "@/lib/data/DataProvider"
 import { getUserEmail } from "@/lib/auth"
 import { toast } from "sonner"
 import {
@@ -38,13 +33,10 @@ import {
   Save,
   ArrowLeft,
   AlertCircle,
-  Home,
   Menu,
   FileText
 } from "lucide-react"
 import Link from "next/link"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BookingInfoSheet } from "@/components/bookings/BookingInfoSheet"
 
 // Guest welcoming activity types that require the M&G report
@@ -103,6 +95,9 @@ export function ActivityTracker({
 }: ActivityTrackerProps) {
   const searchParams = useSearchParams()
   const reportComplete = searchParams.get("reportComplete") === "true"
+  
+  // Get homes data from DataProvider for reliable home lookup
+  const { homes } = useData()
   
   // Get template, optionally loading property-specific data for provisioning
   const template = getActivityTemplate(activityType, homeCode)
@@ -163,7 +158,6 @@ export function ActivityTracker({
 
   const [activityNotes, setActivityNotes] = useState("")
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
-  const [homeSheetOpen, setHomeSheetOpen] = useState(false)
   const [showSwitchDialog, setShowSwitchDialog] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false)
@@ -174,13 +168,6 @@ export function ActivityTracker({
     new Date().getMonth() >= 4 && new Date().getMonth() <= 9 ? "summer" : "winter"
   )
   const [currentOccupancy, setCurrentOccupancy] = useState<"booking" | "empty" | "host">("booking")
-
-  // Close home sheet when navigation occurs (e.g., bottom nav click)
-  useEffect(() => {
-    const handleClose = () => setHomeSheetOpen(false)
-    window.addEventListener(CLOSE_ALL_SHEETS_EVENT, handleClose)
-    return () => window.removeEventListener(CLOSE_ALL_SHEETS_EVENT, handleClose)
-  }, [])
 
   // Set mounted state to prevent hydration issues
   useEffect(() => {
@@ -466,7 +453,7 @@ export function ActivityTracker({
 
     try {
       // Get home data
-      const home = testHomes.find(h => h.id === homeId)
+      const home = homes.find(h => h.id === homeId)
       
       // Get weather data
       let weatherData: ActivityPDFData["weather"] | undefined
@@ -679,81 +666,37 @@ export function ActivityTracker({
   // Get booking data if bookingId is provided
   const booking = bookingId ? testBookings.find(b => b.bookingId === bookingId) : null
 
+  // Get home data for HomeInfoSheet props
+  const home = homes.find(h => h.id === homeId)
+
   return (
     <div className="space-y-4">
       {/* Home Menubar - Sticky */}
-      <Sheet open={homeSheetOpen} onOpenChange={setHomeSheetOpen}>
-        <div className="sticky top-16 z-30 bg-background pb-2 -mx-4 px-4 sm:-mx-6 sm:px-6">
-          <div className="flex items-center gap-2 border rounded-lg p-2 bg-muted/50 shadow-sm">
-            
-            <span className="text-sm font-medium flex-1">{homeCode} {homeName && `• ${homeName}`}</span>
-            {bookingId && (
-              <BookingInfoSheet bookingId={bookingId}>
-                <Button variant="outline" size="sm" className="gap-2 w-full">
-                  <FileText className="h-4 w-4" />
-                  View Booking
-                </Button>
-              </BookingInfoSheet>
-            )}
-            <SheetTrigger asChild>
+      <div className="sticky top-16 z-30 bg-background pb-2 -mx-4 px-4 sm:-mx-6 sm:px-6">
+        <div className="flex items-center gap-2 border rounded-lg p-2 bg-muted/50 shadow-sm">
+          <span className="text-sm font-medium flex-1">{homeCode} {homeName && `• ${homeName}`}</span>
+          {bookingId && (
+            <BookingInfoSheet bookingId={bookingId}>
               <Button variant="outline" size="sm" className="gap-2 w-full">
-                <Menu className="h-4 w-4" />
-                View Home Info
+                <FileText className="h-4 w-4" />
+                View Booking
               </Button>
-            </SheetTrigger>
-          </div>
+            </BookingInfoSheet>
+          )}
+          <HomeInfoSheet
+            homeId={homeId}
+            homeCode={home?.code || homeCode}
+            homeName={home?.name || homeName}
+            location={home?.location}
+            market={home?.market}
+          >
+            <Button variant="outline" size="sm" className="gap-2 w-full">
+              <Menu className="h-4 w-4" />
+              View Home Info
+            </Button>
+          </HomeInfoSheet>
         </div>
-
-        <SheetContent side="bottom" className="h-[calc(92vh-8rem)] max-h-[calc(92vh-4rem)]">
-          <SheetHeader className="mb-4">
-            <SheetTitle className="flex items-center gap-2">
-              <Home className="h-5 w-5" />
-              {homeCode} {homeName && `• ${homeName}`}
-            </SheetTitle>
-          </SheetHeader>
-          
-          {/* Home Activities CTA */}
-          <div className="mb-4">
-            <HomeActivitiesSheet 
-              homeId={homeId} 
-              homeCode={homeCode} 
-              homeName={homeName}
-            />
-          </div>
-          
-          <Tabs defaultValue="essentials" className="w-full h-full flex flex-col">
-            <TabsList className="grid w-full grid-cols-5 mb-4">
-              <TabsTrigger value="browse">Browse</TabsTrigger>
-              <TabsTrigger value="access">Access</TabsTrigger>
-              <TabsTrigger value="essentials">Essentials</TabsTrigger>
-              <TabsTrigger value="rules">Rules</TabsTrigger>
-              <TabsTrigger value="media">Media</TabsTrigger>
-            </TabsList>
-
-            <div className="flex-1 overflow-y-auto">
-              <TabsContent value="browse" className="mt-0">
-                <PropertyBrowser homeId={homeId} homeCode={homeCode} homeName={homeName} />
-              </TabsContent>
-
-              <TabsContent value="access" className="mt-0">
-                <HomeAccess homeCode={homeCode} />
-              </TabsContent>
-
-              <TabsContent value="essentials" className="mt-0">
-                <HomeEssentials homeCode={homeCode} />
-              </TabsContent>
-
-              <TabsContent value="rules" className="mt-0">
-                <HomeRules homeCode={homeCode} />
-              </TabsContent>
-
-              <TabsContent value="media" className="mt-0">
-                <HomeMedia homeId={homeId} homeCode={homeCode} />
-              </TabsContent>
-            </div>
-          </Tabs>
-        </SheetContent>
-      </Sheet>
+      </div>
 
       {/* Header */}
       <Card data-activity-header>
