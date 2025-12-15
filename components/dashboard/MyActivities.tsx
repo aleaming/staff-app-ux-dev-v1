@@ -259,7 +259,8 @@ export function MyActivities({ activities = [], bookings = [], homes = [], isLoa
                 <div className="flex flex-col items-end gap-1 flex-shrink-0">
                   <Badge
                     variant={statusInfo.variant}
-                    className={`whitespace-nowrap ${activity.status === 'paused' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400 border-orange-200 dark:border-orange-800' : ''}`}
+                    className={`whitespace-nowrap ${activity.status === 'paused' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400 border-orange-200 dark:border-orange-800' : ''} ${activity.status === 'to-start' ? 'text-neutral-900 border-transparent' : ''}`}
+                    style={activity.status === 'to-start' ? { backgroundColor: typeConfig.color } : undefined}
                   >
                     {activity.status === 'paused' && <Pause className="h-3 w-3 mr-1" />}
                     {statusInfo.label}
@@ -333,7 +334,8 @@ export function MyActivities({ activities = [], bookings = [], homes = [], isLoa
                   <Button
                     size="lg"
                     variant="secondary"
-                    className="w-full h-10 rounded-lg font-medium text-base"
+                    className="w-full h-10 rounded-lg font-medium text-base text-neutral-900 border-transparent"
+                    style={{ backgroundColor: typeConfig.color }}
                   >
                     Activity Details
                   </Button>

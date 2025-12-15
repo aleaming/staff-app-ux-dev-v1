@@ -25,10 +25,10 @@ import {
 import Link from "next/link"
 
 const statusConfig = {
-  "upcoming": { label: "Pre-Stay", className: "bg-[#E2F0D9] text-green-900 border-[#E2F0D9] hover:bg-[#E2F0D9]" },
-  "current": { label: "In-Stay", className: "bg-[#A7C58E] text-green-900 border-[#A7C58E] hover:bg-[#A7C58E]" },
-  "departure": { label: "Post-Stay", className: "bg-[#AFABAB] text-gray-900 border-[#AFABAB] hover:bg-[#AFABAB]" },
-  "completed": { label: "Completed", className: "bg-[#AFABAB] text-gray-900 border-[#AFABAB] hover:bg-[#AFABAB]" },
+  "upcoming": { label: "Pre-Stay", className: "bg-[#E2F0D9] text-neutral-700 border-[#E2F0D9] hover:bg-[#E2F0D9]" },
+  "current": { label: "In-Stay", className: "bg-[#A7C58E] text-neutral-700 border-[#A7C58E] hover:bg-[#A7C58E]" },
+  "departure": { label: "Post-Stay", className: "bg-[#AFABAB] text-neutral-700 border-[#AFABAB] hover:bg-[#AFABAB]" },
+  "completed": { label: "Completed", className: "bg-[#AFABAB] text-neutral-700 border-[#AFABAB] hover:bg-[#AFABAB]" },
 }
 
 interface BookingDetailPageProps {
@@ -129,9 +129,6 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
               </TabsList>
 
               <TabsContent value="details" className="space-y-3">
-                {/* Field Staff Notes */}
-                {notes && <BookingNotesCard notes={notes} />}
-
                 {/* Guest Information */}
                 <Card>
                   <CardHeader>
@@ -200,6 +197,9 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                     )}
                   </CardContent>
                 </Card>
+
+                {/* Field Staff Notes */}
+                {notes && <BookingNotesCard notes={notes} />}
 
                 {/* Quick Actions */}
                 <Card>

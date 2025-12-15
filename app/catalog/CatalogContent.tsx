@@ -19,10 +19,10 @@ const homeStatusConfig = {
 }
 
 const bookingStatusConfig = {
-  "upcoming": { label: "Pre-Stay", className: "bg-[#E2F0D9] text-green-900 border-[#E2F0D9] hover:bg-[#E2F0D9]" },
-  "current": { label: "In-Stay", className: "bg-[#A7C58E] text-green-900 border-[#A7C58E] hover:bg-[#A7C58E]" },
-  "departure": { label: "Post-Stay", className: "bg-[#AFABAB] text-gray-900 border-[#AFABAB] hover:bg-[#AFABAB]" },
-  "completed": { label: "Completed", className: "bg-[#AFABAB] text-gray-900 border-[#AFABAB] hover:bg-[#AFABAB]" },
+  "upcoming": { label: "Pre-Stay", className: "bg-[#E2F0D9] text-neutral-900 border-[#E2F0D9] hover:bg-[#E2F0D9]" },
+  "current": { label: "In-Stay", className: "bg-[#A7C58E] text-neutral-900 border-[#A7C58E] hover:bg-[#A7C58E]" },
+  "departure": { label: "Post-Stay", className: "bg-[#AFABAB] text-neutral-900 border-[#AFABAB] hover:bg-[#AFABAB]" },
+  "completed": { label: "Completed", className: "bg-[#AFABAB] text-neutral-900 border-[#AFABAB] hover:bg-[#AFABAB]" },
 }
 
 function CatalogSkeleton() {

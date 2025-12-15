@@ -22,10 +22,10 @@ import {
 import Link from "next/link"
 
 const statusConfig = {
-  "upcoming": { label: "Pre-Stay", className: "bg-[#E2F0D9] text-green-900 border-[#E2F0D9]" },
-  "current": { label: "In-Stay", className: "bg-[#A7C58E] text-green-900 border-[#A7C58E]" },
-  "departure": { label: "Post-Stay", className: "bg-[#AFABAB] text-gray-900 border-[#AFABAB]" },
-  "completed": { label: "Completed", className: "bg-[#AFABAB] text-gray-900 border-[#AFABAB]" },
+  "upcoming": { label: "Pre-Stay", className: "bg-[#E2F0D9] text-neutral-700 border-[#E2F0D9]" },
+  "current": { label: "In-Stay", className: "bg-[#A7C58E] text-neutral-700 border-[#A7C58E]" },
+  "departure": { label: "Post-Stay", className: "bg-[#AFABAB] text-neutral-700 border-[#AFABAB]" },
+  "completed": { label: "Completed", className: "bg-[#AFABAB] text-neutral-700 border-[#AFABAB]" },
 }
 
 interface BookingInfoSheetProps {
@@ -99,9 +99,6 @@ export function BookingInfoSheet({
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto space-y-4 pb-48 md:pb-6">
-          {/* Field Staff Notes */}
-          {notes && <BookingNotesCard notes={notes} />}
-
           {/* Guest Information */}
           <Card>
             <CardContent className="p-4 space-y-3">
@@ -144,6 +141,9 @@ export function BookingInfoSheet({
               )}
             </CardContent>
           </Card>
+
+          {/* Field Staff Notes */}
+          {notes && <BookingNotesCard notes={notes} />}
 
           {/* Booking Dates */}
           <Card>
