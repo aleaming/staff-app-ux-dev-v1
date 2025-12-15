@@ -12,6 +12,7 @@ import { HomeMedia } from "@/components/homes/HomeMedia"
 import { PropertyBrowser } from "@/components/property/PropertyBrowser"
 import { HomeActivitiesSheet } from "@/components/homes/HomeActivitiesSheet"
 import { Home } from "lucide-react"
+import Link from "next/link"
 
 interface HomeInfoSheetProps {
   homeId: string
@@ -51,7 +52,12 @@ export function HomeInfoSheet({
         <SheetHeader className="mb-4">
           <SheetTitle className="flex items-center gap-2">
             <Home className="h-5 w-5" />
-            {homeCode} {homeName && `• ${homeName}`}
+            <Link 
+              href={`/homes/${homeId}`}
+              className="hover:underline hover:text-primary transition-colors"
+            >
+              {homeCode} {homeName && `• ${homeName}`}
+            </Link>
           </SheetTitle>
           {(location || market) && (
             <div className="flex items-center gap-1 flex-wrap mt-1">

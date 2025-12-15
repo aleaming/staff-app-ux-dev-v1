@@ -12,14 +12,10 @@ import {
   Copy, 
   Check, 
   AlertTriangle,
-  User,
   Users,
   MessageSquare,
   ExternalLink,
-  Building,
-  Clock,
-  Percent,
-  Home
+  Building
 } from "lucide-react"
 import type { BookingNotes } from "@/lib/test-data"
 
@@ -109,45 +105,17 @@ export function BookingNotesCard({ notes }: BookingNotesCardProps) {
                   <span className="font-semibold text-sm">Entry Codes</span>
                   <span className="text-xs text-muted-foreground">(Test before guest arrives)</span>
                 </div>
-                <div className="grid gap-2">
+                <div className="grid grid-cols-2 gap-2">
                   {notes.entryCodes?.streetLevel && (
-                    <div className="flex items-center justify-between p-2 bg-background rounded border">
-                      <div>
-                        <span className="text-xs text-muted-foreground">Street Level</span>
-                        <p className="font-mono font-bold text-lg">{notes.entryCodes.streetLevel}</p>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 w-8 p-0"
-                        onClick={() => copyToClipboard(notes.entryCodes!.streetLevel!, 'street')}
-                      >
-                        {copiedField === 'street' ? (
-                          <Check className="h-4 w-4 text-green-600" />
-                        ) : (
-                          <Copy className="h-4 w-4" />
-                        )}
-                      </Button>
+                    <div className="px-3 py-0 bg-background rounded border">
+                      <span className="text-xs text-muted-foreground">Street Level</span>
+                      <p className="font-mono font-bold text-lg">{notes.entryCodes.streetLevel}</p>
                     </div>
                   )}
                   {notes.entryCodes?.apartment && (
-                    <div className="flex items-center justify-between p-2 bg-background rounded border">
-                      <div>
-                        <span className="text-xs text-muted-foreground">Apartment</span>
-                        <p className="font-mono font-bold text-lg">{notes.entryCodes.apartment}</p>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 w-8 p-0"
-                        onClick={() => copyToClipboard(notes.entryCodes!.apartment!, 'apartment')}
-                      >
-                        {copiedField === 'apartment' ? (
-                          <Check className="h-4 w-4 text-green-600" />
-                        ) : (
-                          <Copy className="h-4 w-4" />
-                        )}
-                      </Button>
+                    <div className="px-3 py-0 bg-background rounded border">
+                      <span className="text-xs text-muted-foreground">Apartment</span>
+                      <p className="font-mono font-bold text-lg">{notes.entryCodes.apartment}</p>
                     </div>
                   )}
                 </div>
@@ -164,34 +132,30 @@ export function BookingNotesCard({ notes }: BookingNotesCardProps) {
                   <Users className="h-4 w-4" />
                   Guest Information
                 </div>
-                <div className="grid gap-2 text-sm">
+                <div className="grid gap-1.5 text-sm">
                   {notes.repeatGuest !== undefined && (
-                    <div className="flex items-center gap-2">
-                      <User className="h-3.5 w-3.5 text-muted-foreground" />
-                      <span className="text-muted-foreground">Repeat Guest:</span>
+                    <div className="flex items-center">
+                      <span className="w-24 flex-shrink-0 text-muted-foreground">Repeat Guest</span>
                       <Badge variant={notes.repeatGuest ? "default" : "secondary"} className="text-xs">
                         {notes.repeatGuest ? "Yes" : "No"}
                       </Badge>
                     </div>
                   )}
                   {notes.contextOfStay && (
-                    <div className="flex items-start gap-2">
-                      <MessageSquare className="h-3.5 w-3.5 text-muted-foreground mt-0.5" />
-                      <span className="text-muted-foreground">Purpose:</span>
+                    <div className="flex items-start">
+                      <span className="w-24 flex-shrink-0 text-muted-foreground">Purpose:</span>
                       <span className="flex-1">{notes.contextOfStay}</span>
                     </div>
                   )}
                   {notes.groupMakeup && (
-                    <div className="flex items-start gap-2">
-                      <Users className="h-3.5 w-3.5 text-muted-foreground mt-0.5" />
-                      <span className="text-muted-foreground">Group:</span>
+                    <div className="flex items-start">
+                      <span className="w-24 flex-shrink-0 text-muted-foreground">Group:</span>
                       <span className="flex-1">{notes.groupMakeup}</span>
                     </div>
                   )}
                   {notes.concerns && (
-                    <div className="flex items-start gap-2">
-                      <AlertTriangle className="h-3.5 w-3.5 text-amber-500 mt-0.5" />
-                      <span className="text-muted-foreground">Requests:</span>
+                    <div className="flex items-start">
+                      <span className="w-24 flex-shrink-0 text-muted-foreground">Requests:</span>
                       <span className="flex-1">{notes.concerns}</span>
                     </div>
                   )}
@@ -201,9 +165,8 @@ export function BookingNotesCard({ notes }: BookingNotesCardProps) {
 
             {/* Check-in/Check-out Notes */}
             {notes.checkInOutNotes && (
-              <div className="flex items-start gap-2 text-sm">
-                <Clock className="h-3.5 w-3.5 text-muted-foreground mt-0.5" />
-                <span className="text-muted-foreground">Check-in/out:</span>
+              <div className="flex items-start text-sm">
+                <span className="w-24 flex-shrink-0 text-muted-foreground">Check-in/out:</span>
                 <span className="flex-1">{notes.checkInOutNotes}</span>
               </div>
             )}
@@ -215,25 +178,22 @@ export function BookingNotesCard({ notes }: BookingNotesCardProps) {
                   <Building className="h-4 w-4" />
                   Booking Details
                 </div>
-                <div className="grid gap-2 text-sm">
+                <div className="grid gap-1.5 text-sm">
                   {notes.flexRate && (
-                    <div className="flex items-center gap-2">
-                      <Percent className="h-3.5 w-3.5 text-muted-foreground" />
-                      <span className="text-muted-foreground">Flex Rate:</span>
+                    <div className="flex items-center">
+                      <span className="w-24 flex-shrink-0 text-muted-foreground">Flex Rate:</span>
                       <span>{notes.flexRate}</span>
                     </div>
                   )}
                   {notes.discountNote && notes.discountNote !== "N/A" && (
-                    <div className="flex items-center gap-2">
-                      <Percent className="h-3.5 w-3.5 text-muted-foreground" />
-                      <span className="text-muted-foreground">Discount:</span>
+                    <div className="flex items-center">
+                      <span className="w-24 flex-shrink-0 text-muted-foreground">Discount:</span>
                       <span>{notes.discountNote}</span>
                     </div>
                   )}
                   {notes.homeownerNotes && notes.homeownerNotes !== "N/A" && (
-                    <div className="flex items-start gap-2">
-                      <Home className="h-3.5 w-3.5 text-muted-foreground mt-0.5" />
-                      <span className="text-muted-foreground">Homeowner:</span>
+                    <div className="flex items-start">
+                      <span className="w-24 flex-shrink-0 text-muted-foreground">Homeowner:</span>
                       <span className="flex-1">{notes.homeownerNotes}</span>
                     </div>
                   )}

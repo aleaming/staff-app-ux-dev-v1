@@ -135,13 +135,14 @@ export function DamagesSheet({ homeId, damages }: DamagesSheetProps) {
   }
 
   return (
-    <div className="space-y-6 pb-24">
-      <div>
-        <p className="text-foreground font-medium">
+    <div className="space-y-4">
+      {/* Property Info */}
+      <div className="p-3 bg-muted rounded-lg">
+        <p className="font-semibold text-foreground">
           {home?.code} {home?.name && `• ${home.name}`}
         </p>
-        <p className="text-sm text-muted-foreground mt-2">
-          Review and acknowledge each damage. Upload photos to document current condition.
+        <p className="text-sm text-muted-foreground mt-1">
+          Review and acknowledge each damage below. Upload photos to document current condition.
         </p>
       </div>
 
@@ -152,28 +153,23 @@ export function DamagesSheet({ homeId, damages }: DamagesSheetProps) {
 
           return (
             <Card key={damage.id} className={isAcknowledged ? "opacity-70" : ""}>
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <CardTitle className="text-lg">{damage.description}</CardTitle>
-                      <AlertTriangle className="h-5 w-5 text-orange-500" />
-                    </div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <Badge variant="outline" className="text-xs">
-                        {damage.location}
-                      </Badge>
-                      {getSeverityBadge(damage.severity)}
-                      {getStatusBadge(damage.status)}
-                      <span className="text-xs text-muted-foreground">
-                        Reported {new Date(damage.reportedDate).toLocaleDateString()}
-                      </span>
-                    </div>
-                  </div>
-                  
+              <CardHeader className="pb-2">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="h-5 w-5 text-orange-500 flex-shrink-0" />
+                  <CardTitle className="text-base font-semibold">{damage.description}</CardTitle>
+                </div>
+                <div className="flex items-center gap-2 flex-wrap mt-2">
+                  <Badge variant="outline" className="text-xs">
+                    {damage.location}
+                  </Badge>
+                  {getSeverityBadge(damage.severity)}
+                  {getStatusBadge(damage.status)}
+                  <span className="text-xs text-muted-foreground">
+                    Reported {new Date(damage.reportedDate).toLocaleDateString()}
+                  </span>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4 pt-2">
                 {/* Notes */}
                 <div>
                   <label className="text-sm font-medium mb-2 block">Notes</label>
@@ -181,7 +177,8 @@ export function DamagesSheet({ homeId, damages }: DamagesSheetProps) {
                     placeholder="Add any additional notes about this damage..."
                     value={state?.notes || ""}
                     onChange={(e) => handleNotesChange(damage.id, e.target.value)}
-                    rows={3}
+                    rows={2}
+                    className="resize-none"
                   />
                 </div>
 

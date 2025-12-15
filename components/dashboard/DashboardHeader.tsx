@@ -131,17 +131,13 @@ export function DashboardHeader({
         {!weatherLoading && weather && (
           <>
             <span className="text-muted-foreground/50">•</span>
-            <div className="flex items-center gap-1.5">
-              <WeatherIcon icon={weather.icon} />
-              <span className="font-medium">{weather.temperature}°C</span>
-              <span className="hidden sm:inline text-muted-foreground/80">{weather.condition}</span>
-              <span className="text-muted-foreground/50">•</span>
-              <WeatherDetailsSheet latitude={latitude} longitude={longitude} city="London">
-                <button className="text-primary hover:underline text-sm font-medium">
-                  Hourly Forecast
-                </button>
-              </WeatherDetailsSheet>
-            </div>
+            <WeatherDetailsSheet latitude={latitude} longitude={longitude} city="London">
+              <button className="flex items-center gap-1.5 hover:text-primary transition-colors">
+                <WeatherIcon icon={weather.icon} />
+                <span className="font-medium">{weather.temperature}°C</span>
+                <span className="hidden sm:inline text-muted-foreground/80">{weather.condition}</span>
+              </button>
+            </WeatherDetailsSheet>
           </>
         )}
         

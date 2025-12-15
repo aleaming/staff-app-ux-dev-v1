@@ -109,11 +109,11 @@ export function DamagesNotificationBanner({ homeId: propHomeId, damages: propDam
         </SheetTrigger>
       </div>
 
-      <SheetContent side="bottom" className="h-screen max-h-[calc(92vh-8rem)] flex flex-col bg-secondary dark:bg-secondary-foreground">
-        <SheetHeader className="mb-1">
+      <SheetContent side="bottom" className="max-h-[82vh] overflow-y-auto pb-48 bg-secondary dark:bg-secondary-foreground">
+        <SheetHeader>
           <SheetTitle className="text-2xl text-left">Known Damages</SheetTitle>
         </SheetHeader>
-        <div className="flex-1 overflow-y-auto">
+        <div className="mt-4">
           <DamagesSheet homeId={homeId} damages={damages} />
         </div>
       </SheetContent>

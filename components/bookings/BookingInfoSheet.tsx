@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { HomeInfoSheet } from "@/components/homes/HomeInfoSheet"
+import { BookingNotesCard } from "@/components/bookings/BookingNotesCard"
 import { useData } from "@/lib/data/DataProvider"
 import { 
   Calendar, 
@@ -37,7 +38,7 @@ export function BookingInfoSheet({
   children
 }: BookingInfoSheetProps) {
   const [open, setOpen] = useState(false)
-  const { homes, bookings, activities } = useData()
+  const { homes, bookings, activities, bookingNotes } = useData()
 
   // Close sheet when navigation occurs
   useEffect(() => {
@@ -49,6 +50,7 @@ export function BookingInfoSheet({
   const booking = bookings.find(b => b.bookingId === bookingId)
   const home = booking ? homes.find(h => h.code === booking.homeCode) : null
   const bookingActivities = booking ? activities.filter(a => a.bookingId === booking.bookingId) : []
+  const notes = booking ? bookingNotes.find(n => n.bookingRef === booking.bookingId) : null
 
   if (!booking) {
     return <>{children}</>
@@ -84,7 +86,12 @@ export function BookingInfoSheet({
         <SheetHeader className="mb-4">
           <SheetTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5" />
-            <span className="text-primary">{booking.bookingId}</span>
+            <Link 
+              href={`/bookings/${booking.id}`}
+              className="text-primary hover:underline transition-colors"
+            >
+              {booking.bookingId}
+            </Link>
             <Badge className={statusInfo.className}>
               {statusInfo.label}
             </Badge>
@@ -92,6 +99,9 @@ export function BookingInfoSheet({
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto space-y-4 pb-48 md:pb-6">
+          {/* Field Staff Notes */}
+          {notes && <BookingNotesCard notes={notes} />}
+
           {/* Guest Information */}
           <Card>
             <CardContent className="p-4 space-y-3">
