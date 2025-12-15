@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { GoogleMapView, HomeMarker } from "@/components/map/GoogleMapView"
 import {
   MapPin,
   Shield,
@@ -13,7 +14,8 @@ import {
   CheckCircle2,
   X,
   Eye,
-  EyeOff
+  EyeOff,
+  Copy
 } from "lucide-react"
 
 interface HomeAccessProps {
@@ -22,9 +24,16 @@ interface HomeAccessProps {
 
 export function HomeAccess({ homeCode }: HomeAccessProps) {
   const [showCodes, setShowCodes] = useState<Record<string, boolean>>({})
+  const [copiedField, setCopiedField] = useState<string | null>(null)
 
   const toggleCode = (key: string) => {
     setShowCodes(prev => ({ ...prev, [key]: !prev[key] }))
+  }
+
+  const handleCopy = (text: string, field: string) => {
+    navigator.clipboard.writeText(text)
+    setCopiedField(field)
+    setTimeout(() => setCopiedField(null), 2000)
   }
 
   // Mock data extracted from the image - in production, this would come from the home data
@@ -105,16 +114,23 @@ export function HomeAccess({ homeCode }: HomeAccessProps) {
         <CardContent className="space-y-4">
           {/* Map Display */}
           <div className="aspect-video bg-muted rounded-lg overflow-hidden relative border">
-            <iframe
-              width="100%"
-              height="100%"
-              frameBorder="0"
-              scrolling="no"
-              marginHeight={0}
-              marginWidth={0}
-              src={`https://www.openstreetmap.org/export/embed.html?bbox=${accessInfo.coordinates.lng - 0.01}%2C${accessInfo.coordinates.lat - 0.01}%2C${accessInfo.coordinates.lng + 0.01}%2C${accessInfo.coordinates.lat + 0.01}&layer=mapnik&marker=${accessInfo.coordinates.lat}%2C${accessInfo.coordinates.lng}`}
-              className="border-0"
-              title="Property Location Map"
+            <GoogleMapView
+              markers={[
+                {
+                  id: `home-${homeCode}`,
+                  type: "home",
+                  lat: accessInfo.coordinates.lat,
+                  lng: accessInfo.coordinates.lng,
+                  code: homeCode,
+                  name: accessInfo.streetName,
+                  address: accessInfo.address,
+                } as HomeMarker
+              ]}
+              center={accessInfo.coordinates}
+              zoom={16}
+              singleMarkerMode={true}
+              showInfoWindows={false}
+              className="w-full h-full"
             />
           </div>
 
@@ -123,7 +139,17 @@ export function HomeAccess({ homeCode }: HomeAccessProps) {
             <p className="font-medium">{accessInfo.streetName}</p>
           </div>
           <div>
-            <p className="text-sm text-muted-foreground">Address</p>
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-muted-foreground">Address</p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleCopy(accessInfo.address, "address")}
+              >
+                <Copy className="h-3 w-3 mr-1" />
+                {copiedField === "address" ? "Copied!" : "Copy"}
+              </Button>
+            </div>
             <p className="font-medium">{accessInfo.address}</p>
           </div>
 
