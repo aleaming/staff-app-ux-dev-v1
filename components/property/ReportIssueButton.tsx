@@ -31,11 +31,11 @@ export function ReportIssueButton({
     <>
       <Button
         variant={variant}
-        className={className || "w-full gap-2"}
+        className={className || "w-full gap-2 text-sm"}
         onClick={() => setSheetOpen(true)}
       >
-        <AlertTriangle className="h-4 w-4" />
-        Report Issue
+        <AlertTriangle className="h-4 w-4 shrink-0" />
+        <span className="truncate">Report Issue</span>
       </Button>
 
       {sheetOpen && (

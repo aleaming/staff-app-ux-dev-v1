@@ -18,16 +18,16 @@ export function HomeInformationCard({ home }: HomeInformationCardProps) {
 
   return (
     <>
-      <Card>
+      <Card className="overflow-hidden">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 px-1">
             
             Home Information
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            <div className="flex items-center gap-1">
+        <CardContent className="overflow-hidden">
+          <div className="space-y-3 min-w-0">
+            <div className="flex items-center gap-1 flex-wrap min-w-0">
               <HomeInfoSheet
                 homeId={home.id}
                 homeCode={home.code}
@@ -49,21 +49,21 @@ export function HomeInformationCard({ home }: HomeInformationCardProps) {
                     location={home.location}
                     market={home.market}
                   >
-                    <button className="text-xs font-normal text-muted-foreground underline hover:text-primary/80 transition-colors text-left">
+                    <button className="text-xs font-normal text-muted-foreground underline hover:text-primary/80 transition-colors text-left truncate max-w-[180px]">
                       {home.name}
                     </button>
                   </HomeInfoSheet>
                 </>
               )}
             </div>
-            <div>
+            <div className="min-w-0">
        
               <button
                 onClick={() => setMapSheetOpen(true)}
-                className="flex items-start gap-1 text-sm font-medium hover:text-primary transition-colors text-left"
+                className="flex items-start gap-1 text-sm font-medium hover:text-primary transition-colors text-left min-w-0 max-w-full"
               >
-                <MapPin className="h-3 w-3 mt-0.5" />
-                <span className="underline font-normal text-xs">{home.address}, {home.city}</span>
+                <MapPin className="h-3 w-3 mt-0.5 shrink-0" />
+                <span className="underline font-normal text-xs break-words">{home.address}, {home.city}</span>
               </button>
             </div>
             {home.distance !== undefined && (
@@ -72,7 +72,7 @@ export function HomeInformationCard({ home }: HomeInformationCardProps) {
                 <p className="text-sm font-medium">{home.distance.toFixed(1)} km away</p>
               </div>
             )}
-            <Button variant="outline" asChild className="w-full">
+            <Button variant="outline" asChild className="w-full text-sm">
               <Link href={`/homes/${home.id}`}>View Home Details</Link>
             </Button>
           </div>

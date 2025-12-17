@@ -111,26 +111,28 @@ export default function CatalogContent() {
                       <CardContent className="p-3">
                         <div className="flex items-start justify-between">
                           <div className="flex-1 min-w-0">
-                            <h3 className="text-base font-semibold mb-1 truncate">
-                              <span className="text-primary">{home.code}</span>
-                              {home.name && (
-                                <span className="text-base font-normal text-muted-foreground ml-2">{home.name}</span>
+                            <div className="flex items-center justify-between gap-2 mb-1">
+                              <h3 className="text-base font-semibold truncate min-w-0">
+                                <span className="text-primary">{home.code}</span>
+                                {home.name && (
+                                  <span className="text-base font-normal text-muted-foreground ml-2">{home.name}</span>
+                                )}
+                              </h3>
+                              {(home.location || home.market) && (
+                                <div className="flex items-center gap-1.5 flex-shrink-0">
+                                  {home.location && (
+                                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-normal">
+                                      {home.location}
+                                    </Badge>
+                                  )}
+                                  {home.market && home.market !== home.location && (
+                                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-normal">
+                                      {home.market}
+                                    </Badge>
+                                  )}
+                                </div>
                               )}
-                            </h3>
-                            {(home.location || home.market) && (
-                              <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1">
-                                {home.location && (
-                                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-normal">
-                                    {home.location}
-                                  </Badge>
-                                )}
-                                {home.market && home.market !== home.location && (
-                                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-normal">
-                                    {home.market}
-                                  </Badge>
-                                )}
-                              </div>
-                            )}
+                            </div>
                             <button
                               onClick={(e) => handleShowMap(e, home.code)}
                               className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mb-1 text-left w-full overflow-hidden"
@@ -180,15 +182,23 @@ export default function CatalogContent() {
                   <Link key={booking.id} href={`/bookings/${booking.id}`}>
                     <Card className="hover:bg-white dark:hover:bg-neutral-900 transition-colors">
                       <CardContent className="p-3">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
+                        <div className="flex items-start justify-between min-w-0">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between mb-1 flex-wrap gap-2">
                               <h3 className="text-base font-semibold">
                                 <span className="text-primary">{booking.bookingId}</span>
                               </h3>
+                              <div className="flex items-center justify-end gap-2">
+                              <div className="flex gap-1 text-muted-foreground text-xs">
+                                <Calendar className="h-3 w-3" />
+                                <span>
+                                  {booking.checkIn.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - {booking.checkOut.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                </span>
+                              </div>
                               <Badge className={statusInfo.className}>
                                 {statusInfo.label}
                               </Badge>
+                              </div>
                             </div>
                             <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
                               <User className="h-3 w-3" />
@@ -226,19 +236,14 @@ export default function CatalogContent() {
                             {home && (
                               <button
                                 onClick={(e) => handleShowMap(e, booking.homeCode)}
-                                className="flex items-start gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mb-1 text-left"
+                                className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mb-1 text-left w-full overflow-hidden"
                               >
-                                <MapPin className="h-3 w-3 mt-0.5" />
-                                <span className="underline">{home.address}, {home.city}</span>
+                                <MapPin className="h-3 w-3 flex-shrink-0" />
+                                <span className="underline truncate">{home.address}, {home.city}</span>
                               </button>
                             )}
                             <div className="flex items-center gap-4 text-xs">
-                              <div className="flex items-center gap-1 text-muted-foreground">
-                                <Calendar className="h-3 w-3" />
-                                <span>
-                                  {booking.checkIn.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - {booking.checkOut.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                                </span>
-                              </div>
+                              
                               {booking.numberOfGuests && (
                                 <span className="text-muted-foreground">
                                   {booking.numberOfGuests} guest{booking.numberOfGuests !== 1 ? 's' : ''}

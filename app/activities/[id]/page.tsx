@@ -203,16 +203,16 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
         <DamagesNotificationBanner homeId={home.id} damages={home.damages} />
       )}
 
-      <div className="container mx-auto px-4 py-6 md:py-8">
+      <div className="container mx-auto px-4 py-6 md:py-8 max-w-full overflow-hidden">
         <div className="space-y-4">
           {/* Breadcrumbs */}
           <Breadcrumbs items={breadcrumbs} />
 
           {/* Header */}
-        <div className="flex items-start gap-4">
+        <div className="flex items-start gap-4 min-w-0">
           
-          <div className="flex-1">
-            <h1 className="text-xl md:text-2xl font-bold">{typeConfig.label}</h1>
+          <div className="flex-1 min-w-0">
+            <h1 className="text-xl md:text-2xl font-bold truncate">{typeConfig.label}</h1>
             {home ? (
               <HomeInfoSheet
                 homeId={home.id}
@@ -221,7 +221,7 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
                 location={home.location}
                 market={home.market}
               >
-                <button className="text-xs text-primary underline hover:text-primary/80 transition-colors text-left mt-1">
+                <button className="text-xs text-primary underline hover:text-primary/80 transition-colors text-left mt-1 truncate max-w-full block">
                   {activity.homeCode}
                   {activity.homeName && (
                     <span className="text-muted-foreground"> • {activity.homeName}</span>
@@ -229,7 +229,7 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
                 </button>
               </HomeInfoSheet>
             ) : (
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-xs text-muted-foreground mt-1 truncate">
                 {activity.homeCode} {activity.homeName && `• ${activity.homeName}`}
               </p>
             )}
@@ -239,39 +239,39 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
           </div>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid gap-6 lg:grid-cols-3 min-w-0">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-3">
+          <div className="lg:col-span-2 space-y-3 min-w-0">
             {/* Activity Info */}
-            <Card>
+            <Card className="overflow-hidden">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 px-1">
                   
                   Activity Details
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
+              <CardContent className="space-y-3 overflow-hidden">
                 {activity.description && (
                   <div className="flex flex-col">
                     <p className="text-xs font-medium">{activity.description}</p>
                   </div>
                 )}
                 
-                <div className="grid gap-2 md:grid-cols-2">
-                  <div className="flex items-start gap-2">
-                    <Clock className="h-3 w-3 text-muted-foreground mt-0.5" />
-                    <div>
+                <div className="grid gap-2 md:grid-cols-2 min-w-0">
+                  <div className="flex items-start gap-2 min-w-0">
+                    <Clock className="h-3 w-3 text-muted-foreground mt-0.5 shrink-0" />
+                    <div className="min-w-0 overflow-hidden">
                       <p className="text-xs text-muted-foreground">Scheduled Time</p>
-                      <p className="font-medium text-xs">{formatTimeRange(activity.scheduledTime, activity.endTime)}</p>
+                      <p className="font-medium text-xs break-words">{formatTimeRange(activity.scheduledTime, activity.endTime)}</p>
                     </div>
                   </div>
                   
                   {activity.assignedTo && (
-                    <div className="flex items-start gap-2">
-                      <User className="h-3 w-3 text-muted-foreground mt-0.5" />
-                      <div>
+                    <div className="flex items-start gap-2 min-w-0">
+                      <User className="h-3 w-3 text-muted-foreground mt-0.5 shrink-0" />
+                      <div className="min-w-0">
                         <p className="text-xs text-muted-foreground">Assigned To</p>
-                        <p className="text-xs font-medium">{activity.assignedTo}</p>
+                        <p className="text-xs font-medium truncate">{activity.assignedTo}</p>
                       </div>
                     </div>
                   )}
@@ -292,38 +292,38 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
 
             {/* Booking Information */}
             {booking && (
-              <Card>
+              <Card className="overflow-hidden">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 px-1">
     
                     Booking Information
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-1">
-                      <p className="text-xs text-muted-foreground">Booking ID:</p>
-                      <p className="text-xs font-semibold">{booking.bookingId}</p>
+                <CardContent className="overflow-hidden">
+                  <div className="space-y-2 min-w-0">
+                    <div className="flex items-center gap-1 flex-wrap min-w-0">
+                      <p className="text-xs text-muted-foreground shrink-0">Booking ID:</p>
+                      <p className="text-xs font-semibold truncate">{booking.bookingId}</p>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <p className="text-xs text-muted-foreground">Guest:</p>
-                      <p className="text-xs font-medium">{booking.guestName}</p>
+                    <div className="flex items-center gap-1 flex-wrap min-w-0">
+                      <p className="text-xs text-muted-foreground shrink-0">Guest:</p>
+                      <p className="text-xs font-medium truncate">{booking.guestName}</p>
                     </div>
-                    <div className="grid gap-1 grid-cols-2">
-                      <div>
+                    <div className="grid gap-1 grid-cols-2 min-w-0">
+                      <div className="min-w-0">
                         <p className="text-xs text-muted-foreground">Check-in</p>
-                        <p className="text-xs font-medium">
+                        <p className="text-xs font-medium truncate">
                           {booking.checkIn.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                         </p>
                       </div>
-                      <div>
+                      <div className="min-w-0">
                         <p className="text-xs text-muted-foreground">Check-out</p>
-                        <p className="text-xs font-medium">
+                        <p className="text-xs font-medium truncate">
                           {booking.checkOut.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                         </p>
                       </div>
                     </div>
-                    <Button variant="outline" asChild className="w-full">
+                    <Button variant="outline" asChild className="w-full text-sm">
                       <Link href={`/bookings/${booking.id}`}>View Booking Details</Link>
                     </Button>
                   </div>
@@ -348,20 +348,20 @@ export default function ActivityDetailPage({ params }: ActivityDetailPageProps) 
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
-            <Card>
+          <div className="space-y-6 min-w-0">
+            <Card className="overflow-hidden">
               <CardHeader>
                 <CardTitle className="px-1">Quick Actions</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2">
+              <CardContent className="space-y-2 overflow-hidden">
                 {/* Task Preview Button */}
                 <TaskPreviewSheet 
                   activityType={activity.type as ActivityType}
                   activityName={typeConfig.label}
                 >
-                  <Button variant="outline" className="w-full gap-2">
-                    <List className="h-4 w-4" />
-                    Preview all tasks
+                  <Button variant="outline" className="w-full gap-2 text-sm">
+                    <List className="h-4 w-4 shrink-0" />
+                    <span className="truncate">Preview all tasks</span>
                   </Button>
                 </TaskPreviewSheet>
                
