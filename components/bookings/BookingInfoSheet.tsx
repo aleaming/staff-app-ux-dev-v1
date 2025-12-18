@@ -23,10 +23,10 @@ import {
 import Link from "next/link"
 
 const statusConfig = {
-  "upcoming": { label: "Pre-Stay", className: "bg-[#E2F0D9] text-neutral-700 border-[#E2F0D9]" },
-  "current": { label: "In-Stay", className: "bg-[#A7C58E] text-neutral-700 border-[#A7C58E]" },
-  "departure": { label: "Post-Stay", className: "bg-[#AFABAB] text-neutral-700 border-[#AFABAB]" },
-  "completed": { label: "Completed", className: "bg-[#AFABAB] text-neutral-700 border-[#AFABAB]" },
+  "upcoming": { label: "Pre-Stay", className: "bg-booking-pre-stay text-neutral-700 border-booking-pre-stay" },
+  "current": { label: "In-Stay", className: "bg-booking-in-stay text-neutral-700 border-booking-in-stay" },
+  "departure": { label: "Post-Stay", className: "bg-booking-post-stay text-neutral-700 border-booking-post-stay" },
+  "completed": { label: "Completed", className: "bg-booking-completed text-neutral-700 border-booking-completed" },
 }
 
 interface BookingInfoSheetProps {

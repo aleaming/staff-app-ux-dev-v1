@@ -59,6 +59,20 @@ const config: Config = {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
+  			},
+  			booking: {
+  				'pre-stay': 'var(--booking-pre-stay)',
+  				'in-stay': 'var(--booking-in-stay)',
+  				'post-stay': 'var(--booking-post-stay)',
+  				'completed': 'var(--booking-completed)'
+  			},
+  			map: {
+  				'marker-red': 'var(--map-marker-red)',
+  				'marker-green': 'var(--map-marker-green)',
+  				'marker-yellow': 'var(--map-marker-yellow)',
+  				'marker-blue': 'var(--map-marker-blue)',
+  				'marker-orange': 'var(--map-marker-orange)',
+  				'stroke': 'var(--map-stroke)'
   			}
   		},
   		keyframes: {

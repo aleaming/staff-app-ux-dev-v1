@@ -68,31 +68,49 @@ interface GoogleMapViewProps {
   routeWaypoints?: { lat: number; lng: number }[] // For drawing route polyline
 }
 
+// Get the computed CSS variable value for use in SVG strings
+// Colors are defined in globals.css under --map-marker-* variables
+function getCssVariableValue(varName: string): string {
+  if (typeof window === "undefined") {
+    // Fallback values for SSR
+    const fallbacks: Record<string, string> = {
+      "--map-marker-red": "#ef4444",
+      "--map-marker-green": "#22c55e",
+      "--map-marker-yellow": "#eab308",
+      "--map-marker-blue": "#3b82f6",
+      "--map-marker-orange": "#f97316",
+      "--map-stroke": "#9a7c5c",
+    }
+    return fallbacks[varName] || "#3b82f6"
+  }
+  return getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || "#3b82f6"
+}
+
 // Get marker color based on type and status
 function getMarkerColor(marker: MapMarker): string {
   if (marker.type === "home") {
     switch (marker.status) {
       case "occupied":
-        return "#ef4444" // red
+        return getCssVariableValue("--map-marker-red")
       case "available":
-        return "#22c55e" // green
+        return getCssVariableValue("--map-marker-green")
       case "maintenance":
-        return "#eab308" // yellow
+        return getCssVariableValue("--map-marker-yellow")
       default:
-        return "#3b82f6" // blue
+        return getCssVariableValue("--map-marker-blue")
     }
   } else {
     switch (marker.status) {
       case "pending":
-        return "#3b82f6" // blue
+        return getCssVariableValue("--map-marker-blue")
       case "in-progress":
-        return "#f97316" // orange
+        return getCssVariableValue("--map-marker-orange")
       case "completed":
-        return "#22c55e" // green
+        return getCssVariableValue("--map-marker-green")
       case "cancelled":
-        return "#ef4444" // red
+        return getCssVariableValue("--map-marker-red")
       default:
-        return "#3b82f6" // blue
+        return getCssVariableValue("--map-marker-blue")
     }
   }
 }
@@ -139,12 +157,14 @@ function createMarkerIcon(marker: MapMarker): google.maps.Icon {
   }
 }
 
-// Polyline options for route display
-const polylineOptions: google.maps.PolylineOptions = {
-  strokeColor: "#9a7c5c", // Primary brand color
-  strokeOpacity: 0.8,
-  strokeWeight: 3,
-  geodesic: true,
+// Get polyline options for route display (needs to be a function to resolve CSS variable)
+function getPolylineOptions(): google.maps.PolylineOptions {
+  return {
+    strokeColor: getCssVariableValue("--map-stroke"),
+    strokeOpacity: 0.8,
+    strokeWeight: 3,
+    geodesic: true,
+  }
 }
 
 export function GoogleMapView({
@@ -246,7 +266,7 @@ export function GoogleMapView({
         {routeWaypoints.length > 1 && (
           <Polyline
             path={routeWaypoints}
-            options={polylineOptions}
+            options={getPolylineOptions()}
           />
         )}
 

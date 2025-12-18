@@ -43,7 +43,7 @@
     --sidebar-accent-foreground: 0 0% 20%;
     --sidebar-border: 0 0% 91%;
     --sidebar-ring: 16 96% 59%;
-    
+
     /* Activity Type Colors */
     --activity-provisioning: #F4B183;
     --activity-deprovision: #A1C6E7;
@@ -58,7 +58,21 @@
     --activity-adhoc: #AFABAB;
     --activity-quality-check: #FF9393;
     --activity-additional-greet: #B2E4E8;
-    
+
+    /* Booking Status Colors */
+    --booking-pre-stay: #E2F0D9;
+    --booking-in-stay: #A7C58E;
+    --booking-post-stay: #AFABAB;
+    --booking-completed: #AFABAB;
+
+    /* Map Colors */
+    --map-marker-red: #ef4444;
+    --map-marker-green: #22c55e;
+    --map-marker-yellow: #eab308;
+    --map-marker-blue: #3b82f6;
+    --map-marker-orange: #f97316;
+    --map-stroke: #9a7c5c;
+
     --shadow-color: rgb(0, 0, 0);
     --shadow-2xs: 0 1px 3px 0px rgb(from var(--shadow-color) r g b / 0.05);
     --shadow-xs: 0 1px 3px 0px rgb(from var(--shadow-color) r g b / 0.05);
@@ -118,7 +132,21 @@
     --activity-adhoc: #AFABAB;
     --activity-quality-check: #FF9393;
     --activity-additional-greet: #B2E4E8;
-    
+
+    /* Booking Status Colors */
+    --booking-pre-stay: #E2F0D9;
+    --booking-in-stay: #A7C58E;
+    --booking-post-stay: #AFABAB;
+    --booking-completed: #AFABAB;
+
+    /* Map Colors */
+    --map-marker-red: #ef4444;
+    --map-marker-green: #22c55e;
+    --map-marker-yellow: #eab308;
+    --map-marker-blue: #3b82f6;
+    --map-marker-orange: #f97316;
+    --map-stroke: #9a7c5c;
+
     --shadow-color: rgb(0, 0, 0);
   }
 }

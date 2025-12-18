@@ -384,18 +384,75 @@ Each activity type has a designated color for instant visual recognition. These 
 ### Implementation
 
 ```tsx
-// Activity card with colored left border
-<Card className="border-l-[6px]" style={{ borderLeftColor: '#F4B183' }}>
+// Activity card with colored left border using CSS variable
+<Card className="border-l-[6px]" style={{ borderLeftColor: 'var(--activity-provisioning)' }}>
   {/* Provisioning activity content */}
 </Card>
 
-// Activity type config object
+// Activity type config object using CSS variables
 const activityTypeConfig = {
-  provisioning: { color: '#F4B183', icon: Package },
-  turn: { color: '#B4A7D6', icon: RefreshCw },
-  'meet-greet': { color: '#46BDC6', icon: Users },
+  provisioning: { color: 'var(--activity-provisioning)', icon: Package },
+  turn: { color: 'var(--activity-turn)', icon: RefreshCw },
+  'meet-greet': { color: 'var(--activity-greet)', icon: Users },
   // ...
 }
+```
+
+---
+
+## 5.1. Booking Status Colors
+
+Each booking status has a designated color for visual recognition. These colors are defined as CSS variables and available as Tailwind classes.
+
+| Status | Color | CSS Variable | Tailwind Class | Usage |
+|--------|-------|--------------|----------------|-------|
+| **Pre-Stay** | Light Green | `--booking-pre-stay` | `bg-booking-pre-stay` | Upcoming bookings |
+| **In-Stay** | Medium Green | `--booking-in-stay` | `bg-booking-in-stay` | Current bookings |
+| **Post-Stay** | Gray | `--booking-post-stay` | `bg-booking-post-stay` | Departures |
+| **Completed** | Gray | `--booking-completed` | `bg-booking-completed` | Completed bookings |
+
+### Implementation
+
+```tsx
+// Booking status badge using Tailwind classes
+<Badge className="bg-booking-pre-stay text-neutral-700 border-booking-pre-stay">
+  Pre-Stay
+</Badge>
+
+// Status config object
+const statusConfig = {
+  "upcoming": { label: "Pre-Stay", className: "bg-booking-pre-stay text-neutral-700 border-booking-pre-stay" },
+  "current": { label: "In-Stay", className: "bg-booking-in-stay text-neutral-700 border-booking-in-stay" },
+  "departure": { label: "Post-Stay", className: "bg-booking-post-stay text-neutral-700 border-booking-post-stay" },
+  "completed": { label: "Completed", className: "bg-booking-completed text-neutral-700 border-booking-completed" },
+}
+```
+
+---
+
+## 5.2. Map Colors
+
+Map markers and route lines use centralized color tokens for consistency.
+
+| Element | CSS Variable | Hex | Usage |
+|---------|--------------|-----|-------|
+| **Red Marker** | `--map-marker-red` | `#ef4444` | Occupied homes, cancelled activities |
+| **Green Marker** | `--map-marker-green` | `#22c55e` | Available homes, completed activities |
+| **Yellow Marker** | `--map-marker-yellow` | `#eab308` | Maintenance homes |
+| **Blue Marker** | `--map-marker-blue` | `#3b82f6` | Default, pending activities |
+| **Orange Marker** | `--map-marker-orange` | `#f97316` | In-progress activities |
+| **Stroke** | `--map-stroke` | `#9a7c5c` | Route polylines |
+
+### Implementation
+
+```tsx
+// Access map colors via CSS variable resolver
+function getCssVariableValue(varName: string): string {
+  return getComputedStyle(document.documentElement).getPropertyValue(varName).trim()
+}
+
+// Usage
+const markerColor = getCssVariableValue("--map-marker-green")
 ```
 
 ---
