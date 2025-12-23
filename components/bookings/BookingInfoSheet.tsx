@@ -83,8 +83,8 @@ export function BookingInfoSheet({
         {children}
       </SheetTrigger>
 
-      <SheetContent side="bottom" className="h-[calc(92vh-8rem)] max-h-[calc(92vh-4rem)]">
-        <SheetHeader className="mb-4">
+      <SheetContent side="bottom" className="h-[85vh] max-h-[85vh] flex flex-col overflow-hidden !pb-0">
+        <SheetHeader className="mb-4 flex-shrink-0">
           <SheetTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5" />
             <Link 
@@ -99,7 +99,7 @@ export function BookingInfoSheet({
           </SheetTitle>
         </SheetHeader>
 
-        <div className="flex-1 overflow-y-auto space-y-4 pb-48 md:pb-6">
+        <div className="flex-1 overflow-y-auto space-y-4 pb-24 md:pb-8 -mx-4 sm:-mx-6 px-4 sm:px-6">
           {/* Guest Information */}
           <Card>
             <CardContent className="p-4 space-y-3">
