@@ -93,11 +93,7 @@ export function MapSheet({
           {/* Header */}
           <SheetHeader className="p-4 sm:p-6 pb-4 border-b">
             <div className="flex items-start gap-3">
-              <div className="flex-shrink-0 mt-1">
-                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                  <MapPin className="h-5 w-5 text-primary" />
-                </div>
-              </div>
+             
               <div className="flex-1 min-w-0">
                 <SheetTitle className="text-lg sm:text-xl mb-1">
                   {homeCode} {homeName && `• ${homeName}`}
