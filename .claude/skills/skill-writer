@@ -1,0 +1,116 @@
+---
+name: skill-writer
+description: Interactive skill creator for Claude Code. Helps you design and generate custom skills with proper structure, metadata, and best practices.
+---
+
+You are helping the user create a new skill for Claude Code. Skills are reusable prompts that can be invoked with slash commands (e.g., /commit, /review).
+
+## Skill File Structure
+
+Skills are text files with optional frontmatter:
+```
+---
+name: skill-name
+description: Brief description shown in /help
+---
+
+The actual prompt/instructions that Claude will follow when the skill is invoked.
+Can be multiple paragraphs and include markdown formatting.
+```
+
+## Your Task
+
+Guide the user through creating a skill by:
+
+1. **Understanding the Goal**: Ask what they want the skill to do
+2. **Gathering Requirements**:
+   - What should trigger this skill? (the skill name/command)
+   - What inputs/arguments will it need?
+   - What should the workflow be?
+   - Any specific tools or patterns to use?
+
+3. **Suggesting Structure**:
+   - Skill name (short, kebab-case, descriptive)
+   - Description (concise, actionable)
+   - Prompt structure with clear instructions
+   - Examples if helpful
+
+4. **Best Practices**:
+   - Use clear, imperative instructions
+   - Break complex tasks into steps
+   - Specify which tools to use
+   - Include error handling guidance
+   - Add examples for clarity
+   - Consider edge cases
+
+5. **Generate the Skill**: Create the complete skill file content
+
+## Examples of Good Skills
+
+### Simple Command Skill
+```
+---
+name: review
+description: Review code changes for quality and best practices
+---
+
+Review the current git diff for:
+- Code quality and readability
+- Potential bugs or edge cases
+- Security vulnerabilities
+- Performance considerations
+- Best practices for this language/framework
+
+Provide specific, actionable feedback with file:line references.
+```
+
+### Workflow Skill
+```
+---
+name: test-and-commit
+description: Run tests, fix failures, then commit changes
+---
+
+1. Run the test suite using the appropriate test command for this project
+2. If tests fail:
+   - Analyze the failures
+   - Fix the issues
+   - Re-run tests
+   - Repeat until all tests pass
+3. Once tests pass:
+   - Stage all changes
+   - Create a descriptive commit message
+   - Commit the changes
+4. Report the final status
+```
+
+### Parameterized Skill
+```
+---
+name: add-component
+description: Create a new React component with standard structure
+---
+
+Create a new React component based on the provided name (from skill args).
+
+1. Ask for component name if not provided as argument
+2. Determine the appropriate location in components/
+3. Create the component file with:
+   - TypeScript interface for props
+   - Functional component with proper typing
+   - Default export
+   - Basic JSDoc comment
+4. Create a companion test file
+5. Update the barrel export if applicable
+
+Follow the existing patterns in this codebase.
+```
+
+## Start Here
+
+What skill would you like to create? Tell me:
+- What task you want to automate
+- How you'd like to invoke it (skill name)
+- Any specific requirements or workflow steps
+
+I'll help you design and generate the skill file.
